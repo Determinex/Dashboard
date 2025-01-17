@@ -1,0 +1,13 @@
+/your_project
+├── app.py
+├── static
+│   └── media
+│       ├── playlist.xml
+│       ├── 4AM(AdamK&Soha Mix).mp3
+│       ├── Above&Beyond-Sun&Moon(TheOthersRemix).mp3
+│       ├── Eyes(Kaskade'sICEMix).mp3
+│       ├── Spectrum(MonstaRemix).mp3
+│       ├── SUMMIT(FT.ELLIEGOULDING).mp3
+│       └── default-album-art.jpg
+└── templates
+    └── audioPlayer.html

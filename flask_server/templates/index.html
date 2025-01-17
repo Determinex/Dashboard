@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Directory Explorer</title>
+    <link rel="stylesheet" href="../static/css/indexedstyles.css"> <!-- Adjust the path as necessary -->
+    <script src="../static/js/indexedscripts.js"></script> <!-- Adjust the path as necessary -->
+</head>
+<body>
+    <h1>Directory Tree Explorer</h1>
+    <div id="tree"></div>
+    <script>
+        // Sample directory structure data
+        const directoryStructure = {
+            "my_project": {
+                "flask_server": {
+                    "__init__.py": null,
+                    "server.py": null,
+                    "templates": {
+                        "index.html": null
+                    },
+                    "static": {
+                        "css": {
+                            "styles.css": null
+                        },
+                        "js": {
+                            "scripts.js": null
+                        }
+                    }
+                },
+                "node_server": {
+                    "server.js": null,
+                    "package.json": null
+                },
+                "logs": {
+                    "flask.log": null,
+                    "node.log": null
+                }
+            }
+        };
+
+        // Function to create the tree structure
+        function createTree(container, structure) {
+            for (const key in structure) {
+                const isDirectory = typeof structure[key] === 'object';
+                const item = document.createElement('div');
+                item.className = isDirectory ? 'directory' : 'file';
+                item.textContent = key;
+
+                if (isDirectory) {
+                    const childContainer = document.createElement('div');
+                    childContainer.classList.add('child-container');
+                    childContainer.style.display = 'none'; // Initially hidden
+
+                    item.addEventListener('click', () => {
+                        if (childContainer.style.display === 'none') {
+                            childContainer.style.display = 'block';
+                            createTree(childContainer, structure[key]);
+                        } else {
+                            childContainer.style.display = 'none';
+                        }
+                    });
+                    item.appendChild(childContainer);
+                } else {
+                    item.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                        alert('File clicked: ' + key);
+                        // Fetch the file or handle accordingly
+                    });
+                }
+                
+                container.appendChild(item);
+            }
+        }
+
+        // Generate the directory tree on page load
+        const treeContainer = document.getElementById('tree');
+        createTree(treeContainer, directoryStructure["my_project"]);
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+:root {
+  --primary-color: #333;
+  --secondary-color: #818181;
+  --hover-color: #f1f1f1;
+  --background-color: rgba(0, 0, 0, 0.7);
+  --text-color: white;
+}
+
+.sidenav {
+  background-color: var(--primary-color);
+}
+
+.sidenav a {
+  color: var(--secondary-color);
+}
+
+.sidenav a:hover {
+  color: var(--hover-color);
+}
+
+.dynamic-content, aside {
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+.sidenav {
+  height: 100%; /* Set the height to 100% of the viewport height */
+  width: 0; /* Set the width to 0 to hide the menu by default */
+  position: fixed; /* Set the position to fixed */
+  z-index: 1; /* Set the z-index to make the menu appear on top of other elements */
+  top: 0; /* Set the menu to the top of the screen */
+  left: 0; /* Set the menu to the left side of the screen */
+  background-color: #333; /* Set the background color for the menu */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* Add transition effect for the menu */
+  padding-top: 60px; /* Add padding to the top of the menu */
+}
+.sidenav a {
+  padding: 8px 8px 8px 32px; /* Add padding to the menu items */
+  text-decoration: none; /* Remove underline from links */
+  font-size: 25px; /* Set the font size for the menu items */
+  color: #818181; /* Set the text color for the menu items */
+  display: block; /* Display block for full-width links */
+  transition: 0.3s; /* Add transition effect to text color */
+}
+.sidenav a:hover {
+  color: #f1f1f1; /* Change text color on hover */
+}
+.navbar-header .menu-icon {
+  font-size: 30px; /* Set the font size for the menu icon */
+  cursor: pointer; /* Add cursor pointer to indicate clickable element */
+  color: white; /* Set the color for the menu icon */
+}
+.navbar-header .site-title {
+  font-size: 24px; /* Set the font size for the site title */
+  color: white; /* Set the color for the site title */
+  margin-left: 20px; /* Add margin to the site title */
+}
+.navbar-form {
+  margin-right: 0px; /* Remove default margin */
+  float: right; /* Right-align the search box area */
+}
+
+/* Dropdown container */
+.dropdown-container {
+  display: none; /* Hide the dropdown container by default */
+  background-color: #262626; /* Set the background color for the dropdown container */
+  padding-left: 8px; /* Add padding to the dropdown container */
+}
+.dropdown-container a {
+  padding: 8px 8px 8px 32px; /* Add padding to the dropdown items */
+  text-decoration: none; /* Remove underline from links */
+  font-size: 20px; /* Set the font size for the dropdown items */
+  color: #848484; /* Set the text color for the dropdown items */
+  display: block; /* Display block for full-width links */
+}
+.dropdown-btn:hover {
+  color: #f3f3f3; /* Set the text color for the hover effect */
+}
+.dropdown-container a:hover {
+  background-color: #575757; /* Set the background color for the hover effect */
+}
+.dropdown-container a:hover::before {
+  content: '> '; /* Add a caret symbol before the dropdown items on hover */
+  position: relative; /* Position absolute for pseudo-element */
+  left: -20px; /* Position caret to the left */
+  transform: translateY(-50%); /* Center vertically */
+  color: #f3f3f3; /* Set the text color for the caret symbol */
+}
+ /* Dropdown button */
+.dropdown-btn {
+  padding: 8px 8px 8px 32px; /* Add padding to the dropdown button */
+  text-decoration: none; /* Remove underline from links */
+  font-size: 25px; /* Set the font size for the dropdown button */
+  color: #848484; /* Set the text color for the dropdown button */
+  display: block; /* Display block for full-width links */
+  border: none; /* Remove default border */
+  background: none; /* Remove background color */
+  width: 100%; /* Set the width to 100% */
+  cursor: pointer; /* Add cursor pointer to indicate clickable element */
+  outline: none; /* Remove outline */
+  text-align: left; /* Align text to the left */
+  position: relative; /* Position relative for pseudo-element */
+  transition: color 0.3s ease; /* Add transition for color */
+}
+/* Add an active class to the dropdown button when it is clicked */
+.dropdown-btn.active {
+  background-color: #575757; /* Set the background color for the active dropdown button */
+  color: #f3f3f3; /* Set the text color for the active dropdown button */
+  border-bottom: #262626 solid 1px;
+}
+
+/* Pseudo-element for caret */
+.dropdown-btn::after {
+  content: ''; /* Empty content initially */
+  position: absolute; /* Position absolute for pseudo-element */
+  right: 10px; /* Position caret to the right */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Center vertically */
+  border: solid transparent; /* Transparent border */
+  border-width: 0 4px 4px 4px; /* Create caret shape */
+  border-top-color: transparent; /* Transparent top border */
+  border-bottom-color: transparent; /* Transparent bottom border */
+  border-left-color: transparent; /* Transparent left border */
+  border-right-color: transparent; /* Transparent right border */
+  transition: border-color 0.3s ease; /* Add transition for border color */
+}
+
+/* Hover effect to show caret */
+.dropdown-btn:hover::after {
+  border-top-color: #848484; /* Set caret color on hover */
+}
+
+.toolbar {
+  background-color: #f8f9fa; /* Set the background color for the toolbar */
+  padding: 10px; /* Add padding to the toolbar */
+  height: 100vh; /* Set the height of the toolbar to 100% of the viewport height */
+  border-right: 1px solid #ddd; /* Add a border to the right side of the toolbar */
+  width: 60px; /* Set a fixed width for the toolbar */
+}
+.toolbar button {
+  width: 40px; /* Set a fixed width for the buttons */
+  height: 40px; /* Set a fixed height for the buttons */
+  margin-bottom: 10px; /* Add margin to the buttons */
+  display: flex; /* Use flexbox for the buttons */
+  align-items: center; /* Center the icon in the button */
+  justify-content: center; /* Center the icon in the button */
+}
+.toolbar button i {
+  font-size: 14px; /* Set the font size for the icons */
+}
+/* Background gradient for the site */
+body {
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 15%, rgba(7,62,156,1) 50%, rgba(2,175,230,1) 85%, rgba(0,0,255,1) 100%);
+  color: white; /* Ensure text is readable */
+  margin-top: 0; /* Remove default margin */
+}
+main {
+  background: rgb(0,239,255);
+  background: -moz-radial-gradient(circle, rgba(0,239,255,0.4976259887273503) 0%, rgba(9,9,121,0.4976259887273503) 15%, rgba(121,140,213,0.4976259887273503) 35%, rgba(7,62,156,0.4976259887273503) 50%, rgba(42,92,134,0.4976259887273503) 65%, rgba(2,175,230,0.4976259887273503) 85%, rgba(0,0,255,0.5004271091755296) 100%);
+  background: -webkit-radial-gradient(circle, rgba(0,239,255,0.4976259887273503) 0%, rgba(9,9,121,0.4976259887273503) 15%, rgba(121,140,213,0.4976259887273503) 35%, rgba(7,62,156,0.4976259887273503) 50%, rgba(42,92,134,0.4976259887273503) 65%, rgba(2,175,230,0.4976259887273503) 85%, rgba(0,0,255,0.5004271091755296) 100%);
+  background: radial-gradient(circle, rgba(0,239,255,0.4976259887273503) 0%, rgba(9,9,121,0.976259887273503) 15%, rgba(121,140,213,0.4976259887273503) 35%, rgba(7,62,156,0.4976259887273503) 50%, rgba(42,92,134,0.4976259887273503) 65%, rgba(2,175,230,0.4976259887273503) 85%, rgba(0,0,255,0.5004271091755296) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#00efff",endColorstr="#0000ff",GradientType=1); 
+}
+
+.blog-post h2 {
+  color: white; /* Set the color of the blog post titles */
+  text-align: center; /* Center the blog post titles */
+}
+.blog-post-meta {
+  text-align: right; /* Align the meta information to the right */
+}
+.dynamic-content, aside {
+  border: 1px solid gold; /* Gold border */
+  background-color: rgba(0, 0, 0, 0.7); /* Darker background with some transparency */
+  color: white; /* Ensure text is readable */
+  margin-top: 20px; /* Add margin to the top of the well element */
+}
+.dynamic-content {
+  max-width: 1280px; /* Set the width of the main content area */
+  padding: 20px; /* Add padding to the main content area */
+}
+aside {
+  max-width: 400px; /* Set the width of the sidebar */
+  min-width: 325px; /* Set the minimum width of the sidebar */
+  padding: 0px; /* Remove default padding */
+  margin-left: 20px; /* Add margin to the left of the sidebar */
+}
+.time-widget {
+  display: flex; /* Use flexbox for time widget */
+  flex-direction: row; /* Row layout for time widget */
+  justify-content: space-between; /* Ensure space between elements */
+  align-items: center; /* Center vertically */
+  height: 100%; /* Ensure the widget takes the full height of its container */
+  margin-top: 5px; /* Add margin to the top of the time widget */
+  max-width: 350px !important;/* Set a maximum width for the time widget */
+  min-width: 250px; /* Set a minimum width for the time widget */
+   text-align: center; /* Center text within the widget */
+}
+
+/* Reduce spacing between navbar and main content */
+.container-fluid {
+  padding-top: 0; /* Remove default padding */
+}
+
+/* Hide sections by default */
+#addBookmarkSection, #searchBookmarksSection, #viewBookmarksSection, #organizeSection {
+  display: none;
+}
+
+/* Media player styles */
+.media-player {
+  display: flex;
+  flex-direction: row; /* Row layout for main sections */
+  align-items: flex-start;
+  justify-content: space-between; /* Ensure space between content and playlist */
+  margin-top: 10px; /* Reduced margin */
+}
+.media-content {
+  display: flex;
+  flex-direction: column; /* Column layout for album art and controls */
+  align-items: center;
+}
+.album-art {
+  width: 150px; /* Reduced width */
+  height: 150px; /* Reduced height */
+  background-color: #333;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 10px; /* Reduced margin */
+}
+.audio-controls {
+  display: flex;
+  flex-direction: row; /* Row layout for controls */
+  align-items: center;
+  justify-content: center;
+}
+.audio-controls button, .audio-controls input[type="range"] {
+  margin: 0 5px; /* Adjust margin */
+}
+.audio-controls button {
+  width: 32px; /* Set width for icon buttons */
+  height: 32px; /* Set height for icon buttons */
+  background-size: contain; /* Ensure the entire graphic is displayed */
+  background-repeat: no-repeat; /* Prevent background repetition */
+  background-position: center; /* Center the background image */
+  border: none; /* Remove default border */
+  cursor: pointer; /* Change cursor to pointer */
+}
+.prev-button {
+  background-image: url('../media/prev-btn.png');
+}
+.play-button {
+  background-image: url('../media/play-btn.png');
+}
+.pause-button {
+  background-image: url('../media/pause-btn.png');
+}
+.stop-button {
+  background-image: url('../media/stop-btn.png');
+}
+.next-button {
+  background-image: url('../media/next-btn.png');
+}
+.mute-button {
+  background-image: url('../media/mute-btn.png');
+}
+.volume-button {
+  background-image: url('../media/vol-on-btn.png');
+}
+.playlist {
+  width: 200px; /* Set a fixed width */
+  max-height: 150px; /* Adjust height */
+  overflow-y: auto;
+  background-color: #222;
+  padding: 5px; /* Reduced padding */
+  border-radius: 5px;
+  text-align: left; /* Align text to the left */
+}
+.playlist-item {
+  padding: 5px; /* Reduced padding */
+  cursor: pointer;
+}
+.playlist-item:hover {
+  background-color: #444;
+}
+
+@media (max-width: 768px) {
+  .sidenav {
+    width: 100%;
+  }
+
+  .toolbar {
+    width: 100%;
+    height: auto;
+  }
+
+  .dynamic-content, aside {
+    margin-left: 0;
+  }
+}

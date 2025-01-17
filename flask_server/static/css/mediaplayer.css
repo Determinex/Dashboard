@@ -1,0 +1,201 @@
+.container {
+    min-width: 294px;
+    min-height: 378px;
+    max-height: 100%;
+    background-color: #222; /* Dark background */
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    margin: 20px auto; /* Center the container horizontally */
+  }
+  .playlist-item {
+    display: block;
+    padding: 5px;
+    margin: 3px;
+    border: 1px solid #444; /* Dark border */
+    cursor: pointer;
+    color: #ddd; /* Light text color for readability */
+  }
+  .playlist-item:hover {
+    background-color: #555; /* Slightly lighter background on hover */
+  }
+  .accordion {
+    background-color: #222; /* Dark background */
+    color: #ddd; /* Light text color */
+    cursor: pointer;
+    padding: 10px;
+    width: 100%;
+    border: none;
+    text-align: center;
+    outline: none;
+    font-size: 15px;
+    transition: 0.4s;
+  }
+  .active, .accordion:hover {
+    background-color: #333; /* Slightly lighter background on hover */
+  }
+  .panel {
+    padding: 0 10px;
+    display: none;
+    background-color: #111; /* Dark background */
+    border-bottom: #444 1px solid;
+    overflow: hidden;
+    color: #ddd; /* Light text color */
+    margin-bottom: 5px; /* Add spacing between panels and controls */
+  }
+  .controls {
+    text-align: center;
+    margin-top: 10px;
+    z-index: 1; /* Ensure controls are above panels */
+    background-color: #222; /* Match container background */
+    padding: 5px;
+    border-radius: 10px;
+  }
+  .controls button {
+    margin: 0 5px;
+    font-size: 16px; /* Adjusted font size */
+    background-color: #444; /* Dark button background */
+    color: #ddd; /* Light text color */
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    position: relative;
+  }
+  .controls button:hover {
+    background-color: #555; /* Slightly lighter background on hover */
+  }
+  .controls button .fa-repeat-1 {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 10px; /* Adjusted font size */
+    background-color: #444;
+    border-radius: 50%;
+    padding: 2px;
+  }
+  #albumArt {
+    text-align: center;
+    margin-top: 10px;
+  }
+  #albumArt img {
+    max-width: 100%;
+    max-height: 150px; /* Adjusted max height */
+    width: auto;
+    height: auto;
+  }
+  #playlist {
+    overflow-y: auto; /* Make the playlist scrollable */
+    max-height: 200px; /* Adjust the max height as needed */
+  }
+  #playlist::-webkit-scrollbar {
+    width: 10px;
+  }
+  #playlist::-webkit-scrollbar-thumb {
+background-color: #444; /* Dark scrollbar thumb */
+border-radius: 10px;
+}
+#playlist::-webkit-scrollbar-track {
+background-color: #222; /* Dark scrollbar track */
+}
+.playlist-item {
+display: block;
+padding: 5px;
+margin: 3px;
+border: 1px solid #444; /* Dark border */
+cursor: pointer;
+color: #ddd; /* Light text color for readability */
+background: linear-gradient(
+  45deg,
+  #e6b800 5%,  /* Light gold */
+  #b38f00 10%, /* Lighter gold */
+  #806600 30%, /* Medium gold */
+  #665500 50%, /* Dark gold */
+  #806600 70%, /* Medium gold */
+  #b38f00 80%, /* Lighter gold */
+  #e6b800 95%  /* Light gold */
+);
+position: relative;
+overflow: hidden;
+transition: background 0.3s;
+text-align:center;
+}
+.playlist-item::before {
+content: '';
+position: absolute;
+top: 0;
+left: -75%;
+width: 50%;
+height: 100%;
+background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%);
+transform: skewX(-25deg);
+}
+.playlist-item:hover::before {
+animation: shine 0.75s;
+}
+@keyframes shine {
+0% {
+  left: -75%;
+}
+100% {
+  left: 125%;
+}
+}
+.active {
+background-color: #333; /* Slightly lighter background on hover */
+} 
+.inactive {
+color: #777; /* Lighter text color for inactive buttons */
+}
+.active, .inactive:hover {
+background-color: #555; /* Slightly lighter background on hover */
+}
+  .active .fa-repeat-1 {
+    background-color: #555;
+  }
+  .metallic-button.active {
+    background: linear-gradient(
+      45deg,
+    #999 5%,
+    #fff 10%,
+    #ccc 30%,
+    #ddd 50%,
+    #ccc 70%,
+    #fff 80%,
+    #999 95%
+    );
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  }
+  .metallic-button.active:hover {
+    transform: translateY(-2px);
+  }
+  .metallic-button {
+    font-size: 14px;
+    padding: 6px 16px;
+    font-weight: 400;
+    border: none;
+    outline: none;
+    color: #000;
+    background: linear-gradient(
+      45deg,
+    #999 5%,
+    #fff 10%,
+    #ccc 30%,
+    #ddd 50%,
+    #ccc 70%,
+    #fff 80%,
+    #999 95%
+    );
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+  } 
+
+  .metallic-button:hover {
+    transform: translateY(-2px);
+  }
