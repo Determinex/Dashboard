@@ -1,3 +1,6 @@
+Supported Solutions for Python issues:
+https://youtu.be/pQj4b7azNLY?si=mP0jUuToQwRMwpOi
+
 for flask application:
 Traceback (most recent call last):
   File "C:\Users\Andrew\Documents\My Programs\Dashboard\flask_server\app.py", line 2, in <module>
