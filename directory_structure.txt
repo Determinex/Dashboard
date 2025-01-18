@@ -1,0 +1,73 @@
+Directory structure for: Dashboard/
+
+documentation
+    ├── dashboard_spec.txt
+    ├── encryptor.py.txt
+    ├── instructions.txt
+    ├── New Text Document.txt
+    ├── Readme.txt
+    ├── server_setup.txt
+    ├── server_setup2.txt
+    ├── wrapper_script_py.txt
+flask_server
+    ├── .old
+        ├── dbsetup.py
+        ├── firstattempt_server.py
+        ├── generate.py
+        ├── gui.py
+        ├── main.py
+        ├── run_servers.py
+        ├── server.py
+        ├── settings_manager.py
+        ├── utils.py
+    ├── app.py
+    ├── requirements.txt
+    ├── routes.py
+    ├── static
+        ├── css
+            ├── indexedstyles.css
+            ├── mediaplayer.css
+            ├── styles.css
+        ├── js
+            ├── mediaplayer.js
+            ├── scripts.js
+        ├── media
+            ├── 4AM(AdamK&Soha Mix).mp3
+            ├── Above&Beyond-Sun&Moon(TheOthersRemix).mp3
+            ├── Alan Walker, Dash Berlin & Vikkstar - Better Off (Alone, Pt. III) - Official Music Video.mp3
+            ├── default-album-art.jpg
+            ├── example_playlist.xspf
+            ├── Eyes(Kaskade'sICEMix).mp3
+            ├── media.txt
+            ├── playlist.xml
+            ├── Spectrum(MonstaRemix).mp3
+            ├── SUMMIT(FT.ELLIEGOULDING).mp3
+        ├── static.txt
+    ├── templates
+        ├── audioPlayer.html
+        ├── bookmarks_manager.html
+        ├── directory_explorer.html
+        ├── encryptor.html
+        ├── homepage.html
+        ├── index.html
+        ├── index1.html
+        ├── login.html
+        ├── notes_manager.html
+        ├── password_manager.html
+        ├── template.html
+    ├── utils
+        ├── broswer.py
+        ├── db.py
+        ├── encryptor.py
+        ├── export.py
+        ├── logger.py
+        ├── playlist.py
+        ├── scan_and_list.py
+logs
+    ├── flask.log
+    ├── node.log
+node_server
+    ├── example_ajax_call.txt
+    ├── package.json
+    ├── server.js
+    ├── server.old.js

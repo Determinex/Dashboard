@@ -1,0 +1,18 @@
+/* indexedstyles.css */
+body {
+    font-family: Arial, sans-serif;
+}
+
+.directory {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.file {
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.child-container {
+    margin-left: 20px;
+}
