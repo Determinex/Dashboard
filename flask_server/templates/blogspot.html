@@ -37,20 +37,24 @@
             height: 100vh; /* Full height */
             position: sticky;
             top: 0;
+            display: flex;
+            flex-direction: column;
         }
         .sidebar h3 {
             font-size: 1.2rem;
             margin-bottom: 15px;
         }
-        .sidebar a {
+        .sidebar button {
             display: block;
+            width: 100%;
             padding: 10px;
             color: #333;
             text-decoration: none;
             border-radius: 5px;
             transition: background-color 0.3s;
+            margin-bottom: 5px;
         }
-        .sidebar a:hover {
+        .sidebar button:hover {
             background-color: #d0d0d0; /* Hover effect */
         }
         .content-area {
@@ -104,6 +108,48 @@
         .pinned-notes {
             margin-bottom: 20px;
         }
+        .tab-content {
+            margin-top: 20px;
+        }
+        .tab-pane {
+            display: none; /* Hide all tab content by default */
+        }
+        .tab-pane.active {
+            display: block; /* Show active tab content */
+        }
+        .sidebar {
+    background-color: #e1e1e1; /* Light gray for sidebar */
+    padding: 20px;
+    height: 100vh; /* Full height */
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.tab-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align buttons to the left */
+    margin-bottom: 20px;
+}
+
+.tab-buttons .btn {
+    margin-bottom: 10px; /* Space between buttons */
+    width: 100%; /* Full width for buttons */
+}
+
+.tab-content {
+    flex-grow: 1;
+}
+
+.tab-pane {
+    display: none; /* Hide all tab content by default */
+}
+
+.tab-pane.active {
+    display: block; /* Show active tab content */
+}
     </style>
 </head>
 <body>
@@ -122,7 +168,15 @@
     <div class="row">
         <!-- Sidebar Navigation -->
         <nav class="col-md-3 sidebar">
-            <h3>Notebooks</h3>
+    <h3>Navigation</h3>
+    <div class="tab-buttons">
+        <button class="btn btn-light" id="notebooks-tab" onclick="openTab('notebooks')">Notebooks</button>
+        <button class="btn btn-light" id="tags-tab" onclick="openTab('tags')">Tags</button>
+        <button class="btn btn-light" id="user-settings-button" data-toggle="modal" data-target="#userSettingsModal"><i class="fas fa-cog"></i> User Settings</button>
+    </div>
+    <div class="tab-content">
+        <div id="notebooks" class="tab-pane active">
+            <h4>Notebooks</h4>
             <div id="notebook-list">
                 <a href="#" class="notebook" data-id="1">Notebook 1</a>
                 <a href="#" class="notebook" data-id="2">Notebook 2</a>
@@ -131,13 +185,18 @@
             <button class="btn btn-primary" id="new-notebook-button"><i class="fas fa-plus"></i> New Notebook</button>
             <button class="btn btn-secondary" id="rename-notebook-button"><i class="fas fa-edit"></i> Rename Notebook</button>
             <button class="btn btn-danger" id="delete-notebook-button"><i class="fas fa-trash"></i> Delete Notebook</button>
-            <h3>Tags</h3>
+        </div>
+
+        <div id="tags" class="tab-pane" style="display:none;">
+            <h4>Tags</h4>
             <div id="tag-list">
                 <span class="badge badge-secondary">Tag 1</span>
                 <span class="badge badge-secondary">Tag 2</span>
                 <span class="badge badge-secondary">Tag 3</span>
             </div>
-        </nav>
+        </div>
+    </div>
+</nav>
 
         <!-- Content Area -->
         <main class="col-md-9 content-area">
@@ -191,6 +250,55 @@
     </div>
 </div>
 
+<!-- User Settings Modal -->
+<div class="modal fade" id="userSettingsModal" tabindex="-1" role="dialog" aria-labelledby="userSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userSettingsModalLabel">User  Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="user-settings-form">
+                    <div class="form-group">
+                        <label for="theme-select">Theme</label>
+                        <select class="form-control" id="theme-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="font-size-select">Font Size</label>
+                        <select class="form-control" id="font-size-select">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-spacing-select">Line Spacing</label>
+                        <select class="form-control" id="line-spacing-select">
+                            <option value="1">Single</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2">Double</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-background-color">Note Background Color</label>
+                        <input type="color" class="form-control" id="note-background-color" value="#ffffff">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-settings-button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Footer -->
 <footer>
     <p>&copy; 2023 My Notes Manager. All rights reserved.</p>
@@ -201,6 +309,15 @@
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script>
+    function openTab(tabName) {
+        var i;
+        var x = document.getElementsByClassName("tab-pane");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none"; // Hide all tab content
+        }
+        document.getElementById(tabName).style.display = "block"; // Show the selected tab
+    }
+
     $(document).ready(function() {
         // Initialize tooltip
         $('.wow-tooltip').tooltipster({
@@ -353,7 +470,31 @@
                 alert("Please select a notebook to delete.");
             }
         });
+
+        // User settings functionality
+        $('#user-settings-button').on('click', function() {
+            $('#userSettingsModal').modal('show');
+        });
+
+        $('#save-settings-button').on('click', function() {
+            var selectedTheme = $('#theme-select').val();
+            var selectedFontSize = $('#font-size-select').val();
+            var selectedLineSpacing = $('#line-spacing-select').val();
+            var noteBackgroundColor = $('#note-background-color').val();
+            // Save user preferences (send to server if needed)
+            console.log("User  preferences saved: Theme - " + selectedTheme + ", Font Size - " + selectedFontSize + ", Line Spacing - " + selectedLineSpacing + ", Note Background Color - " + noteBackgroundColor);
+            $('#userSettingsModal').modal('hide');
+        });
     });
+    
+    function openTab(tabName) {
+    var i;
+    var x = document.getElementsByClassName("tab-pane");
+    for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none"; // Hide all tab content
+    }
+    document.getElementById(tabName).style.display = "block"; // Show the selected tab
+}
 </script>
 </body>
 </html>
