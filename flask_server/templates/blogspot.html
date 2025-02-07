@@ -101,6 +101,9 @@
         .tag-input {
             margin-top: 10px;
         }
+        .pinned-notes {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -120,17 +123,20 @@
         <!-- Sidebar Navigation -->
         <nav class="col-md-3 sidebar">
             <h3>Notebooks</h3>
-            <a href="#">Notebook 1</a>
-            <a href="#">Notebook 2</a>
-            <a href="#">Notebook 3</a>
-            <h3>Sections</h3>
-            <a href="#">Section 1</a>
-            <a href="#">Section 2</a>
-            <a href="#">Section 3</a>
+            <div id="notebook-list">
+                <a href="#" class="notebook" data-id="1">Notebook 1</a>
+                <a href="#" class="notebook" data-id="2">Notebook 2</a>
+                <a href="#" class="notebook" data-id="3">Notebook 3</a>
+            </div>
+            <button class="btn btn-primary" id="new-notebook-button"><i class="fas fa-plus"></i> New Notebook</button>
+            <button class="btn btn-secondary" id="rename-notebook-button"><i class="fas fa-edit"></i> Rename Notebook</button>
+            <button class="btn btn-danger" id="delete-notebook-button"><i class="fas fa-trash"></i> Delete Notebook</button>
             <h3>Tags</h3>
-            <a href="#">Tag 1</a>
-            <a href="#">Tag 2</a>
-            <a href="#">Tag 3</a>
+            <div id="tag-list">
+                <span class="badge badge-secondary">Tag 1</span>
+                <span class="badge badge-secondary">Tag 2</span>
+                <span class="badge badge-secondary">Tag 3</span>
+            </div>
         </nav>
 
         <!-- Content Area -->
@@ -140,6 +146,15 @@
                 <button class="btn btn-secondary" id="save-button"><i class="fas fa-save"></i> Save</button>
                 <button class="btn btn-light" id="delete-button"><i class="fas fa-trash"></i> Delete</button>
             </div>
+
+            <!-- Pinned Notes Section -->
+            <div class="pinned-notes">
+                <h3>Pinned Notes</h3>
+                <div id="pinned-notes-list">
+                    <!-- Pinned notes will be dynamically added here -->
+                </div>
+            </div>
+
             <div id="notes-list">
                 <div class="note-card" data-id="1">
                     <h2 class="note-title">Blog Post Title 1</h2>
@@ -244,7 +259,10 @@
                 data: JSON.stringify({id: noteId}),
                 contentType: 'application/json',
                 success: function(data) {
-                    console.log(data);
+                    // Move the pinned note to the pinned section
+                    var pinnedNote = $('.note-card[data-id="' + noteId + '"]').clone();
+                    $('#pinned-notes-list').append(pinnedNote);
+                    $('.note-card[data-id="' + noteId + '"]').remove(); // Remove from main list
                 }
             });
         });
@@ -278,6 +296,62 @@
             // Add tag to the note and update the database
             console.log("Tag added: " + tag);
             $('#tag-input').val(''); // Clear input
+        });
+
+        // Notebook management functionality
+        $('#new-notebook-button').on('click', function() {
+            var notebookName = prompt("Enter the name of the new notebook:");
+            if (notebookName) {
+                // Send AJAX request to create a new notebook
+                $.ajax({
+                    type: 'POST',
+                    url: '/create-notebook',
+                    data: JSON.stringify({name: notebookName}),
+                    contentType: 'application/json',
+                    success: function(data) {
+                        $('#notebook-list').append('<a href="#" class="notebook" data-id="' + data.id + '">' + notebookName + '</a>');
+                    }
+                });
+            }
+        });
+
+        $('#rename-notebook-button').on('click', function() {
+            var selectedNotebook = $('.notebook.selected'); // Assuming you have a way to select a notebook
+            if (selectedNotebook.length) {
+                var newName = prompt("Enter the new name for the notebook:", selectedNotebook.text());
+                if (newName) {
+                    // Send AJAX request to rename the notebook
+                    $.ajax({
+                        type: 'POST',
+                        url: '/rename-notebook',
+                        data: JSON.stringify({id: selectedNotebook.data('id'), name: newName}),
+                        contentType: 'application/json',
+                        success: function(data) {
+                            selectedNotebook.text(newName);
+                        }
+                    });
+                }
+            } else {
+                alert("Please select a notebook to rename.");
+            }
+        });
+
+        $('#delete-notebook-button').on('click', function() {
+            var selectedNotebook = $('.notebook.selected'); // Assuming you have a way to select a notebook
+            if (selectedNotebook.length) {
+                // Send AJAX request to delete the notebook
+                $.ajax({
+                    type: 'POST',
+                    url: '/delete-notebook',
+                    data: JSON.stringify({id: selectedNotebook.data('id')}),
+                    contentType: 'application/json',
+                    success: function(data) {
+                        selectedNotebook.remove();
+                    }
+                });
+            } else {
+                alert("Please select a notebook to delete.");
+            }
         });
     });
 </script>
