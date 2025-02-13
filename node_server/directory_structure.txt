@@ -1,4 +1,0 @@
-example_ajax_call.txt
-package.json
-server.js
-server.old.js
