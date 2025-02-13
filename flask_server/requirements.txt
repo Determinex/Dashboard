@@ -1,3 +1,0 @@
-tkinter               # For the GUI (Usually included with Python, but listed here for clarity)
-browser-history       # To fetch browser history
-pycryptodome          # For encryption
