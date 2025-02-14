@@ -207,3 +207,26 @@ $(document).ready(function(){
     // Initially hide all toolbars
     hideAllToolbars();
 });
+
+function filterByTag(tagId) {
+    // Store all list items for notes
+    var notes = document.querySelectorAll('#notesList .list-group-item');
+
+    // Loop through notes and filter based on tag
+    notes.forEach(note => {
+        // Get the tags data attribute as an array
+        var noteTags = note.getAttribute('data-tags').split(',');
+        if (noteTags.includes(tagId.toString())) {
+            note.style.display = ""; // Show the note if it has the selected tag
+        } else {
+            note.style.display = "none"; // Hide the note if it doesn't have the selected tag
+        }
+    });
+}
+function resetFilters() {
+    // Reset all filters by showing all notes
+    var notes = document.querySelectorAll('#notesList .list-group-item');
+    notes.forEach(note => {
+        note.style.display = ""; // Show all notes
+    });
+}
