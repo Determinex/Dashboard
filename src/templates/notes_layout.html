@@ -1,0 +1,76 @@
+<!-- filepath: /home/selph/Documents/Dashboard/src/templates/notes_layout.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Notes Module{% endblock %}</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Include Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Include Dashboard's CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- Include Custom CSS for Notes Module -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/notes_styles.css') }}">
+</head>
+<body>
+    <header class="navbar navbar-expand-lg navbar-light bg-light">
+        {% include 'header.html' %}
+    </header>
+    <div class="container-fluid">
+        <div class="row">
+            {% include 'navigation.html' %}
+        </div>
+        <div id="content" class="row">
+            <main role="main" class="main-content ml-sm-auto px-4">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="bg-light py-3 text-center">
+        {% include 'footer.html' %}
+    </footer>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Include Popper.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- Include Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Include Dashboard's JavaScript -->
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <!-- Include Custom JavaScript for Notes Module -->
+    <script src="{{ url_for('static', filename='js/notes_scripts.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    var flashModal = new bootstrap.Modal(document.getElementById('flashModal'));
+                    flashModal.show();
+                {% endif %}
+            {% endwith %}
+        });
+    </script>
+</body>
+</html>

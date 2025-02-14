@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard | Introduction Page</title>
+  <!-- Include Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <!-- Include Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Include Custom CSS -->
+  <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+  <header class="navbar navbar-expand-lg navbar-light bg-light">
+    {% include 'header.html' %}
+  </header>
+  <div class="container-fluid">
+    <div class="row">
+      {% include 'navigation.html' %}
+    </div>
+    <div id="content" class="row">
+      <main role="main" class="main-content ml-sm-auto px-4">
+        <div class="container-fluid mt-4">
+          <!-- Hero Section -->
+          <div class="jumbotron text-center mt-4" style="background-image: url('https://via.placeholder.com/1200x400'); background-size: cover; color: white;">
+            <h1 class="display-4">Welcome to Your Dashboard!</h1>
+            <p class="lead">Manage your data efficiently, effectively, and privately.</p>
+            <hr class="my-4" style="border-color: white;">
+          </div>
+
+          <article class="blog-post first-run mx-auto">
+            <h2 class="display-5 link-body-emphasis mb-1 text-center">Getting Started...</h2>
+            <p class="blog-post-meta text-right">January 10, 2025 by <a href="#">Me</a></p>
+            <hr>
+            <p>Use the options in the slide menu to access various managers for your online life. The toolbar on the left can be used to add or remove entries from the databases that store your information in the database.</p>
+            <p>The database is encryptable, and it is encrypted by default. Should you desire it, opt for it to be unencrypted by going into the site-settings.config file menu on the slide out menu.</p>
+            <p>The various managers provided here include:</p>
+            
+            <!-- Accordion Structure -->
+            <div class="accordion" id="accordionExample">
+              <div class="card">
+                <div class="card-header" id="headingOne">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Managing Bookmarks with Dashboard
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h3>Bookmarks Manager</h3>
+                    <p>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingTwo">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                      Managing Notes with Dashboard
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h3>Notes Manager</h3>
+                    <p>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header" id="headingThree">
+                  <h2 class="mb-0">
+                    <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                      Managing Passwords with Dashboard
+                    </button>
+                  </h2>
+                </div>
+                <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+                  <div class="card-body">
+                    <h3>Passwords Manager</h3>
+                    <p>Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Footer Note -->
+            <div class="footer-note mt-4">
+              <p>This program is distributed as-is, and will not be updated in the future, unless you, or someone else, updates and distributes it. All rights given to this program are done so under the GPL license it's distributed with. I may have started this program, but, hopefully, I won't be the end of it.</p>
+              <p>Good luck, and enjoy using my dashboard.</p>
+            </div>
+          </article>
+        </div>
+      </main>
+    </div>
+  </div>
+  <div class="modal fade" id="flashModal" tabindex="-1" role="dialog" aria-labelledby="flashModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="flashModalLabel">Notification</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <!-- Flash Message Content -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer class="bg-light py-3 text-center">
+    {% include 'footer.html' %}
+  </footer>
+  <!-- Include jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <!-- Include Popper.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <!-- Include Bootstrap JS -->
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- Include custom JavaScript -->
+  <script src="/static/js/scripts.js"></script>
+</body>
+</html>
