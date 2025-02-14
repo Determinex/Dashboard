@@ -14,7 +14,7 @@
 # ------------------------------------------------------------------------------ #
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SelectField, SubmitField
 from wtforms.validators import DataRequired, ValidationError, EqualTo
 from src.models import User
 
@@ -23,6 +23,11 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
+
+    def validate_password(self, password):
+        user = User.query.filter_by(password=password.data).first()
+        if user is not None:
+            raise ValidationError('Please use a different password.')
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
@@ -35,3 +40,10 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
             raise ValidationError('Please use a different username.')
+
+class BookmarkForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    url = StringField('URL', validators=[DataRequired()])
+    folder_id = SelectField('Folder', coerce=int)  # Choices populated in the route
+    tag_id = SelectField('Tag', coerce=int)  # Choices populated in the route
+    submit = SubmitField('Save Bookmark')
