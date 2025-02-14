@@ -1,4 +1,4 @@
-<!-- filepath: /home/selph/Documents/Dashboard/src/templates/notes_layout.html -->
+<!-- # src/templates/notes_layout.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <!-- Include Dashboard's CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <!-- Include Custom CSS for Notes Module -->
+    <!-- Include Note Manager Template CSS for Notes Module -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/notes_styles.css') }}">
 </head>
 <body>
@@ -23,7 +23,7 @@
             {% include 'navigation.html' %}
         </div>
         <div id="content" class="row">
-            <main role="main" class="main-content ml-sm-auto px-4">
+            <main role="main" class="main-content col-12">
                 {% block content %}{% endblock %}
             </main>
         </div>
