@@ -1,3 +1,16 @@
+# ------------------------------------------------------------------------------ #
+# File: src/__init__.py                                                          #
+# Project: Dashboard                                                             #
+# File Created: 2025-02-14 11:00:00                                              #
+# Last Mod Date: 2025-02-14 11:00:00                                             #
+# Last Mod By: Determinex                                                        #
+# ------------------------------------------------------------------------------ #
+# Component of: flask application source directory (src)                         #
+# Used by: app.py                                                                #
+# Description: This file contains the application setup                          #
+# Content: Contains application's globally imported modules & setup functions    #
+# ------------------------------------------------------------------------------ #
+
 import os # Import os
 from flask import Flask # Import Flask
 from flask_sqlalchemy import SQLAlchemy # Import SQLAlchemy
