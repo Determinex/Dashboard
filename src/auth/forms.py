@@ -1,7 +1,22 @@
+# ------------------------------------------------------------------------------ #
+# File: src/auth/forms.py                                                        #
+# Project: Dashboard                                                             #
+# File Created: 2025-02-14 11:00:00                                              #
+# Last Mod Date: 2025-02-14 11:00:00                                             #
+# Last Mod By: Determinex                                                        #
+# ------------------------------------------------------------------------------ #
+# Component of: src/__init__.py                                                  #
+# Used in: src/auth/routes.py, templates, static                                 #
+# Description: This file contains the form elements for login and registration   #
+# Content: Contains the form elements for login and registration page elements   #
+# --- used in the header & navigation html page template components utilized by  #
+# --- Jinja2 templating engine in the Flask web application.                     #
+# ------------------------------------------------------------------------------ #
+
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
-from app.models import User
+from wtforms.validators import DataRequired, ValidationError, EqualTo
+from src.models import User
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired()])
