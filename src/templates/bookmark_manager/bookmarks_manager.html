@@ -1,0 +1,219 @@
+<!-- src/templates/bookmarks_manager.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Bookmark Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Bookmark Manager</h1>
+
+    <!-- Top Bar -->
+    <div class="d-flex justify-content-between mb-3">
+        <div>
+            <button id="prevButton" class="btn btn-secondary">⟨ Prev</button>
+            <button id="nextButton" class="btn btn-secondary">Next ⟩</button>
+        </div>
+        <div>
+            <div class="btn-group">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="organizeDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    ⚙️ Organize
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="organizeDropdown">
+                    <li><a class="dropdown-item" href="#" id="addFolder">Add Folder</a></li>
+                    <li><a class="dropdown-item" href="#" id="renameFolder">Rename Folder</a></li>
+                    <li><a class="dropdown-item" href="#" id="deleteFolder">Delete Folder</a></li>
+                </ul>
+            </div>
+            <button class="btn btn-secondary" id="viewsButton">Views</button>
+            <div class="btn-group">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="importBackupDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    Import and Backup
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="importBackupDropdown">
+                    <li><a class="dropdown-item" href="#" id="importBookmark">Import</a></li>
+                    <li><a class="dropdown-item" href="#" id="exportBookmark">Export</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Search Bar -->
+    <div class="mb-3">
+        <input type="text" id="searchBar" class="form-control" placeholder="Search Bookmarks" aria-label="Search Bookmarks">
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Folders</h3>
+            <ul id="folder-list" class="list-group">
+                {% for folder in folders %}
+                <li class="list-group-item" data-id="{{ folder.id }}">
+                    {{ folder.name }}
+                    <button class="btn btn-danger btn-sm float-end delete-folder">Delete</button>
+                </li>
+                {% endfor %}
+            </ul>
+            <form id="folder-form" method="POST" action="{{ url_for('bookmarks.add_folder') }}">
+                <div class="mb-3">
+                    <input type="text" class="form-control" name="folder_name" placeholder="New Folder Name" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Folder</button>
+            </form>
+        </div>
+
+        <div class="col-md-8">
+            <h3>Bookmarks</h3>
+            <ul id="bookmark-list" class="list-group">
+                {% for bookmark in bookmarks %}
+                <li class="list-group-item" data-id="{{ bookmark.id }}">
+                    <strong>{{ bookmark.title }}</strong>
+                    <a href="{{ bookmark.url }}" target="_blank">{{ bookmark.url }}</a>
+                    <button class="btn btn-danger btn-sm float-end delete-bookmark">Delete</button>
+                </li>
+                {% endfor %}
+            </ul>
+            <h4>Add/Edit Bookmark</h4>
+            <form id="bookmark-form" method="POST" action="{{ url_for('bookmarks.bookmarks_manager') }}">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.title.label('Title') }}
+                    {{ form.title(class='form-control', placeholder='Enter Bookmark Title') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.url.label('URL') }}
+                    {{ form.url(class='form-control', placeholder='Enter Bookmark URL') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.folder_id.label('Folder') }}
+                    {{ form.folder_id(class='form-control') }}
+                </div>
+                <div class="mb-3">
+                    {{ form.tag_id.label('Tag') }}
+                    {{ form.tag_id(class='form-control') }}
+                </div>
+                <button type="submit" class="btn btn-primary">Save Bookmark</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+{% block scripts %}
+<script>
+
+    // JavaScript for handling the import/export modal and other interactions
+
+    document.getElementById('importBookmark').addEventListener('click', function() {
+
+        var modal = new bootstrap.Modal(document.getElementById('importExportModal'));
+
+        modal.show();
+
+    });
+
+
+    document.getElementById('exportBookmark').addEventListener('click', function() {
+
+        var modal = new bootstrap.Modal(document.getElementById('importExportModal'));
+
+        modal.show();
+
+    });
+
+
+    document.getElementById('submitImportExport').addEventListener('click', function() {
+
+        var fileInput = document.getElementById('fileInput').files[0];
+
+        var exportFormat = document.getElementById('exportFormat').value;
+
+
+        // Implement AJAX calls or form submissions to handle the import/export process
+
+        // e.g., send fileInput and exportFormat to the server
+
+
+        var modal = bootstrap.Modal.getInstance(document.getElementById('importExportModal'));
+
+        modal.hide();
+
+    });
+
+
+    document.getElementById('searchBar').addEventListener('keypress', function(e) {
+
+        if (e.key === 'Enter') {
+
+            var query = this.value;
+
+            // Implement AJAX call to search bookmarks based on the query
+
+        }
+
+    });
+
+
+    // Delete bookmark functionality
+
+    document.querySelectorAll('.delete-bookmark').forEach(button => {
+
+        button.addEventListener('click', function() {
+
+            const bookmarkId = this.parentElement.getAttribute('data-id');
+
+            fetch(`/bookmarks/${bookmarkId}`, {
+
+                method: 'DELETE'
+
+            })
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (data.success) {
+
+                    this.parentElement.remove();
+
+                }
+
+            });
+
+        });
+
+    });
+
+
+    // Delete folder functionality
+
+    document.querySelectorAll('.delete-folder').forEach(button => {
+
+        button.addEventListener('click', function() {
+
+            const folderId = this.parentElement.getAttribute('data-id');
+
+            fetch(`/folders/${folderId}`, {
+
+                method: 'DELETE'
+
+            })
+
+            .then(response => response.json())
+
+            .then(data => {
+
+                if (data.success) {
+
+                    this.parentElement.remove();
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>
+{% endblock %}
