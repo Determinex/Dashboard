@@ -1,0 +1,12 @@
+The root directory `dashboard/` contains:
+
+*   `database/`: A directory (presumably for database files or scripts)
+*   `documentation/`: A directory for documentation
+*   `src/`: A directory (containing your Flask application)
+*   `trash/`: A directory (likely for temporary or discarded files)
+*   `LICENSE`: A file (likely the project's license)
+*   `README.md`: A file (containing project information)
+*   `clean.bat`: A batch file (likely for cleaning the project)
+*   `requirements.txt`: A file listing project dependencies
+*   `setup.bat`: A batch file (likely for setting up the project)
+*   `start.bat`: A batch file (likely for starting the application)
