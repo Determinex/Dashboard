@@ -1,0 +1,94 @@
+/* Professional Tetradic Color Scheme 1 */
+:root {
+    --primary-color: #2c3e50; /* Dark Blue */
+    --secondary-color: #e74c3c; /* Red */
+    --tertiary-color: #3498db; /* Light Blue */
+    --quaternary-color: #f1c40f; /* Yellow */
+    --background-color: #ecf0f1; /* Light Gray */
+    --text-color: #2c3e50; /* Dark Blue */
+    --header-background-color: #6d7fcc; /* Dark Blue */
+    --header-text-color: #fff; /* White */
+    --link-color: #3498db; /* Light Blue */
+    --link-hover-color: #e74c3c; /* Red */
+    --button-background-color: #6d7fcc; /* Dark Blue */
+    --button-text-color: #fff; /* White */
+    --button-hover-background-color: #2c3e50; /* Red */
+    --footer-background-color: #bdc3c7; /* Gray */
+    --footer-text-color: #2c3e50; /* Dark Blue */
+}
+
+/* Professional Tetradic Color Scheme 2 */
+:root.alternative-scheme-1 {
+    --primary-color: #34495e; /* Dark Gray Blue */
+    --secondary-color: #1abc9c; /* Turquoise */
+    --tertiary-color: #e67e22; /* Orange */
+    --quaternary-color: #9b59b6; /* Purple */
+    --background-color: #ecf0f1; /* Light Gray */
+    --text-color: #34495e; /* Dark Gray Blue */
+    --header-background-color: #34495e; /* Dark Gray Blue */
+    --header-text-color: #fff; /* White */
+    --link-color: #1abc9c; /* Turquoise */
+    --link-hover-color: #e67e22; /* Orange */
+    --button-background-color: #34495e; /* Dark Gray Blue */
+    --button-text-color: #fff; /* White */
+    --button-hover-background-color: #e67e22; /* Orange */
+    --footer-background-color: #bdc3c7; /* Gray */
+    --footer-text-color: #34495e; /* Dark Gray Blue */
+}
+
+/* Professional Tetradic Color Scheme 3 */
+:root.alternative-scheme-2 {
+    --primary-color: #2c3e50; /* Dark Blue */
+    --secondary-color: #8e44ad; /* Purple */
+    --tertiary-color: #16a085; /* Green */
+    --quaternary-color: #f39c12; /* Yellow */
+    --background-color: #ecf0f1; /* Light Gray */
+    --text-color: #2c3e50; /* Dark Blue */
+    --header-background-color: #6d7fcc; /* Dark Blue */
+    --header-text-color: #fff; /* White */
+    --link-color: #8e44ad; /* Purple */
+    --link-hover-color: #16a085; /* Green */
+    --button-background-color: #6d7fcc; /* Dark Blue */
+    --button-text-color: #fff; /* White */
+    --button-hover-background-color: #16a085; /* Green */
+    --footer-background-color: #bdc3c7; /* Gray */
+    --footer-text-color: #2c3e50; /* Dark Blue */
+}
+
+/* Professional Tetradic Color Scheme 4 */
+:root.alternative-scheme-3 {
+    --primary-color: #2c3e50; /* Dark Blue */
+    --secondary-color: #d35400; /* Orange */
+    --tertiary-color: #2980b9; /* Blue */
+    --quaternary-color: #27ae60; /* Green */
+    --background-color: #ecf0f1; /* Light Gray */
+    --text-color: #2c3e50; /* Dark Blue */
+    --header-background-color: #6d7fcc; /* Dark Blue */
+    --header-text-color: #fff; /* White */
+    --link-color: #2980b9; /* Blue */
+    --link-hover-color: #d35400; /* Orange */
+    --button-background-color: #6d7fcc; /* Dark Blue */
+    --button-text-color: #fff; /* White */
+    --button-hover-background-color: #d35400; /* Orange */
+    --footer-background-color: #bdc3c7; /* Gray */
+    --footer-text-color: #2c3e50; /* Dark Blue */
+}
+
+/* Professional Tetradic Color Scheme 5 */
+:root.alternative-scheme-4 {
+    --primary-color: #2c3e50; /* Dark Blue */
+    --secondary-color: #c0392b; /* Red */
+    --tertiary-color: #2980b9; /* Blue */
+    --quaternary-color: #27ae60; /* Green */
+    --background-color: #ecf0f1; /* Light Gray */
+    --text-color: #2c3e50; /* Dark Blue */
+    --header-background-color: #6d7fcc; /* Dark Blue */
+    --header-text-color: #fff; /* White */
+    --link-color: #2980b9; /* Blue */
+    --link-hover-color: #c0392b; /* Red */
+    --button-background-color: #6d7fcc; /* Dark Blue */
+    --button-text-color: #fff; /* White */
+    --button-hover-background-color: #c0392b; /* Red */
+    --footer-background-color: #bdc3c7; /* Gray */
+    --footer-text-color: #2c3e50; /* Dark Blue */
+}

@@ -1,0 +1,47 @@
+<!-- filepath: /home/selph/Documents/Dashboard/src/templates/note_editor.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Dashboard | Note Editor{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <h1 class="display-4 text-center my-4">Note Editor</h1>
+      
+      <!-- Note Editor -->
+      <div class="card mb-4">
+        <div class="card-header">
+          <h2 class="h5 mb-0">Create/Edit Note</h2>
+        </div>
+        <div class="card-body">
+          <form id="noteForm" method="POST" action="{{ url_for('main.save_note') }}">
+            <div class="form-group">
+              <label for="noteTitle">Title</label>
+              <input type="text" class="form-control" id="noteTitle" name="title" placeholder="Enter note title" required>
+            </div>
+            <div class="form-group">
+              <label for="noteTag">Tag</label>
+              <input type="text" class="form-control" id="noteTag" name="tag" placeholder="Enter note tag">
+            </div>
+            <div class="form-group">
+              <label for="editor">Content</label>
+              <textarea id="editor" class="form-control" name="content" rows="10" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Note</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CKEditor Script -->
+<script src="https://cdn.ckeditor.com/ckeditor5/34.1.0/classic/ckeditor.js"></script>
+<script>
+  ClassicEditor.create(document.querySelector('#editor'))
+    .catch(error => {
+      console.error(error);
+    });
+</script>
+{% endblock %}

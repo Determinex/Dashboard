@@ -1,0 +1,41 @@
+<!-- filepath: /home/selph/Documents/Dashboard/src/templates/notes_manager.html -->
+{% extends 'notes_layout.html' %}
+
+{% block title %}Dashboard | Notes Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <h1 class="display-4 text-center my-4">Notes Manager</h1>
+      
+      <!-- Button to Open Note Editor in New Tab -->
+      <div class="text-center mb-4">
+        <a href="{{ url_for('main.note_editor') }}" target="_blank" class="btn btn-primary">Create/Edit Note</a>
+      </div>
+      
+      <!-- Notes List -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="h5 mb-0">Your Notes</h2>
+        </div>
+        <div class="card-body">
+          <ul class="list-group">
+            {% for note in notes %}
+            <li class="list-group-item">
+              <h3 class="h6 mb-1">{{ note.title }}</h3>
+              <p class="mb-1">{{ note.note_content.content[:100] if note.note_content else 'Content saved as file' }}</p>
+              <small class="text-muted">Last updated on {{ note.last_modified.strftime('%B %d, %Y') }}</small>
+              <div class="mt-2">
+                <button class="btn btn-sm btn-outline-primary">Edit</button>
+                <button class="btn btn-sm btn-outline-danger">Delete</button>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
