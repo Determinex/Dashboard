@@ -1,0 +1,86 @@
+<div class="container-fluid d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center">
+        <button type="button" id="sidebarCollapse" class="btn btn-primary me-2">
+            <i class="fas fa-align-left"></i>
+        </button>
+        <a class="navbar-brand ms-2" href="#">Dashboard</a>
+    </div>
+    <div class="logo-image d-none d-lg-block mx-auto">
+        <img src="https://via.placeholder.com/150x50" alt="Logo" width="150">
+    </div>
+    <div class="d-flex align-items-center ms-auto">
+        <form class="d-flex me-3" role="search" target="_blank" onsubmit="return openSearch()">
+            <input type="text" class="form-control" id="searchQuery" placeholder="Search">
+            <button type="submit" class="btn btn-outline-primary ms-2">Go</button>
+        </form>
+        <div class="login-button ms-3">
+            <button class="btn btn-outline-primary" id="userIcon" data-logged-in="{{ 'True' if current_user.is_authenticated else 'False' }}">
+                <i class="fas fa-user"></i>
+            </button>
+            <div id="userPopup" class="user-popup d-none">
+                {% if current_user.is_authenticated %}
+                    <a href="#" data-toggle="modal" data-target="#headerUserModal">Logout</a>
+                {% else %}
+                    <ul class="nav nav-tabs" id="headerAuthTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="headerLogin-tab" data-toggle="tab" href="#headerLogin" role="tab" aria-controls="headerLogin" aria-selected="true">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="headerRegister-tab" data-toggle="tab" href="#headerRegister" role="tab" aria-controls="headerRegister" aria-selected="false">Register</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="headerAuthTabsContent">
+                        <div class="tab-pane fade show active" id="headerLogin" role="tabpanel" aria-labelledby="headerLogin-tab">
+                            <form id="headerLoginForm" method="POST" action="{{ url_for('auth.login') }}">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="headerLoginUsername" name="username" placeholder="Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="headerLoginPassword" name="password" placeholder="Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <div id="headerLoginError" class="text-danger mt-2"></div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="headerRegister" role="tabpanel" aria-labelledby="headerRegister-tab">
+                            <form id="headerRegisterForm" method="POST" action="{{ url_for('auth.register') }}">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="headerRegisterUsername" name="username" placeholder="Username" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="headerRegisterPassword" name="password" placeholder="Password" required>
+                                </div>
+                                <div class="form-group">
+                                    <input type="password" class="form-control" id="headerConfirmPassword" name="confirm_password" placeholder="Confirm Password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                                <div id="headerRegisterError" class="text-danger mt-2"></div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Header User Modal -->
+<div class="modal fade" id="headerUserModal" tabindex="-1" aria-labelledby="headerUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="headerUserModalLabel">User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Logout Form -->
+                <form id="headerLogoutForm" method="POST" action="{{ url_for('auth.logout') }}">
+                    <p>Are you sure you want to log out?</p>
+                    <button type="submit" class="btn btn-primary">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

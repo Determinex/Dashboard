@@ -1,0 +1,312 @@
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+@import "colors.css"; /* Import the color schemes */
+
+/* General Styles */
+body {
+    font-family: 'Poppins', 'Arial', sans-serif;
+    background: var(--background-color); /* Use background color */
+    margin: 0;
+    padding: 0;
+    color: var(--text-color); /* Use text color */
+}
+
+/* Header Styles */
+header {
+    background: var(--header-background-color); /* Use header background color */
+    color: var(--header-text-color); /* Use header text color */
+    padding: 0 20px;
+    max-height: 60px;
+}
+
+/* Paragraph Styles */
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: var(--text-color); /* Use text color */
+}
+
+/* Link Styles */
+a[data-toggle="collapse"] {
+    position: relative;
+    color: var(--link-color); /* Use link color */
+}
+
+/* Navbar Styles */
+.navbar-toggler {
+    margin-right: 10px; /* Adjust the value as needed */
+    color: var(--header-text-color); /* Use header text color */
+}
+
+.navbar-brand {
+    margin-left: 10px; /* Adjust the value as needed */
+    color: var(--header-text-color); /* Use header text color */
+}
+
+/* Input Group Styles */
+.input-group {
+    margin-right: 10px; /* Adjust the value as needed */
+}
+
+/* Login Button Styles */
+.login-button {
+    margin-left: 10px; /* Adjust the value as needed */
+    color: var(--header-text-color); /* Use header text color */
+}
+
+/* Dropdown Toggle Styles */
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+/* Sidebar Styles */
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 250px;
+    background: var(--header-background-color); /* Use primary color */
+    color: var(--header-text-color); /* Use header text color */
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 9999;
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(-100%);
+}
+
+#sidebar.active {
+    transform: translateX(0);
+}
+
+#sidebarCollapse {
+    cursor: pointer;
+    color: var(--header-text-color); /* Use header text color */
+}
+
+#sidebar .sidebar-header {
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
+    background: var(--header-background-color); /* Use secondary color */
+    text-align: center;
+}
+
+#sidebar .sidebar-header hr {
+    border-color: var(--header-text-color); /* Use header text color */
+}
+
+#sidebar ul {
+    background: var(--header-background-color); /* Use secondary color */
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--tertiary-color); /* Use tertiary color */
+}
+
+#sidebar .components {
+    flex: 1; /* Allow this section to take up available space */
+}
+
+#sidebar ul p {
+    color: var(--header-text-color); /* Use header text color */
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+    color: var(--header-text-color); /* Use header text color */
+    background: var(--header-background-color); /* Use secondary color */
+}
+
+#sidebar ul li a:hover,
+#sidebar ul li a:focus,
+#sidebar ul li.active > a,
+ul ul a:hover,
+ul ul a:focus,
+ul ul li.active > a {
+    color: var(--primary-color); /* Use primary color */
+    background: #fff; /* Original hover and active background color */
+}
+
+#sidebar ul li.active > a,
+a[aria-expanded="true"] {
+    color: var(--primary-color); /* Use primary color */
+    background: #fff; /* Original active background color */
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: var(--secondary-color); /* Use secondary color */
+    color: var(--header-text-color); /* Use header text color */
+}
+
+ul ul a:hover,
+ul ul a:focus,
+ul ul li.active > a {
+    color: var(--primary-color); /* Use primary color */
+    background: #fff; /* Original hover and active background color */
+}
+
+.sidebar-footer {
+    margin-top: auto; /* Pushes the footer to the bottom */
+    padding: 10px; /* Add some padding for aesthetics */
+    background: var(--footer-background-color); /* Use footer background color */
+    text-align: center; /* Center text in the footer */
+    color: var(--footer-text-color); /* Use footer text color */
+}
+
+/* Jumbotron Styles */
+.jumbotron {
+    background-color: var(--footer-background-color); /* Use footer background color */
+    padding: 2rem 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Accordion Card Header Styles */
+.accordion .card-header {
+    background: linear-gradient(45deg, #A8A9AD, #B4B5B8, #C0C0C3, #CBCCCD, #D7D7D8, #E3E3E3); /* Linear metallic silver gradient */
+    color: var(--text-color); /* Use text color */
+    text-align: center; /* Center the text */
+}
+
+.accordion .card-header h3 {
+    margin: 0;
+}
+
+/* Main Content Styles */
+.main-content {
+    width: 100%;
+    padding: 20px;
+    transition: margin-left 0.3s ease-in-out;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+/* Heading Styles */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    color: var(--text-color); /* Use text color */
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+button, .btn {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    color: var(--button-text-color); /* Use button text color */
+    background-color: var(--button-background-color); /* Use button background color */
+}
+
+button:hover, .btn:hover {
+    background-color: var(--button-hover-background-color); /* Use button hover background color */
+    color: var(--button-text-color); /* Use button text color */
+}
+
+/* Footer Styles */
+footer {
+    background: var(--footer-background-color); /* Use footer background color */
+    padding: 20px;
+    text-align: center;
+    color: var(--footer-text-color); /* Use footer text color */
+    border-top: 1px solid #e7e7e7;
+}
+
+/* Center the accordion and set a max width */
+.accordion {
+    max-width: 800px; /* Adjust the value as needed */
+    margin: 0 auto; /* Center the accordion */
+}
+
+/* Center the article and set a max width */
+.blog-post.first-run {
+    max-width: 800px; /* Adjust the value as needed */
+    margin: 0 auto; /* Center the article */
+    padding: 20px; /* Add padding for better readability */
+    background: #fff; /* Set background color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    border-radius: 8px; /* Add border radius */
+}
+
+.footer-note {
+    text-align: center;
+    font-size: 0.9em;
+    color: var(--footer-text-color); /* Use footer text color */
+    margin-top: 20px;
+}
+
+.blog-post-meta {
+    text-align: right; /* Right-align the metadata */
+    color: var(--footer-text-color); /* Use footer text color */
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+    #sidebar {
+      transform: translateX(-250px);
+    }
+    #sidebar.active {
+      transform: translateX(0);
+    }
+}
+
+/* User Popup Styles */
+.user-popup {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+    width: 300px; /* Updated width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.user-popup p {
+    margin: 0 0 10px;
+    color: var(--text-color); /* Use text color */
+}
+
+.user-popup form > button {
+    margin: auto;
+    color: var(--button-text-color); /* Use button text color */
+    background-color: var(--button-background-color); /* Use button background color */
+}
+
+.user-popup.d-none {
+    display: none;
+}
+
+/* Compact form styles */
+.user-popup .form-group {
+    margin-bottom: 5px; /* Reduce the space between form groups */
+}
+
+.user-popup .form-control {
+    padding: 5px 10px; /* Reduce the padding inside form controls */
+    margin-bottom: 5px; /* Ensure minimal margin between form controls */
+}
+
+.user-popup .btn {
+    padding: 5px 10px; /* Reduce the padding inside buttons */
+}
+
+/* Add bottom margin to tabs */
+.user-popup .nav-tabs {
+    margin-bottom: 15px; /* Add bottom margin to tabs */
+}

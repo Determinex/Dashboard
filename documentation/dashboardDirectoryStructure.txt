@@ -1,0 +1,111 @@
+/Dashboard                   # Root directory for the Flask server application managing bookmarks, notes, and passwords.
+│
+├── app                      # Main source code for the Flask application.
+│   ├── __init__.py         # Application factory; initializes the Flask app and sets up configurations.
+│   ├── api                  # Directory containing API-related files for handling data operations.
+│   │   ├── __init__.py      # Initialization file for the API module; sets up the API package.
+│   │   ├── auth.py          # API endpoints related to user authentication (login, registration).
+│   │   ├── bookmarks.py      # API endpoints for managing bookmarks (CRUD operations).
+│   │   ├── notes.py         # API endpoints for managing notes (CRUD operations).
+│   │   ├── passwords.py      # API endpoints for managing passwords (CRUD operations).
+│   │   ├── errors.py        # Custom error handling for the API, defining how to respond to errors.
+│   │   ├── schemas.py       # Request and response schemas using Marshmallow for data validation.
+│   │   └── users.py         # API endpoints related to user management (e.g., user profiles).
+│   │
+│   ├── app.py               # Main application file; creates the APIFlask app instance and registers blueprints.
+│   ├── auth                 # Directory for authentication-related logic and routes.
+│   │   ├── __init__.py      # Initialization file for the auth module; sets up the authentication package.
+│   │   ├── forms.py         # Forms for user authentication (login, registration) using Flask-WTF.
+│   │   └── routes.py        # Routes for handling authentication requests and rendering templates.
+│   ├── cli.py               # Custom command-line interface commands for managing the application.
+│   ├── config               # Directory for configuration files, managing different environments.
+│   │   ├── __init__.py      # Initialization file for the config module; sets up the configuration package.
+│   │   ├── base_config.py   # Base configuration settings shared across environments.
+│   │   ├── development.py   # Configuration settings specific to the development environment.
+│   │   ├── production.py    # Configuration settings specific to the production environment.
+│   │   └── testing.py       # Configuration settings specific to the testing environment.
+│   ├── encryption           # Directory for encryption-related functionality.
+│   │   ├── __init__.py      # Initialization file for the encryption module; sets up the encryption package.
+│   │   └── encryptor.py     # Functions for encrypting and decrypting sensitive data.
+│   ├── forms                # Directory for form-related files, including validation and rendering.
+│   │   ├── __init__.py      # Initialization file for the forms module; sets up the forms package.
+│   │   ├── bookmarks.py      # Forms related to bookmarks (e.g., adding/editing bookmarks).
+│   │   ├── notes.py         # Forms related to notes (e.g., adding/editing notes).
+│   │   └── passwords.py     # Forms related to passwords (e.g., adding/editing passwords).
+│   ├── logs                 # Directory for log files to track application events and errors.
+│   │   └── app.log          # Log file for recording application events and errors.
+│   ├── models               # Directory for database models representing application data structures.
+│   │   ├── __init__.py      # Initialization file for the models module; sets up the models package.
+│   │   ├── bookmarks.py     # Model definition for bookmarks, including fields and methods.
+│   │   ├── notes.py         # Model definition for notes, including fields and methods.
+│   │   ├── passwords.py     # Model definition for passwords, including fields and methods.
+│   │   └── user.py          # Model definition for users, including fields and methods.
+│   ├── requirements.txt     # List of project dependencies for package management.
+│   ├── routes               # Directory for application routes that handle user requests.
+│   │   ├── __init__.py      # Initialization file for the routes module; sets up the routes package.
+│   │   ├── auth.py          # Routes for authentication-related endpoints (login, registration).
+│   │   ├── bookmarks.py      # Routes for bookmarks manager-related endpoints (viewing, adding bookmarks).
+│   │   ├── main.py          # Main application routes for rendering the primary user interface.
+│   │   ├── notes.py         # Routes for notes manager-related endpoints (viewing, adding notes).
+│   │   └── passwords.py     # Routes for passwords manager-related endpoints (viewing, adding passwords).
+│   ├── services             # Directory for business logic that handles application operations.
+│   │   ├── __init__.py      # Initialization file for the services module; sets up the services package.
+│   │   └── user_service.py  # Business logic related to user management (e.g., user registration).
+│   ├── static               # Directory for static files (CSS, JavaScript) served to clients.
+│   │   ├── css              # Directory for CSS files used in the application.
+│   │   │   ├── colors.css   # CSS file defining color variables and styles.
+│   │   │   └── styles.css   # CSS file for general styles applied across the application.
+│   │   └── javascript       # Directory for JavaScript files used in the application.
+│   │       └── scripts.js   # JavaScript file for client-side interactivity and AJAX calls.
+│   ├── templates            # Directory for HTML templates used for rendering views.
+│   │   ├── components       # Directory for reusable HTML components (e.g., headers, footers).
+│   │   │   ├── footer.html  # HTML template for the footer component.
+│   │   │   ├── header.html  # HTML template for the header component.
+│   │   │   └── navigation.html # HTML template for the navigation component.
+│   │   ├── index.html       # Main index page template for the application.
+│   │   ├── layout.html      # Base layout template that other templates extend.
+│   │   ├── error_pages      # Directory for custom HTTP error pages (e.g., 404, 500).
+│   │   │   ├── 404.html     # Custom 404 error page template.
+│   │   │   └── 500.html     # Custom 500 error page template.
+│   │   └── modules          # Directory for module-specific templates.
+│   │       ├── dashboard    # Directory for the dashboard page module template.
+│   │       │   ├── index.html # Index page for the dashboard module.
+│   │       ├── bookmarks    # Directory for bookmarks manager module templates.
+│   │       │   ├── index.html # Index page for bookmarks manager module.
+│   │       │   ├── layout.html # Layout template for bookmarks manager module.
+│   │       │   └── manager.html # Webpage for managing bookmarks.
+│   │       ├── notes        # Directory for notes module templates.
+│   │       │   ├── index.html # Index page for notes manager module.
+│   │       │   ├── layout.html # Layout template for notes manager module.
+│   │       │   └── manager.html # Webpage for managing notes.
+│   │       └── passwords    # Directory for passwords manager module templates.
+│   │           ├── index.html # Index page for passwords manager module.
+│   │           ├── layout.html # Layout template for passwords manager module.
+│   │           └── manager.html # Webpage for managing passwords.
+│   └── utils.py             # General utility functions for common tasks in the application.
+│
+├── database                 # Directory for database-related files.
+│   └── dashboard.db         # SQLite database file for the Dashboard project.
+│
+├── docs                     # Documentation directory for project-related documents and guides.
+│
+├── environment              # Directory for OS-specific virtual environment configurations.
+│   ├── linux                # Linux-specific environment files.
+│   │   ├── venv             # Virtual environment directory for the Flask application.
+│   │   ├── clean.sh         # Script to clean/reset the database via re-initialization.
+│   │   ├── setup.sh         # Script to set up the environment and install dependencies.
+│   │   └── start.sh         # Script to start the Flask application on Linux.
+│   └── windows              # Windows-specific environment files.
+│       ├── venv             # Virtual environment directory for the Flask application.
+│       ├── clean.bat        # Script to clean/reset the database via re-initialization on Windows.
+│       ├── setup.bat        # Script to set up the environment and install dependencies on Windows.
+│       └── start.bat        # Script to start the Flask application on Windows.
+│
+├── logs                     # Directory for log files to track application events and errors.
+│   └── app.log              # Log file for recording application events and errors.
+│
+├── run.py                   # Entry point for running the Flask application.
+│
+├── .env                     # File for environment variables used in configuration.
+├── .flaskenv                # File for Flask-specific environment variables.
+└── README.md                # Project documentation, including setup instructions and usage guidelines.

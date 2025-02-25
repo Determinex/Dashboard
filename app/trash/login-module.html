@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Module</title>
+    <style>
+        /* User Popup Styles */
+        .user-popup {
+            position: absolute;
+            background-color: white;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            z-index: 1000;
+            width: 300px; /* Updated width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .user-popup p {
+            margin: 0 0 10px;
+            color: var(--text-color); /* Use text color */
+        }
+
+        .user-popup form > button {
+            margin: auto;
+            color: var(--button-text-color); /* Use button text color */
+            background-color: var(--button-background-color); /* Use button background color */
+        }
+
+        .user-popup.d-none {
+            display: none;
+        }
+
+        /* Compact form styles */
+        .user-popup .form-group {
+            margin-bottom: 5px; /* Reduce the space between form groups */
+        }
+
+        .user-popup .form-control {
+            padding: 5px 10px; /* Reduce the padding inside form controls */
+            margin-bottom: 5px; /* Ensure minimal margin between form controls */
+        }
+
+        .user-popup .btn {
+            padding: 5px 10px; /* Reduce the padding inside buttons */
+            margin-top: 10px; /* Ensure minimal margin above buttons */
+        }
+
+        /* Add bottom margin to tabs */
+        .user-popup .nav-tabs {
+            margin-bottom: 15px; /* Add bottom margin to tabs */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <button class="btn btn-outline-primary" id="userIcon">
+            <i class="fas fa-user"></i>
+        </button>
+        <div id="userPopup" class="user-popup d-none">
+            <ul class="nav nav-tabs" id="authTabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" id="login-tab" data-toggle="tab" href="#login" role="tab" aria-controls="login" aria-selected="true">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" id="register-tab" data-toggle="tab" href="#register" role="tab" aria-controls="register" aria-selected="false">Register</a>
+                </li>
+            </ul>
+            <div class="tab-content" id="authTabsContent">
+                <div class="tab-pane fade show active" id="login" role="tabpanel" aria-labelledby="login-tab">
+                    <form id="loginForm" method="POST" action="#">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="loginUsername" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="loginPassword" name="password" placeholder="Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+                <div class="tab-pane fade" id="register" role="tabpanel" aria-labelledby="register-tab">
+                    <form id="registerForm" method="POST" action="#">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="registerUsername" name="username" placeholder="Username" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="registerPassword" name="password" placeholder="Password" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="confirmPassword" name="confirm_password" placeholder="Confirm Password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const userIcon = document.getElementById('userIcon');
+            const userPopup = document.getElementById('userPopup');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+
+            if (userIcon) {
+                userIcon.addEventListener('click', function (event) {
+                    event.stopPropagation();
+                    userPopup.classList.toggle('d-none');
+                    positionUserPopup();
+                });
+            }
+
+            // Hide user popup when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!userPopup.contains(event.target) && !userIcon.contains(event.target)) {
+                    userPopup.classList.add('d-none');
+                }
+            });
+
+            // Validate register form
+            if (registerForm) {
+                registerForm.addEventListener('submit', function (event) {
+                    const registerPassword = document.getElementById('registerPassword');
+                    const confirmPassword = document.getElementById('confirmPassword');
+                    if (registerPassword.value !== confirmPassword.value) {
+                        event.preventDefault();
+                        alert('Passwords do not match!');
+                    }
+                });
+            }
+
+            // Function to position the user popup
+            function positionUserPopup() {
+                const iconRect = userIcon.getBoundingClientRect();
+                const popupRect = userPopup.getBoundingClientRect();
+                const viewportWidth = window.innerWidth;
+                const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+                const rightEdge = viewportWidth - scrollbarWidth;
+
+                let left = iconRect.left + (iconRect.width / 2) - (popupRect.width / 2);
+                if (left + popupRect.width > rightEdge) {
+                    left = rightEdge - popupRect.width;
+                } else if (left < 0) {
+                    left = 0;
+                }
+                userPopup.style.left = `${left}px`;
+                userPopup.style.top = `${iconRect.bottom + window.scrollY}px`;
+            }
+        });
+    </script>
+
+    <!-- Include Bootstrap CSS and JS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

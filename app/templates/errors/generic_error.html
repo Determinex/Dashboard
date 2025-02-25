@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Error</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle, #ffffff, #e0f7fa, #b2ebf2, #80deea);
+            color: #102a43;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        .container {
+            background-color: #4d7499;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            border: 2px solid #29b6f6;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            z-index: 1;
+        }
+        h1 {
+            font-size: 50px;
+            color: #ffffff;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 0;
+        }
+        h1 span {
+            background: linear-gradient(to right, #f0f4f8, #d9e2ec, #bcccdc);
+            -webkit-background-clip: text;
+            -moz-background-clip: text;
+            -ms-background-clip: text;
+            -o-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .message-box {
+            background-color: #ffffff;
+            color: #102a43;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .error-log-box {
+            background-color: #ffffff;
+            color: #102a43;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            resize: vertical;
+        }
+        p {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        a {
+            color: #29b6f6;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .background-image {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 300px;
+            opacity: 0.5;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><span>Error</span></h1>
+        <div class="message-box">
+            <p>Always in motion is the future.</p>
+            <p>Remember, the Force will be with you, always.</p>
+            <p><a href="/">Return to Home</a></p>
+        </div>
+        <div class="error-log-box">
+            <p>Error details:</p>
+            <pre>{{ error_message }}</pre>
+        </div>
+    </div>
+</body>
+</html>

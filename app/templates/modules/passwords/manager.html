@@ -1,0 +1,136 @@
+<!-- filepath: /home/selph/Documents/Dashboard/src/templates/passwords_manager.html -->
+{% extends 'layout.html' %}
+
+{% block title %}Dashboard | Passwords Manager{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1 class="mt-4">Passwords Manager</h1>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3><i class="fas fa-key"></i> Passwords</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped table-hover table-sm">
+                        <thead>
+                            <tr>
+                                <th>Website</th>
+                                <th>Username</th>
+                                <th>Password</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for password in passwords %}
+                            <tr>
+                                <td class="copyable" data-copy="{{ password.website }}">{{ password.website }}</td>
+                                <td class="copyable" data-copy="{{ password.username }}">{{ password.username }}</td>
+                                <td class="copyable" data-copy="{{ password.password }}">{{ password.password }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary" onclick="editPassword({{ password.id }})">Edit</button>
+                                    <button class="btn btn-sm btn-danger" onclick="deletePassword({{ password.id }})">Delete</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3><i class="fas fa-plus"></i> Add Password</h3>
+                </div>
+                <div class="card-body">
+                    <form id="addPasswordForm" method="POST" action="{{ url_for('main.add_password') }}">
+                        <div class="form-group">
+                            <label for="website">Website</label>
+                            <input type="text" class="form-control" id="website" name="website" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function editPassword(id) {
+    // Implement edit password functionality
+}
+
+function deletePassword(id) {
+    // Implement delete password functionality
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const copyableElements = document.querySelectorAll('.copyable');
+
+    copyableElements.forEach(element => {
+        element.addEventListener('mouseenter', function () {
+            const tooltip = document.createElement('span');
+            tooltip.className = 'tooltip-text';
+            tooltip.textContent = 'Copy';
+            element.appendChild(tooltip);
+        });
+
+        element.addEventListener('mouseleave', function () {
+            const tooltip = element.querySelector('.tooltip-text');
+            if (tooltip) {
+                tooltip.remove();
+            }
+        });
+
+        element.addEventListener('click', function () {
+            const textToCopy = element.getAttribute('data-copy');
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('Copied to clipboard: ' + textToCopy);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        });
+    });
+});
+</script>
+
+<style>
+.copyable {
+    position: relative;
+    cursor: pointer;
+}
+
+.copyable .tooltip-text {
+    visibility: hidden;
+    width: 50px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 5px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%; /* Position the tooltip above the text */
+    left: 50%;
+    margin-left: -25px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.copyable:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}
+</style>
+{% endblock %}

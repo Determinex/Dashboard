@@ -1,0 +1,106 @@
+.notes-logo {
+    height: 50px;
+}
+.notes-search-bar {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Add box shadow to emphasize placement */
+}
+.notes-search-bar input {
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+.notes-sidebar {
+    background-color: #e1e1e1; /* Light gray for sidebar */
+    padding: 20px;
+    height: 100vh; /* Full height */
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+}
+.notes-sidebar h3 {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+}
+.notes-sidebar button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    margin-bottom: 5px;
+    background-color: #0078d4;
+    color: white;
+    border: none;
+}
+.notes-sidebar button:hover {
+    background-color: #0056b3; /* Hover effect */
+}
+.notes-content-area {
+    padding: 20px;
+    flex-grow: 1;
+}
+.notes-note-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    cursor: move; /* Indicate draggable */
+}
+.notes-note-title {
+    font-size: 1.5rem;
+    color: #0078d4;
+}
+.notes-read-more {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+.notes-read-more:hover {
+    background-color: #0056b3;
+}
+.notes-toolbar {
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    background-color: #f4f4f4;
+    z-index: 1000;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.notes-toolbar button {
+    margin-right: 10px;
+}
+.notes-toolbar button:hover {
+    background-color: #0056b3; /* Hover effect */
+}
+.notes-footer a:hover {
+    text-decoration: underline;
+}
+.notes-tag-input {
+    margin-top: 10px;
+}
+.notes-pinned-notes {
+    margin-bottom: 20px;
+}
+.notes-tab-content {
+    margin-top: 20px;
+}
+.notes-tab-pane {
+    display: none; /* Hide all tab content by default */
+}
+.notes-tab-pane.active {
+    display: block; /* Show active tab content */
+}

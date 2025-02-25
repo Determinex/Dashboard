@@ -1,0 +1,97 @@
+<nav id="sidebar" class="bg-light border-right">
+    <div class="sidebar-header">
+        <h3>Dashboard</h3>
+        <hr>
+    </div>
+    <ul class="list-unstyled components" id="sidebarLinks">
+        <li><a href="/">Home</a></li>
+        {% if current_user.is_authenticated %}
+            <p>Welcome, {{ current_user.username }}</p>
+            <li><a href="/dashboard">View your Dashboard</a></li>
+            <li>
+                <a id="data-managers" href="#dataManagersSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Data Managers</a>
+                <ul class="collapse list-unstyled" id="dataManagersSubmenu">
+                    <li><a href="/bookmarks_manager">Bookmark Manager</a></li>
+                    <li><a href="/notes_manager">Note Manager</a></li>
+                    <li><a href="/passwords_manager">Password Manager</a></li>
+                </ul>
+            </li>
+            <li><a href="/settings">Settings</a></li>
+        {% else %}
+            <li><a href="/license">License</a></li>
+            <li><a href="/legal">Terms of Use, Privacy, Liability</a></li>
+        {% endif %}
+    </ul>
+    <div class="sidebar-footer">
+        {% if current_user.is_authenticated %}
+            <a href="#" id="sidebarLogoutLink" data-toggle="modal" data-target="#sidebarUserModal">Logout</a>
+        {% else %}
+            <p>Please log in to access more features.</p>
+            <a href="#" id="sidebarLoginRegisterLink" data-toggle="modal" data-target="#sidebarUserModal">Login/Register</a>
+        {% endif %}
+    </div>
+</nav>
+
+<!-- Sidebar User Modal -->
+<div class="modal fade" id="sidebarUserModal" tabindex="-1" role="dialog" aria-labelledby="sidebarUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sidebarUserModalLabel">{% if current_user.is_authenticated %}Logout{% else %}Login/Register{% endif %}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if current_user.is_authenticated %}
+                    <form id="sidebarLogoutForm" action="{{ url_for('auth.logout') }}" method="POST">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
+                {% else %}
+                    <ul class="nav nav-tabs" id="sidebarAuthTabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="sidebar-login-tab" data-toggle="tab" href="#sidebar-login" role="tab" aria-controls="sidebar-login" aria-selected="true">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="sidebar-register-tab" data-toggle="tab" href="#sidebar-register" role="tab" aria-controls="sidebar-register" aria-selected="false">Register</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="sidebarAuthTabsContent">
+                        <div class="tab-pane fade show active" id="sidebar-login" role="tabpanel" aria-labelledby="sidebar-login-tab">
+                            <form id="sidebarLoginForm" action="{{ url_for('auth.login') }}" method="POST">
+                                <div class="form-group">
+                                    <label for="sidebarUsername">Username</label>
+                                    <input type="text" class="form-control" id="sidebarUsername" name="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sidebarPassword">Password</label>
+                                    <input type="password" class="form-control" id="sidebarPassword" name="password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Login</button>
+                                <div id="sidebarLoginError" class="text-danger mt-2"></div>
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="sidebar-register" role="tabpanel" aria-labelledby="sidebar-register-tab">
+                            <form id="sidebarRegisterForm" action="{{ url_for('auth.register') }}" method="POST">
+                                <div class="form-group">
+                                    <label for="sidebarRegisterUsername">Username</label>
+                                    <input type="text" class="form-control" id="sidebarRegisterUsername" name="username" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sidebarRegisterPassword">Password</label>
+                                    <input type="password" class="form-control" id="sidebarRegisterPassword" name="password" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sidebarConfirmPassword">Confirm Password</label>
+                                    <input type="password" class="form-control" id="sidebarConfirmPassword" name="confirm_password" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Register</button>
+                                <div id="sidebarRegisterError" class="text-danger mt-2"></div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

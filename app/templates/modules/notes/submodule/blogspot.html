@@ -1,0 +1,137 @@
+{% extends 'notes_layout.html' %}
+
+{% block title %}Dashboard | Blogspot{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="notes-search-bar">
+                <input type="text" id="search-input" class="form-control" placeholder="Search notes...">
+                <button class="btn btn-light ml-2"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <nav class="col-md-3 notes-sidebar">
+            <h3>Navigation</h3>
+            <div class="tab-buttons">
+                <button class="btn btn-light tablink active" data-tab="notebooks">Notebooks</button>
+                <button class="btn btn-light tablink" data-tab="tags">Tags</button>
+                <button class="btn btn-light tablink" data-tab="settings"><i class="fas fa-cog"></i> User Settings</button>
+            </div>
+        </nav>
+        <main class="col-md-9 notes-content-area">
+            <div class="toolbar sticky-top" id="note-toolbar" style="display: none;">
+                <button class="btn btn-primary" id="new-note-button"><i class="fas fa-plus"></i> New Note</button>
+                <button class="btn btn-secondary" id="save-button"><i class="fas fa-save"></i> Save</button>
+                <button class="btn btn-danger" id="delete-button"><i class="fas fa-trash"></i> Delete</button>
+            </div>
+            <div class="toolbar sticky-top" id="notebook-toolbar" style="display: none;">
+                <button class="btn btn-primary" id="new-notebook-button"><i class="fas fa-plus"></i> New Notebook</button>
+                <button class="btn btn-secondary" id="rename-notebook-button"><i class="fas fa-edit"></i> Rename Notebook</button>
+                <button class="btn btn-danger" id="delete-notebook-button"><i class="fas fa-trash"></i> Delete Notebook</button>
+            </div>
+            <div class="tab-content">
+                <div id="notebooks" class="tab-pane active">
+                    <h4>Notebooks</h4>
+                    <div id="notebook-list">
+                        <a href="#" class="notebook" data-id="1">Notebook 1</a>
+                        <a href="#" class="notebook" data-id="2">Notebook 2</a>
+                        <a href="#" class="notebook" data-id="3">Notebook 3</a>
+                    </div>
+                </div>
+                <div id="tags" class="tab-pane">
+                    <h4>Tags</h4>
+                    <div id="tag-list">
+                        <span class="badge badge-secondary">Tag 1</span>
+                        <span class="badge badge-secondary">Tag 2</span>
+                        <span class="badge badge-secondary">Tag 3</span>
+                    </div>
+                </div>
+                <div id="settings" class="tab-pane">
+                    <h4>User Settings</h4>
+                    <form id="user-settings-form">
+                        <div class="form-group">
+                            <label for="theme-select">Theme</label>
+                            <select class="form-control" id="theme-select">
+                                <option value="light">Light</option>
+                                <option value="dark">Dark</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="font-size-select">Font Size</label>
+                            <select class="form-control" id="font-size-select">
+                                <option value="small">Small</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="large">Large</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="line-spacing-select">Line Spacing</label>
+                            <select class="form-control" id="line-spacing-select">
+                                <option value="1">Single</option>
+                                <option value="1.5">1.5</option>
+                                <option value="2">Double</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="note-background-color">Note Background Color</label>
+                            <input type="color" class="form-control" id="note-background-color" value="#ffffff">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- User Settings Modal -->
+<div class="modal fade" id="userSettingsModal" tabindex="-1" role="dialog" aria-labelledby="userSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="userSettingsModalLabel">User Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="user-settings-form">
+                    <div class="form-group">
+                        <label for="theme-select">Theme</label>
+                        <select class="form-control" id="theme-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="font-size-select">Font Size</label>
+                        <select class="form-control" id="font-size-select">
+                            <option value="small">Small</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="large">Large</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="line-spacing-select">Line Spacing</label>
+                        <select class="form-control" id="line-spacing-select">
+                            <option value="1">Single</option>
+                            <option value="1.5">1.5</option>
+                            <option value="2">Double</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="note-background-color">Note Background Color</label>
+                        <input type="color" class="form-control" id="note-background-color" value="#ffffff">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="save-settings-button">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

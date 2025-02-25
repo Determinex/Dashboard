@@ -1,0 +1,25 @@
+<!-- In encryption.html -->
+<div id="drop-area">
+    <p>Drop files here to encrypt/decrypt</p>
+    <input type="file" id="fileElem" multiple accept="*/*" style="display:none">
+    <label for="fileElem">Select files</label>
+</div>
+
+<script>
+    const dropArea = document.getElementById('drop-area');
+
+    dropArea.addEventListener('dragover', (event) => {
+        event.preventDefault();
+        dropArea.classList.add('highlight');
+    });
+
+    dropArea.addEventListener('dragleave', () => {
+        dropArea.classList.remove('highlight');
+    });
+
+    dropArea.addEventListener('drop', (event) => {
+        event.preventDefault();
+        const files = event.dataTransfer.files;
+        // Use AJAX to send files to Flask for processing
+    });
+</script>
