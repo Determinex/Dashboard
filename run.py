@@ -1,8 +1,9 @@
-# run.py
+# dashboard/run.py acts as a vital orchestration tool for automating the setup and management of the Flask application environment.
+
 import os
 import sys
-import subprocess
 import platform
+import subprocess
 import logging
 
 # Set up logging
@@ -16,58 +17,86 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s'
 )
 
-def open_terminal_and_run(command):
-    """Open a terminal window and run the specified command."""
-    logging.info(f"Executing command: {command}")
-    try:
-        if platform.system() == "Windows":
-            subprocess.run(["start", "cmd", "/k", command], shell=True)
-        else:  # Assume Linux
-            subprocess.run(["gnome-terminal", "--", "bash", "-c", command])
-        logging.info(f"Command executed successfully: {command}")
-    except Exception as e:
-        logging.error(f"Error executing command: {command}. Error: {str(e)}")
+def clean():
+    """Remove the database and virtual environment."""
+    db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'dashboard.db')
+    env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
+
+    # Remove database file
+    if os.path.exists(db_path):
+        os.remove(db_path)
+        logging.info(f"Removed database file: {db_path}")
+    
+    # Remove virtual environment folder
+    if os.path.exists(env_dir):
+        import shutil
+        shutil.rmtree(env_dir)
+        logging.info(f"Removed virtual environment folder: {env_dir}")
+    else:
+        logging.warning("Environment folder does not exist.")
+
+def setup():
+    """Create a new virtual environment and install dependencies."""
+    env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
+    venv_path = os.path.join(env_dir, 'venv')
+    
+    # Create virtual environment
+    subprocess.run(['py', '-m', 'venv', venv_path])
+    logging.info(f"Created virtual environment: {venv_path}")
+
+    # Activate and upgrade pip
+    activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
+    subprocess.run(f'CALL {activate_script} && python -m pip install --upgrade pip setuptools wheel', shell=True)
+    
+    # Install dependencies
+    subprocess.run(f'CALL {activate_script} && python -m pip install -r requirements.txt', shell=True)
+
+def start():
+    """Activate the virtual environment and start the Flask application."""
+    env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
+    venv_path = os.path.join(env_dir, 'venv')
+    activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
+    
+    # Activate the virtual environment and start Flask
+    command = f'CALL {activate_script} && set FLASK_APP={os.path.join(os.path.dirname(os.path.abspath(__file__)), "app", "app.py")} && flask run'
+    subprocess.run(command, shell=True)
+
+def list_dependencies():
+    """List installed dependencies in the virtual environment."""
+    env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
+    venv_path = os.path.join(env_dir, 'venv')
+    activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
+    
+    # List dependencies
+    command = f'CALL {activate_script} && pip list'
+    subprocess.run(command, shell=True)
 
 def main():
-    os_type = platform.system()
-    
-    # Define the paths for the clean, setup, and start scripts
-    if os_type == "Windows": # Adjusted for Windows
-        clean_script = "env/windows/clean.bat"
-        setup_script = "env/windows/setup.bat"
-        start_script = "env/windows/start.bat"
-        venv_path = "env/windows/Scripts/activate.bat"  # Adjusted virtual environment path
-    else:  # Adjusted for Linux
-        clean_script = "env/linux/clean.sh"
-        setup_script = "env/linux/setup.sh"
-        start_script = "env/linux/start.sh"
-        venv_path = "env/linux/venv/bin/activate"  # Adjusted virtual environment path
+    """Main function to display menu and execute user choices."""
+    while True:
+        print("Choose an option:")
+        print("1. Clean the database (resetting)")
+        print("2. Setup the virtual environment and install dependencies")
+        print("3. Start the Flask application")
+        print("4. List installed dependencies")
+        print("5. Exit")
 
-    # Display menu options
-    print("Choose an option:")
-    print("1. Clean the database (resetting)")
-    print("2. Setup the virtual environment and install dependencies")
-    print("3. Start the Flask application")
-    print("4. Exit")
-
-    choice = input("Enter your choice (1-4): ")
-
-    if choice == "1":
-        command = f"cd env/windows && {clean_script}"  # Ensure the command is correct
-        open_terminal_and_run(command)
-    elif choice == "2":
-        command = f"cd env/windows && {setup_script}"  # Ensure the command is correct
-        open_terminal_and_run(command)
-    elif choice == "3":
-        command = f"cd env/windows && venv\\Scripts\\activate.bat && flask run --debug"  # Ensure the command is correct
-        open_terminal_and_run(command)
-    elif choice == "4":
-        logging.info("Exiting the application.")
-        print("Exiting...")
-        sys.exit(0)
-    else:
-        logging.warning("Invalid choice made by user.")
-        print("Invalid choice. Please choose a valid option.")
+        choice = input("Enter your choice (1-5): ")
+        if choice == "1":
+            clean()
+        elif choice == "2":
+            setup()
+        elif choice == "3":
+            start()
+        elif choice == "4":
+            list_dependencies()
+        elif choice == "5":
+            logging.info("Exiting the application.")
+            print("Exiting...")
+            sys.exit(0)
+        else:
+            logging.warning("Invalid choice made by user.")
+            print("Invalid choice. Please choose a valid option.")
 
 if __name__ == "__main__":
     logging.info("Application started.")
