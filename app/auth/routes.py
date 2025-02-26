@@ -1,11 +1,11 @@
-# src/auth/routes.py
+# app/auth/routes.py
 # Description: This file contains the routes for the authentication blueprint.
-from flask import render_template, redirect, url_for, flash, request, jsonify
+
+from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
-from src import db
-from src.models import User
-from . import bp
+from . import bp  # Import the bp object from the same package
 from .forms import LoginForm, RegistrationForm
+from app import db  # Import db from the app module
 
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
