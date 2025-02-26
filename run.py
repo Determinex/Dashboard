@@ -22,12 +22,10 @@ def clean():
     db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'database', 'dashboard.db')
     env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
 
-    # Remove database file
     if os.path.exists(db_path):
         os.remove(db_path)
         logging.info(f"Removed database file: {db_path}")
     
-    # Remove virtual environment folder
     if os.path.exists(env_dir):
         import shutil
         shutil.rmtree(env_dir)
@@ -39,15 +37,14 @@ def setup():
     """Create a new virtual environment and install dependencies."""
     env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
     venv_path = os.path.join(env_dir, 'venv')
-    
-    # Create virtual environment
+
     subprocess.run(['py', '-m', 'venv', venv_path])
     logging.info(f"Created virtual environment: {venv_path}")
 
     # Activate and upgrade pip
     activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
     subprocess.run(f'CALL {activate_script} && python -m pip install --upgrade pip setuptools wheel', shell=True)
-    
+
     # Install dependencies
     subprocess.run(f'CALL {activate_script} && python -m pip install -r requirements.txt', shell=True)
 
@@ -56,18 +53,22 @@ def start():
     env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
     venv_path = os.path.join(env_dir, 'venv')
     activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
+
+    # Start the Flask application within the activated virtual environment
+    command = f'CALL {activate_script} && python -m app.main'
     
-    # Activate the virtual environment and start Flask
-    command = f'CALL {activate_script} && set FLASK_APP={os.path.join(os.path.dirname(os.path.abspath(__file__)), "app", "app.py")} && flask run'
-    subprocess.run(command, shell=True)
+    try:
+        subprocess.Popen(command, shell=True)
+        logging.info("Flask application started.")
+    except Exception as e:
+        logging.error(f"Failed to start Flask application: {e}")
 
 def list_dependencies():
     """List installed dependencies in the virtual environment."""
     env_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'env', platform.system().lower())
     venv_path = os.path.join(env_dir, 'venv')
     activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
-    
-    # List dependencies
+
     command = f'CALL {activate_script} && pip list'
     subprocess.run(command, shell=True)
 
