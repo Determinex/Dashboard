@@ -1,0 +1,71 @@
+You're right to seek a more efficient way to manage your configuration without redundancy. The goal is to ensure that your configuration class pulls values directly from your environment variables defined in the `.env` and `.flaskenv` files, without hardcoding defaults unless absolutely necessary.
+
+### Streamlining Your Configuration Class
+
+To achieve this, you can modify your `Config` class to only reference the environment variables without providing default values. This way, if a variable is not set in the environment, your application will raise an error, which can help you catch configuration issues early.
+
+Here’s how you can refactor your `app/config/config.py`:
+
+```python
+import os
+import logging
+
+class Config:
+    # Load environment variables directly without defaults
+    SECRET_KEY = os.environ['SECRET_KEY']  # Raise KeyError if not set
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    DATABASE_DIR = os.path.join(BASE_DIR, 'database')
+    
+    # Use the DATABASE_URL from the environment or raise an error if not set
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']  # Raise KeyError if not set
+    SQLALCHEMY_TRACK_MODIFICATIONS = os.environ.get('SQLALCHEMY_TRACK_MODIFICATIONS', 'False') == 'True'
+    
+    UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
+    ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+    MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB
+
+    # Load Flask environment variables
+    FLASK_ENV = os.environ['FLASK_ENV']  # Raise KeyError if not set
+    DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+    TESTING = os.environ.get('TESTING', 'False') == 'True'
+    LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO')
+
+    # Ensure the database directory exists
+    if not os.path.exists(DATABASE_DIR):
+        os.makedirs(DATABASE_DIR)
+        logging.info(f"Created database directory at {DATABASE_DIR}")
+
+    # Ensure the upload directory exists
+    if not os.path.exists(UPLOAD_FOLDER):
+        os.makedirs(UPLOAD_FOLDER)
+        logging.info(f"Created upload directory at {UPLOAD_FOLDER}")
+
+    # Ensure the logs directory exists
+    LOG_DIR = os.path.join(BASE_DIR, 'logs')
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
+        logging.info(f"Created logs directory at {LOG_DIR}")
+```
+
+### Key Changes Made
+
+1. **Remove Defaults for Critical Variables**: For critical configuration variables like `SECRET_KEY` and `SQLALCHEMY_DATABASE_URI`, use `os.environ['VARIABLE_NAME']`. This will raise a `KeyError` if the variable is not set, which is useful for catching configuration issues early in development or deployment.
+
+2. **Use `os.environ.get()` for Optional Variables**: For variables that may not be critical (like `LOG_LEVEL`), you can still use `os.environ.get()` with a default value. This allows your application to run with sensible defaults if those variables are not set.
+
+3. **Environment Variables**: Ensure that your `.env` and `.flaskenv` files contain the necessary variables. For example, your `.env` file should include:
+   ```plaintext
+   SECRET_KEY=your_secret_key
+   DATABASE_URL=sqlite:///your_database.db
+   FLASK_ENV=development
+   DEBUG=True
+   LOG_LEVEL=INFO
+   ```
+
+### Summary
+
+- **Directly Reference Environment Variables**: By directly referencing environment variables in your configuration class, you avoid redundancy and ensure that your application is using the correct values.
+- **Raise Errors for Missing Variables**: Using `os.environ['VARIABLE_NAME']` will raise an error if the variable is not set, helping you catch configuration issues early.
+- **Keep Your Configuration Clean**: This approach keeps your configuration class clean and focused on pulling values from the environment, making it easier to manage and understand.
+
+By following this approach, you can effectively manage your application's configuration without redundancy, ensuring that each variable is defined in one place and accessed consistently throughout your application.
