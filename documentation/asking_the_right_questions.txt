@@ -1,0 +1,5 @@
+1) I'm trying to build a local flask webapp that emulates the same behavior as online website applications. Is it better to use API routes in a flask application for crud and regular routes for page reconstruction combined with JavaScript when using AJAX calls?
+
+2) I'm trying to build a local flask webapp that emulates the same behavior as online website applications. How do I make and save user preferences to a local JSON file inside my application directory that my app can use when it's rendering a page without relying on node.js?
+
+3) 
