@@ -1,0 +1,84 @@
+DROP TABLE IF EXISTS [bookmarks];
+DROP TABLE IF EXISTS [tags];
+DROP TABLE IF EXISTS [folders];
+DROP TABLE IF EXISTS [notes];
+DROP TABLE IF EXISTS [user_credentials];
+DROP TABLE IF EXISTS [application_table];
+DROP TABLE IF EXISTS [note_content];
+DROP TABLE IF EXISTS [sessions];
+DROP TABLE IF EXISTS [database_backups];
+DROP TABLE IF EXISTS [user_interests];
+
+
+CREATE TABLE [bookmarks] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[site_name] VARCHAR NOT NULL,
+[url] VARCHAR NOT NULL,
+[is_favorite] BOOLEAN NOT NULL,
+[date_created] DATETIME,
+[last_modified] DATETIME,
+[tag_id] INTEGER,
+[folder_id] INTEGER,
+FOREIGN KEY([tag_id]) REFERENCES [tags]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION,
+FOREIGN KEY([folder_id]) REFERENCES [folders]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+CREATE TABLE [tags] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT,
+[tag_name] VARCHAR NOT NULL);
+
+CREATE TABLE [folders] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[folder_name] VARCHAR NOT NULL,
+[parent_folder_name] VARCHAR);
+
+CREATE TABLE [notes] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[note_name] VARCHAR NOT NULL,
+[note_path] TEXT NOT NULL,
+[tag_id] INTEGER,
+[date_created] DATETIME,
+[last_modified] DATETIME,
+FOREIGN KEY([tag_id]) REFERENCES [tags]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+CREATE TABLE [user_credentials] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[site_name] VARCHAR NOT NULL,
+[login] VARCHAR NOT NULL,
+[password_hash] VARCHAR NOT NULL,
+[date_created] DATETIME,
+[last_modified] DATETIME);
+
+CREATE TABLE [application_table] (
+[id] INTEGER PRIMARY KEY NOT NULL UNIQUE,
+[username] VARCHAR NOT NULL UNIQUE,
+[app_password_hash] VARCHAR NOT NULL UNIQUE);
+
+CREATE TABLE [note_content] (
+[note_id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[note_text] BLOB,
+FOREIGN KEY([note_id]) REFERENCES [notes]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+CREATE TABLE [sessions] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+[user_id] INTEGER NOT NULL,
+[token] INTEGER NOT NULL,
+[created_at] DATETIME NOT NULL,
+[expires_at] DATETIME NOT NULL,
+FOREIGN KEY([user_id]) REFERENCES [application_table]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
+CREATE TABLE [database_backups] (
+[id] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE DEFAULT backup_id,
+[backup_name] VARCHAR,
+[backup_path] TEXT NOT NULL,
+[backup_type] VARCHAR NOT NULL,
+[date_created] DATETIME NOT NULL,
+[size] INTEGER NOT NULL,
+[encryption_key] TEXT,
+[notes] TEXT);
+
+CREATE TABLE [user_interests] (
+[user_id] INTEGER NOT NULL,
+[interest] VARCHAR NOT NULL,
+PRIMARY KEY ([user_id],[interest]),
+FOREIGN KEY([user_id]) REFERENCES [application_table]([id]) ON DELETE NO ACTION ON UPDATE NO ACTION);
+
