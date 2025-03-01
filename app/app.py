@@ -7,7 +7,7 @@ from apiflask import APIFlask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_cors import CORS
-from config import DevConfig, ProdConfig
+from app.config import DevConfig, ProdConfig
 from app.models import Bookmark, Folder, Note, Tag, User, db
 from app.routes import register_routes
 
