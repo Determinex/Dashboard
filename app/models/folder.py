@@ -1,4 +1,4 @@
-# filepath: /home/selph/Documents/Dashboard/src/models/folder.py
+# app/models/folder.py
 from . import db
 
 class Folder(db.Model):
