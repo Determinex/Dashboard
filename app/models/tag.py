@@ -1,4 +1,4 @@
-# filepath: /home/selph/Documents/Dashboard/src/models/tag.py
+# app/models/tag.py
 from . import db
     
 class Tag(db.Model):
