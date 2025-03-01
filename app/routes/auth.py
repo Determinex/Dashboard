@@ -1,9 +1,9 @@
-# src/routes/auth.py
+# app/routes/auth.py
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_user, logout_user, current_user
-from src import db
-from src.models import User
-from src.auth.forms import LoginForm
+from app import db
+from app.models import User
+from app.auth.forms import LoginForm
 from flask import Blueprint
 
 bp = Blueprint('auth', __name__)
