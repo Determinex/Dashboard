@@ -8,6 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_cors import CORS
 from dotenv import load_dotenv
+from app.models import Bookmark, Folder, Note, Tag, User, db
 
 # Load environment variables from .env file
 load_dotenv()
