@@ -3,3 +3,9 @@
 SECRET_KEY=your_secret_key
 DATABASE_URL=sqlite:///dashboard/database/dashboard.db
 DEBUG=True
+LOG_LEVEL=DEBUG
+API_KEY=your_development_api_key
+CORS_ORIGINS=*
+
+# Potential Configuration Settings Not-In-Use
+# DATABASE_URL=sqlite:///:memory:
