@@ -1,7 +1,7 @@
 from flask import Flask
-from src.config.config import Config
-from src.routes import main as main_routes
-from src.models import bookmark
+from app.config.config import Config
+from app.routes import main as main_routes
+from app.models import bookmark
 import os
 
 def create_app(config_class=Config):
