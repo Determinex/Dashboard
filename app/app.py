@@ -9,6 +9,7 @@ from flask_login import LoginManager
 from flask_cors import CORS
 from dotenv import load_dotenv
 from app.models import Bookmark, Folder, Note, Tag, User, db
+from app.routes import register_routes
 
 # Load environment variables from .env file
 load_dotenv()
@@ -43,21 +44,6 @@ def init_extensions(app):
     db.init_app(app)  # Initialize the database
     login_manager.init_app(app)  # Initialize the login manager
     login_manager.login_view = 'auth.login'  # Specify login view for Flask-Login
-
-def register_blueprints(app):
-    """Register blueprints for the Flask application."""
-    from app.routes.main import bp as main_bp
-    from app.routes.auth import bp as auth_bp
-    from app.routes.notes_route import notes_bp
-    from app.routes.bookmarks_route import bookmarks_bp
-    from app.routes.passwords_route import passwords_bp
-
-    # It is critical to import here to avoid circular import issues
-    app.register_blueprint(main_bp)
-    app.register_blueprint(auth_bp)
-    app.register_blueprint(notes_bp)
-    app.register_blueprint(bookmarks_bp)
-    app.register_blueprint(passwords_bp)
 
 # Run the application
 if __name__ == '__main__':
