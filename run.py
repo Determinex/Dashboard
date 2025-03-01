@@ -55,7 +55,7 @@ def start():
     activate_script = os.path.join(venv_path, 'Scripts', 'activate.bat') if platform.system() == "Windows" else os.path.join(venv_path, 'bin', 'activate')
 
     # Start the Flask application within the activated virtual environment
-    command = f'CALL {activate_script} && python -m app.app'
+    command = f'CALL {activate_script} && flask run --app app.app'
     
     try:
         subprocess.Popen(command, shell=True)
