@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from src.models import db, Note, NoteContent
+from app.models import db, Note, NoteContent
 
 notes_bp = Blueprint('notes', __name__)
 
