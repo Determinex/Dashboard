@@ -1,13 +1,11 @@
-# src/models/__init__.py
-# This file is used to import all the models and the db object
-from flask_sqlalchemy import SQLAlchemy
+# app/models/__init__.py
+# This file is used to import all the models
 
-db = SQLAlchemy()
-
-from .user import User
-from .bookmark import Bookmark
-from .note import Note, NoteContent
+from .bookmark import Bookmark  
+from .db import db
 from .folder import Folder
+from .note import Note, NoteContent
 from .tag import Tag
+from .user import User
 
-__all__ = ['db', 'User', 'Bookmark', 'Note', 'NoteContent', 'Folder', 'Tag']
+# __all__ = ['db', 'User', 'Bookmark', 'Note', 'NoteContent', 'Folder', 'Tag']
