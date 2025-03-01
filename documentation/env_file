@@ -1,1 +1,5 @@
 # /dashboard/.env
+
+SECRET_KEY=your_secret_key
+DATABASE_URL=sqlite:///dashboard/database/dashboard.db
+DEBUG=True
