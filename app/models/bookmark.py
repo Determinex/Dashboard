@@ -1,4 +1,4 @@
-# filepath: /home/selph/Documents/Dashboard/src/models/bookmark.py
+# app/models/bookmark.py
 from . import db
 
 class Bookmark(db.Model):
