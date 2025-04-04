@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+
+    {% block title %}Dashboard{% endblock %}
+</head>
+<body>
+    {% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+    <ul>
+        <li><a href="{{ url_for('bookmarks.bookmarks') }}">Manage Bookmarks</a></li>
+        <li><a href="{{ url_for('notes.notes') }}">Manage Notes</a></li>
+        <li><a href="{{ url_for('access_credentials.access_credentials') }}">Manage Access Credentials</a></li>
+        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('user_data', uuid=user.uuid) }}">User Directory</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% if user.username == 'admin' %}
+        <li><a href="{{ url_for('view_users') }}">View All Users</a></li>
+        {% endif %}
+    </ul>
+    {% endblock %}
+</body>
+</html>

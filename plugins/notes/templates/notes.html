@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" href="{{ url_for('notes.static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="top-menu-bar">
+        <div>
+            <a href="/dashboard">Dashboard</a>
+            <select id="creation-options">
+                <option value="">Create +</option>
+                <option value="create_notebook">Notebook</option>
+                <option value="create_separator">Section</option>
+                <option value="create_note">Note</option>
+            </select>
+            <select id="import-export-options">
+                <option value="">I/O</option>
+                <option value="import_notebooks">Import</option>
+                <option value="export_notebooks">Export</option>
+            </select>
+        </div>
+        <div>
+            <input type="text" id="search-box" placeholder="Search notes...">
+        </div>
+    </div>
+    <div id="main-content">
+        <div id="directory-column">
+            <div id="notebooks-list">
+                <!-- This is where the list of notebooks will be displayed -->
+                <p>No Notebooks available.</p>
+            </div>
+        </div>
+        <div id="display-column">
+            <div id="load_notes">
+                <!-- This is where the notes will be displayed -->
+                <p>No Notes available.</p>
+            </div>
+        </div>
+    </div>
+    <!-- Javascript Section -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('notes.static', filename='js/scripts.js') }}"></script>
+</body>
+</html>

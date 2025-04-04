@@ -1,0 +1,271 @@
+/* General Reset */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+}
+
+/* Top Menu Bar (Header) */
+#top-menu-bar {
+    background-color: #2a2a2a;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Left Section (25% Width) */
+#top-left-width {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 25%; /* Set width to 25% */
+}
+
+/* Right Section (75% Width) */
+#top-right-width {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    width: 75%; /* Set width to 75% */
+}
+
+/* Links and Buttons */
+#top-menu-bar a {
+    color: white;
+    text-decoration: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+#top-menu-bar #creation-options {
+    width: 100px !important; /* Set a fixed width for the creation-options select element */
+}
+
+#top-menu-bar #import-export-options {
+    width: 80px !important; /* Set a fixed width for the import-export-options select element */
+}
+
+/* Search Box */
+#search-box {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    flex-grow: 1; /* Allow the search box to grow and fill available space */
+    max-width: 900px !important; /* Maximum width for the search box */
+}
+
+/* Main Content Area */
+/* This is the main content area where we will display the content of our data manager web application. */
+/* The main content area will be divided into two or three columns: directory and display (and form, if three columns). */
+#main-content {
+    display: flex;
+    padding: 0 10px;
+    height: calc(100vh - 50px); /* Fill the viewport minus the top menu bar */
+    overflow: hidden;
+}
+
+/* Directory Column */
+/* This column will display the list of notebooks (incuding notebook sections) */
+/* or bookmark folders (including subfolders) or service providers. */
+#directory-column {
+    width: 25%;
+    margin: 0; /* Remove margin to avoid extra space */
+    padding: 0 10px 0 0; /* Remove padding to avoid extra space */
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-right: 1px solid #ccc;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.1);
+    overflow-y: auto; /* Allow vertical scrolling if content overflows */
+}
+
+/* Display Column */
+/* This column will display the content of the selected notebook, bookmark folder, or service provider. */
+/* It will show the notes, bookmarks, or information regarding a service provider in a list or grid format. */
+#display-column {
+    width: 75%;
+    margin: 0; /* Remove margin to avoid extra space */
+    padding: 0 0 0 10px; /* Remove padding to avoid extra space */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end; /* Push the form and toggle button to the bottom */
+    background-color: #fff;
+    min-height: 200px !important; /* Default minimum height */
+    max-height: 800px !important; /* Default maximum height */
+    overflow-y: auto; /* Allow vertical scrolling if content overflows */
+}
+
+#folder-tree, #bookmarks {
+    padding: 10px;
+}
+
+.folder-item, .bookmark-item {
+    display:block;
+}
+
+.folder-item {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.bookmark-item {
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+.placeholder {
+    display: block;
+    color: #999;
+    font-style: italic;
+    text-align: center;
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+/* Form Column */
+#form-column {
+    background-color: #f9f9f9; /* Subtle background color for better contrast */
+    border: 1px solid #ccc; /* Add a border to visually separate the form */
+    border-radius: 8px; /* Rounded corners for a modern look */
+    padding: 5px 15px; /* Add padding for better spacing */
+    transition: max-height 0.3s ease, opacity 0.3s ease; /* Smooth collapse/expand animation */
+    max-height: 500px; /* Default height */
+    overflow: hidden; /* Hide content when collapsed */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+#form-column.collapsed {
+    max-height: 0; /* Collapse the form */
+    opacity: 0; /* Fade out */
+    padding: 0; /* Remove padding when collapsed */
+    border: none; /* Remove border when collapsed */
+    box-shadow: none; /* Remove shadow when collapsed */
+}
+
+/* Form Container */
+#details-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px; /* Add consistent spacing between form elements */
+    min-height: 100px; /* Ensure the form has a minimum height */
+    max-height: 400px; /* Limit the height of the form for better usability */
+}
+
+/* Form Inputs, Textareas, and Selects */
+#details-form input, #details-form textarea, #details-form select {
+    width: 100%; /* Full width for inputs */
+    padding: 5px 10px 5px 10px; /* Add padding for better usability */
+    margin: 0; /* Remove default margin */
+    border: 1px solid #ccc; /* Consistent border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 12px; /* Consistent font size */
+    box-sizing: border-box; /* Ensure padding doesn't affect width */
+    background-color: #fff; /* White background for inputs */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth focus effect */
+}
+
+/* Focus Effect for Inputs */
+#details-form input:focus, #details-form textarea:focus, #details-form select:focus {
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Subtle glow effect */
+    outline: none; /* Remove default outline */
+}
+
+/* Textarea Styling */
+#details-form textarea {
+    resize: vertical; /* Allow vertical resizing only */
+    min-height: 100px; /* Minimum height for textareas */
+    max-height: 300px; /* Maximum height for textareas */
+}
+
+/* Submit Button */
+.form-button-submit {
+    background-color: #007bff; /* Primary blue color */
+    color: white; /* White text */
+    padding: 12px 20px; /* Add padding for better usability */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor for buttons */
+    font-size: 16px; /* Larger font size for emphasis */
+    font-weight: bold; /* Bold text for better visibility */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+/* Hover Effect for Submit Button */
+.form-button-submit:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Disabled Submit Button */
+.form-button-submit:disabled {
+    background-color: #ccc; /* Gray background for disabled state */
+    cursor: not-allowed; /* Not-allowed cursor for disabled state */
+}
+
+/* Toggle Button */
+#toggle-form {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Hover Effect for Toggle Button */
+#toggle-form:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px);
+}
+
+/* Custom Context Menu */
+#custom-context-menu {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    display: none;
+    padding: 5px 0;
+    width: 150px;
+}
+
+#custom-context-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#custom-context-menu li {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #333;
+}
+
+#custom-context-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+/* Hidden class */
+.hidden {
+    display: none;
+}

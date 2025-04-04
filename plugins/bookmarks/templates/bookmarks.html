@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes</title>
+    <link rel="stylesheet" href="{{ url_for('bookmarks.static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div id="top-menu-bar">
+        <div id="top-left-width">
+            <a href="/dashboard">Dashboard</a>
+            <select id="creation-options">
+                <option value="">Create +</option>
+                <option value="create_bookmark">Bookmark</option>
+                <option value="create_folder">Folder</option>
+            </select>
+            <select id="import-export-options">
+                <option value="">I/O</option>
+                <option value="import_notes">Import</option>
+                <option value="export_notes">Export</option>
+            </select>
+        </div>
+        <div id="top-right-width">
+            <input type="text" id="search-box" placeholder="Search bookmarks...">
+        </div>
+    </div>
+    <div id="main-content">
+        <div id="directory-column">
+                <!-- Folder tree will be loaded here -->
+        </div>
+        <div id="display-column">
+            <div id="bookmarks">
+                <!-- Bookmarks will be loaded here -->
+            </div>
+            <button id="toggle-form">Hide Form</button>
+            <div id="form-column">
+                <form id="details-form">
+                    <input type="text" id="details-title" placeholder="Title" required>
+                    <input type="url" id="details-url" placeholder="URL" required>
+                    <textarea id="details-description" placeholder="Description"></textarea>
+                    <input type="text" id="details-tags" placeholder="Tags (Use a comma to separate multiple tags, if using more than one.)">
+                    <input type="text" id="details-directory" placeholder="Directory">
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Custom Context Menu -->
+    <div id="custom-context-menu" class="hidden">
+        <ul>
+            <li id="edit-item">Edit</li>
+            <li id="delete-item">Delete</li>
+            <li id="refresh-area">Refresh Area</li>
+            <li id="refresh-page">Refresh Page</li>
+        </ul>
+    </div>
+    <!-- Javascript Section -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('bookmarks.static', filename='js/scripts.js') }}"></script>
+</body>
+</html>
