@@ -52,3 +52,5 @@ class Directory(db.Model):
             'name': self.name,
             'parent': self.parent.name if self.parent else None
         }
+
+# Make a new dictionary that includes the id and name for user, bookmarks, tags, and directory. Print the result to a log. For the Get Request, use the result in a JSON to preformat the data in a way that the frontend can take the payload and reformat it for display.
