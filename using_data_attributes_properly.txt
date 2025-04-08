@@ -1,0 +1,42 @@
+Here's a breakdown of useful data attributes you could use in a bookmark management web application, categorized for clarity:
+
+**1. Core Bookmark Data:**
+
+* **`data-url`:**  The full URL of the bookmark.
+* **`data-title`:** The title of the bookmark (as displayed on the page).
+* **`data-description`:** A brief description of the bookmark's content.
+* **`data-tags`:** A comma-separated list of tags associated with the bookmark.
+* **`data-favicon`:** The URL of the bookmark's favicon (for visual identification).
+* **`data-last-visited`:** The date and time of the last time the bookmark was visited.
+
+**2. User-Specific Data:**
+
+* **`data-user-id`:** The ID of the user who created or owns the bookmark.
+* **`data-folder-id`:** The ID of the folder the bookmark belongs to.
+* **`data-is-starred`:** A boolean value indicating whether the bookmark is starred.
+* **`data-is-shared`:** A boolean value indicating whether the bookmark is shared with others.
+
+**3. Visual & Interaction Data:**
+
+* **`data-bookmark-type`:** A category for the bookmark (e.g., "article", "video", "website").
+* **`data-read-status`:** A boolean value indicating whether the bookmark content has been read.
+* **`data-highlight-section`:**  A list of highlighted sections within the bookmark's content.
+* **`data-expanded`:**  A boolean value indicating whether the bookmark's description is expanded.
+
+**4. Advanced Features (Optional):**
+
+* **`data-source`:** The source where the bookmark originated (e.g., "browser", "Pocket", "Feedly").
+* **`data-rating`:** A numerical rating assigned to the bookmark by the user.
+* **`data-comments`:** A serialized list of comments associated with the bookmark.
+* **`data-sharing-options`:**  A serialized list of sharing options available for the bookmark.
+
+**Best Practices:**
+
+* **Keep it Concise:** Choose descriptive, short attribute names.
+* **Standard Formats:** Use consistent formats for data types (e.g., dates, booleans).
+* **Semantic Meaning:** Attribute names should clearly convey the data's purpose.
+* **Documentation:** Document your data...
+
+Data attributes can be applied in the format of `data-*`, giving the developer an open option for customization for programming references. If bookmarks are stored in local storage after being fetched from the server, and the local storage is overwritten with the same process each time a new bookmark is created, this could make it very easy for viewing and sorting bookmarks according to the current interaction of the user, since browser local storage is often quicker for accessing data.
+
+Similarly, notes could be accessible the same way, except with note content queried each time a note is opened. It's easier with notes, since notes can be stored in limited depth directories than with bookmarks, which could be organized to an infinite depth vector.
