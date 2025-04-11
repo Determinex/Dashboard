@@ -1,0 +1,53 @@
+### **Explanation of the Structure**
+
+1. **Directories**:
+   - Each directory has:
+     - `id`: Unique identifier.
+     - `name`: Name of the directory.
+     - `parent_directory_id`: Reference to the parent directory (or `None` if it's a root directory).
+     - `children_directory_ids`: List of IDs of child directories.
+     - `bookmark_ids`: List of IDs of bookmarks stored in this directory.
+
+2. **Bookmarks**:
+   - Each bookmark has:
+     - `id`: Unique identifier.
+     - `url`: URL of the bookmark.
+     - `title`: Title of the bookmark.
+     - `directory_id`: Reference to the directory where the bookmark is stored.
+     - `tag_ids`: List of tag IDs associated with the bookmark.
+
+3. **Notebooks**:
+   - Each notebook has:
+     - `id`: Unique identifier.
+     - `name`: Name of the notebook.
+     - `section_ids`: List of IDs of sections within the notebook.
+     - `note_ids`: List of IDs of notes stored directly in the notebook (not in any section).
+
+4. **Sections**:
+   - Each section has:
+     - `id`: Unique identifier.
+     - `name`: Name of the section.
+     - `notebook_id`: Reference to the notebook that contains the section.
+     - `note_ids`: List of IDs of notes stored in the section.
+
+5. **Notes**:
+   - Each note has:
+     - `id`: Unique identifier.
+     - `content`: Content of the note.
+     - `notebook_id`: Reference to the notebook where the note is stored.
+     - `section_id`: Reference to the section where the note is stored (or `None` if it's stored directly in the notebook).
+     - `tag_ids`: List of tag IDs associated with the note.
+
+6. **Tags**:
+   - Each tag has:
+     - `id`: Unique identifier.
+     - `name`: Name of the tag.
+     - `bookmark_ids`: List of IDs of bookmarks associated with the tag.
+     - `note_ids`: List of IDs of notes associated with the tag.
+
+7. **Passwords**:
+   - Each password entry has:
+     - `id`: Unique identifier.
+     - `service`: Name of the service (e.g., "Email").
+     - `username`: Username for the service.
+     - `password`: Encrypted password for the service.
