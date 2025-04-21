@@ -1,0 +1,500 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "description": "Schema for data objects used in the application.",
+  "properties": {
+    "bookmark": {
+      "type": "object",
+      "description": "Represents a web bookmark.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the bookmark.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the bookmark."
+        },
+        "url": {
+          "type": "string",
+          "description": "URL of the bookmark."
+        },
+        "description": {
+          "type": ["string", "null"],
+          "description": "Detailed description of the bookmark.",
+          "nullable": true
+        },
+        "directoryName": {
+          "type": ["string", "null"],
+          "description": "Name of the directory containing the bookmark.",
+          "nullable": true
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": ["string", "null"]
+          },
+          "description": "List of tags associated with the bookmark."
+        },
+        "isFavorite": {
+          "type": "boolean",
+          "description": "Indicates whether the bookmark is marked as a favorite."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the bookmark is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the bookmark should be displayed."
+            },
+            "icon": {
+              "type": ["string", "null"],
+              "description": "Icon to display for the bookmark.",
+              "nullable": true
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the bookmark element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the bookmark in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the bookmark."
+            },
+            "format": {
+              "type": ["string", "null"],
+              "description": "Format string for displaying the bookmark data.",
+              "nullable": true
+            }
+          },
+          "required": ["component"]
+        }
+      },
+      "required": ["name", "url", "displayProperties", "uiHints"]
+    },
+    "note": {
+      "type": "object",
+      "description": "Represents a text note.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the note.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name or title of the note."
+        },
+        "noteContent": {
+          "type": "string",
+          "description": "The main content of the note."
+        },
+        "sectionName": {
+          "type": ["string", "null"],
+          "description": "Name of the section to which the note belongs.",
+          "nullable": true
+        },
+        "notebookName": {
+          "type": "string",
+          "description": "Name of the notebook containing the note."
+        },
+        "tagName": {
+          "type": ["string", "null"],
+          "description": "Name of the tag associated with the note.",
+          "nullable": true
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the note is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the note should be displayed."
+            },
+            "truncateContent": {
+              "type": "boolean",
+              "description": "Indicates whether the note content should be truncated."
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the note element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the note in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the note."
+            },
+            "contentType": {
+              "type": "string",
+              "enum": ["text", "html", "markdown"],
+              "description": "Content type of the note (text, HTML, or Markdown)."
+            }
+          },
+          "required": ["component", "contentType"]
+        }
+      },
+      "required": ["name", "noteContent", "notebookName", "displayProperties", "uiHints"]
+    },
+    "credential": {
+      "type": "object",
+      "description": "Represents user credentials for a service.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the credential.",
+          "readOnly": true
+        },
+        "service": {
+          "type": "string",
+          "description": "Name of the service (e.g., 'Gmail', 'Facebook')."
+        },
+        "identifier": {
+          "type": "string",
+          "description": "Username, email, or other identifier for the service."
+        },
+        "password": {
+          "type": "string",
+          "description": "Encrypted password for the service."
+        },
+        "directoryName": {
+          "type": ["string", "null"],
+          "description": "Name of the directory where the credential is stored.",
+          "nullable": true
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the credential is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the credential should be displayed."
+            },
+            "maskPassword": {
+              "type": "boolean",
+              "description": "Indicates whether the password should be masked."
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the credential element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the credential in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the credential."
+            },
+            "showCopyButton": {
+              "type": "boolean",
+              "description": "Indicates whether to show a button to copy the password."
+            }
+          },
+          "required": ["component"]
+        }
+      },
+      "required": ["service", "identifier", "password", "displayProperties", "uiHints"]
+    },
+    "directory": {
+      "type": "object",
+      "description": "Represents a directory for organizing items.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the directory.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the directory."
+        },
+        "is_default": {
+          "type": "boolean",
+          "description": "Indicates if this is the default directory."
+        },
+        "directoryCategory": {
+          "type": "string",
+          "enum": ["standard", "specialized"],
+          "description": "Category of the directory: 'standard' or 'specialized'."
+        },
+        "properties": {
+          "type": "object",
+          "description": "Properties specific to the directory category.",
+          "oneOf": [
+            {
+              "properties": {
+                "directoryCategory": {
+                  "const": "standard"
+                },
+                "standardProperties": {
+                  "type": "object",
+                  "description": "Properties for standard directories.",
+                  "properties": {}
+                }
+              },
+              "required": ["standardProperties"]
+            },
+            {
+              "properties": {
+                "directoryCategory": {
+                  "const": "specialized"
+                },
+                "specializedProperties": {
+                  "type": "object",
+                  "description": "Properties for specialized directories.",
+                  "properties": {
+                    "subType": {
+                      "type": "string",
+                      "description": "Specific subtype for specialized directories."
+                    },
+                    "details": {
+                      "type": ["string", "null"],
+                      "description": "Additional details for the specialization.",
+                      "nullable": true
+                    }
+                  },
+                  "required": ["subType"]
+                }
+              },
+              "required": ["specializedProperties"]
+            }
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the directory is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the directory should be displayed."
+            },
+            "isCollapsible": {
+              "type": "boolean",
+              "description": "Indicates whether the directory can be collapsed."
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the directory element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the directory in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the directory."
+            },
+            "icon": {
+              "type": ["string", "null"],
+              "description": "Icon to display for the directory.",
+              "nullable": true
+            }
+          },
+          "required": ["component"]
+        }
+      },
+      "required": ["name", "is_default", "directoryCategory", "displayProperties", "uiHints"]
+    },
+    "tag": {
+      "type": "object",
+      "description": "Represents a tag for categorizing items.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "Unique identifier for the tag.",
+          "readOnly": true
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the tag."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the tag is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the tag should be displayed."
+            },
+            "color": {
+              "type": ["string", "null"],
+              "description": "Color to use for displaying the tag.",
+              "nullable": true
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the tag element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the tag in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the tag."
+            },
+            "isClickable": {
+              "type": "boolean",
+              "description": "Indicates whether the tag should be clickable."
+            }
+          },
+          "required": ["component"]
+        }
+      },
+      "required": ["name", "displayProperties", "uiHints"]
+    },
+    "login": {
+      "type": "object",
+      "description": "Represents user login credentials.",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "description": "User ID for login.",
+          "readOnly": true
+        },
+        "username": {
+          "type": "string",
+          "description": "Username for login."
+        },
+        "password": {
+          "type": "string",
+          "description": "Password for login."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of creation (ISO 8601 format)."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "readOnly": true,
+          "description": "Timestamp of last update (ISO 8601 format)."
+        },
+        "displayProperties": {
+          "type": "object",
+          "description": "Properties related to how the login is displayed.",
+          "properties": {
+            "isVisible": {
+              "type": "boolean",
+              "description": "Indicates whether the login should be displayed."
+            },
+            "style": {
+              "type": ["string", "null"],
+              "description": "CSS styles to apply to the login element.",
+              "nullable": true
+            }
+          },
+          "required": ["isVisible"]
+        },
+        "uiHints": {
+          "type": "object",
+          "description": "Hints for rendering the login in the UI.",
+          "properties": {
+            "component": {
+              "type": "string",
+              "description": "Name of the UI component to use for rendering the login."
+            },
+            "showForgotPasswordLink": {
+              "type": "boolean",
+              "description": "Indicates whether to show a 'Forgot Password' link."
+            }
+          },
+          "required": ["component"]
+        }
+      },
+      "required": ["username", "password", "displayProperties", "uiHints"]
+    }
+  },
+  "additionalProperties": false,
+  "version": "2.0"
+}

@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+    display: flex;
+}
+
+#directory-tree {
+    width: 200px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+}
+
+#bookmarks-area {
+    flex: 1;
+    padding: 10px;
+}
+
+.collapsible {
+    display: none; /* Hidden by default */
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.drag-over {
+    background-color: #e0e0e0; /* Light gray background for drag over */
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.notification.error {
+    background-color: #f44336;
+    color: white;
+}

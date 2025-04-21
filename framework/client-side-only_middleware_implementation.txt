@@ -1,0 +1,83 @@
+To implement action interception on the client-side without using middleware (such as those commonly used in libraries like Redux), you can create a custom function to handle actions before they are processed by the state management logic. This can be done using a higher-order function approach. Below is a step-by-step guide on how to set this up:
+
+- Steps to Implement Action Interception
+
+1. Define Your State Management Functions: Create your state management functions such as reducers and action dispatchers.
+
+2. Create an Interceptor Function: Write a function that will intercept action calls. This function can log actions, perform side effects, or even modify actions before they are processed.
+
+3. Wrap Your Dispatch Function: Use the interceptor function to wrap your dispatch calls, allowing you to inject custom logic.
+
+Example Implementation
+
+Here’s a basic example of a custom action interceptor using plain JavaScript:
+
+Step 1: Set Up State and Reducer
+
+```javascript
+let state = {
+    count: 0,
+};
+
+function reducer(state, action) {
+    switch (action.type) {
+        case 'INCREMENT':
+            return { ...state, count: state.count + 1 };
+        case 'DECREMENT':
+            return { ...state, count: state.count - 1 };
+        default:
+            return state;
+    }
+}
+```
+
+Step 2: Implement the Interceptor
+
+```javascript
+function actionInterceptor(action) {
+    // Log the action
+    console.log('Dispatching action:', action);
+    
+    // You can modify the action here if needed
+    if (action.type === 'INCREMENT') {
+        action.incrementedFrom = 'interceptor'; // Example modification
+    }
+    
+    return action; // Return the (possibly modified) action
+}
+```
+
+Step 3: Create a Dispatch Function with Interception
+
+```javascript
+function dispatch(action) {
+    // Pass the action through the interceptor
+    const interceptedAction = actionInterceptor(action);
+    
+    // Update the state using the reducer
+    state = reducer(state, interceptedAction);
+    
+    // Optionally log the new state
+    console.log('New state:', state);
+}
+```
+
+Step 4: Use the Dispatch Function
+
+Now you can use your dispatch function to handle actions:
+
+```javascript
+dispatch({ type: 'INCREMENT' });
+dispatch({ type: 'DECREMENT' });
+```
+
+Conclusion
+
+In this setup:
+- The `actionInterceptor` function intercepts every action before it reaches the reducer.
+- You can add logging, modify the action, or perform additional side-effect logic as needed.
+- This way, you achieve control over action processing similar to middleware without using any external dependencies.
+
+Notes
+
+- In real applications, you need to be able to handle asynchronous actions, nested state, and ensure proper immutability.

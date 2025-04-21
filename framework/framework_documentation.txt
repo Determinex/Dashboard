@@ -1,0 +1,274 @@
+Certainly! Below is a comprehensive documentation for the `BookmarkManager` framework, designed to help developers understand its structure, functionality, and usage.
+
+---
+
+# BookmarkManager Framework Documentation
+
+## Overview
+
+The `BookmarkManager` framework is a JavaScript class designed to manage bookmarks and folders in a web application. It provides functionality for fetching, adding, deleting, and moving bookmarks, as well as managing directories. The framework is built to be user-friendly, with features such as drag-and-drop support, context menus, and notifications.
+
+## Table of Contents
+
+1. [Class Structure](#class-structure)
+2. [Constructor](#constructor)
+3. [Fetching Data](#fetching-data)
+4. [State Management](#state-management)
+5. [Rendering Functions](#rendering-functions)
+6. [Context Menu Handling](#context-menu-handling)
+7. [Form Submission Handling](#form-submission-handling)
+8. [Search Functionality](#search-functionality)
+9. [Drag-and-Drop Functionality](#drag-and-drop-functionality)
+10. [Pagination Control](#pagination-control)
+11. [Unit Testing](#unit-testing)
+12. [Usage Example](#usage-example)
+
+## Class Structure
+
+The `BookmarkManager` class contains methods for managing bookmarks and directories. It is structured to separate concerns, making it easier to maintain and extend.
+
+### Methods Overview
+
+- **Fetching Data**
+  - `fetchDirectories()`
+  - `fetchBookmarks(directoryId, page)`
+  - `addBookmark(bookmark)`
+  - `deleteBookmark(bookmarkId)`
+  - `moveBookmark(bookmarkId, newDirectoryId)`
+
+- **State Management**
+  - `setDirectories(directories)`
+  - `setBookmarks(bookmarks)`
+  - `setCurrentDirectory(directoryId)`
+
+- **Rendering Functions**
+  - `renderDirectories()`
+  - `renderBookmarks()`
+  - `createDraggableElement(name, id, clickHandler)`
+  - `createDraggableBookmarkElement(bookmark)`
+
+- **Context Menu Handling**
+  - `createContextMenu(bookmarkId, event)`
+
+- **Form Submission Handling**
+  - `handleFormSubmission(e)`
+
+- **Search Functionality**
+  - `searchBookmarks(searchTerm)`
+
+- **Drag-and-Drop Functionality**
+  - `setupDragAndDrop()`
+
+- **Pagination Control**
+  - `updatePaginationControls()`
+
+- **Unit Testing**
+  - Example unit tests for the framework.
+
+## Constructor
+
+### `constructor(baseURL)`
+
+Initializes a new instance of the `BookmarkManager` class.
+
+**Parameters:**
+- `baseURL` (string): The base URL for the API endpoints.
+
+## Fetching Data
+
+### `fetchDirectories()`
+
+Fetches the list of directories from the server.
+
+**Returns:**
+- A promise that resolves to an array of directories.
+
+### `fetchBookmarks(directoryId, page)`
+
+Fetches bookmarks for a specific directory.
+
+**Parameters:**
+- `directoryId` (number): The ID of the directory to fetch bookmarks from.
+- `page` (number): The page number for pagination.
+
+**Returns:**
+- A promise that resolves to an array of bookmarks.
+
+### `addBookmark(bookmark)`
+
+Adds a new bookmark.
+
+**Parameters:**
+- `bookmark` (object): The bookmark object containing properties like `Name`, `URL`, `Description`, and `TagName`.
+
+**Returns:**
+- A promise that resolves to the added bookmark.
+
+### `deleteBookmark(bookmarkId)`
+
+Deletes a bookmark by its ID.
+
+**Parameters:**
+- `bookmarkId` (number): The ID of the bookmark to delete.
+
+**Returns:**
+- A promise that resolves to a confirmation message.
+
+### `moveBookmark(bookmarkId, newDirectoryId)`
+
+Moves a bookmark to a new directory.
+
+**Parameters:**
+- `bookmarkId` (number): The ID of the bookmark to move.
+- `newDirectoryId` (number): The ID of the new directory.
+
+**Returns:**
+- A promise that resolves to a confirmation message.
+
+## State Management
+
+### `setDirectories(directories)`
+
+Sets the current directories and renders them.
+
+**Parameters:**
+- `directories` (array): An array of directory objects.
+
+### `setBookmarks(bookmarks)`
+
+Sets the current bookmarks and renders them.
+
+**Parameters:**
+- `bookmarks` (array): An array of bookmark objects.
+
+### `setCurrentDirectory(directoryId)`
+
+Sets the current directory and loads its bookmarks.
+
+**Parameters:**
+- `directoryId` (number): The ID of the directory to set as current.
+
+## Rendering Functions
+
+### `renderDirectories()`
+
+Renders the directory tree in the UI.
+
+### `renderBookmarks()`
+
+Renders the bookmarks in the UI.
+
+### `createDraggableElement(name, id, clickHandler)`
+
+Creates a draggable directory element.
+
+**Parameters:**
+- `name` (string): The name of the directory.
+- `id` (number): The ID of the directory.
+- `clickHandler` (function): The function to call when the element is clicked.
+
+**Returns:**
+- A DOM element representing the directory.
+
+### `createDraggableBookmarkElement(bookmark)`
+
+Creates a draggable bookmark element.
+
+**Parameters:**
+- `bookmark` (object): The bookmark object containing properties like `Name`, `URL`, `Description`, and `TagName`.
+
+**Returns:**
+- A DOM element representing the bookmark.
+
+## Context Menu Handling
+
+### `createContextMenu(bookmarkId, event)`
+
+Creates a context menu for a bookmark.
+
+**Parameters:**
+- `bookmarkId` (number): The ID of the bookmark.
+- `event` (MouseEvent): The mouse event that triggered the context menu.
+
+## Form Submission Handling
+
+### `handleFormSubmission(e)`
+
+Handles the submission of the bookmark editing form.
+
+**Parameters:**
+- `e` (Event): The form submission event.
+
+## Search Functionality
+
+### `searchBookmarks(searchTerm)`
+
+Filters bookmarks based on the search term.
+
+**Parameters:**
+- `searchTerm` (string): The term to search for in bookmark names and descriptions.
+
+## Drag-and-Drop Functionality
+
+### `setupDragAndDrop()`
+
+Sets up the drag-and-drop functionality for bookmarks and directories.
+
+## Pagination Control
+
+### `updatePaginationControls()`
+
+Updates the pagination controls based on the total number of bookmarks.
+
+## Unit Testing
+
+### Example Unit Test
+
+```javascript
+describe('Bookmark Manager', () => {
+    it('should add a bookmark correctly', async () => {
+        const bookmark = { Name: 'Test', URL: 'http://test.com' };
+        await bookmarkManager.addBookmark(bookmark);
+        expect(bookmarkManager.currentBookmarks).toContainEqual(bookmark);
+    });
+});
+```
+
+## Usage Example
+
+To use the `BookmarkManager` framework, follow these steps:
+
+1. **Initialize the BookmarkManager:**
+   ```javascript
+   const bookmarkManager = new BookmarkManager('http://localhost:3000');
+   ```
+
+2. **Load Directories and Bookmarks:**
+   ```javascript
+   document.addEventListener('DOMContentLoaded', () => {
+       bookmarkManager.loadDirectories();
+   });
+   ```
+
+3. **Handle Form Submission:**
+   ```javascript
+   document.getElementById('edit-form-content').addEventListener('submit', (e) => bookmarkManager.handleFormSubmission(e));
+   ```
+
+4. **Implement Context Menu:**
+   ```javascript
+   document.addEventListener('contextmenu', (e) => {
+       if (e.target.closest('#bookmarks-area')) {
+           e.preventDefault();
+           const bookmarkId = e.target.dataset.id;
+           bookmarkManager.createContextMenu(bookmarkId, e);
+       }
+   });
+   ```
+
+5. **Set Up Drag-and-Drop:**
+   ```javascript
+   bookmarkManager.setupDragAndDrop();
+   ```
+
+This documentation provides a comprehensive overview of the `BookmarkManager` framework, detailing its structure, methods, and usage. It serves as a guide for developers to effectively implement and utilize the framework in their applications.

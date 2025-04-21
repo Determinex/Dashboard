@@ -1,0 +1,84 @@
+frontend_schemas.txt
+
+Bookmarks:
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "bookmark": { "$ref": "#/properties/bookmark" },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["standard"] },
+        "is_default": { "type": "boolean" },  // Indicate if this is the default directory
+        "object": { "type": "boolean" },
+        "method": { "type": "string" }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "tag": { "$ref": "#/properties/tag" }
+  },
+  "required": ["bookmark", "directory", "tag"]
+}
+
+Notes:
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "note": { "$ref": "#/properties/note" },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["specialized"] },
+        "is_default": { "type": "boolean" },  // Indicate if this is the default directory
+        "object": { "type": "boolean" },
+        "method": { "type": "string" }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "tag": { "$ref": "#/properties/tag" }
+  },
+  "required": ["note", "directory", "tag"]
+}
+
+Credentials:
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "credential": { "$ref": "#/properties/credential" },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["standard"] },
+        "is_default": { "type": "boolean" },  // Indicate if this is the default directory
+        "object": { "type": "boolean" },
+        "method": { "type": "string" }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "tag": { "$ref": "#/properties/tag" }
+  },
+  "required": ["credential", "directory", "tag"]
+}
+
+Authentication:
+
+{
+  "$schema": " http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "login": { "$ref": "#/properties/login" }
+  },
+  "required": ["login"]
+}

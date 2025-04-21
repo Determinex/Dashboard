@@ -1,0 +1,750 @@
+That is correct. Based on the conversation thus far, how does this example fit within those constraints?
+
+Project constraints:
+1. Layout: Header with dashboard link, create/import/export menus, search bar; left sidebar for nested folder tree; main area for bookmarks (title, description, tags); collapsible edit form; context menu on right-click.
+2. Functionality: API communication for CRUD operations; drag-and-drop for folders/bookmarks; dynamic UI updates; error handling for API calls.
+3. User Experience: Intuitive navigation; responsive design; accessibility considerations.
+4. No External Dependencies: Built without Node.js or npm; self-contained JavaScript/CSS.
+5. Performance: Optimized for loading large bookmark/folder sets.
+
+Frontend:
+
+1. HTML document for the Bookmark Manager module:
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="bookmarkManager.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="dashboard.html">Back to Dashboard</a>
+            <select id="create-options">
+                <option value="">Create...</option>
+                <option value="folder">Folder</option>
+                <option value="bookmark">Bookmark</option>
+            </select>
+            <select id="import-export-options">
+                <option value="">Import/Export...</option>
+                <option value="import">Import</option>
+                <option value="export">Export</option>
+            </select>
+            <input type="text" id="search-bar" placeholder="Search bookmarks...">
+        </nav>
+    </header>
+    <div class="container">
+        <aside id="directory-tree">
+            <ul>
+                {% if directories %}
+                    {% macro render_directories(directories, parent_id=None) %}
+                        {% for directory in directories %}
+                            {% if directory.parent_id == parent_id %}
+                                <li>
+                                    {{ directory.name }}
+                                    {% if directories | selectattr('parent_id', 'equalto', directory.id) | list %}
+                                        <ul>
+                                            {{ render_directories(directories, directory.id) }}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endmacro %}
+                    {{ render_directories(directories) }}
+                {% else %}
+                    <p>You have no directories, make a bookmark first!</p>
+                {% endif %}
+            </ul>
+        </aside>
+        <main id="bookmarks-area">
+            {% if bookmarks %}
+                {% for bookmark in bookmarks %}
+                    <div class="bookmark" data-id="{{ bookmark.id }}" data-tags="{{ bookmark.tags | join(',') }}">
+                        <p>
+                            <a href="{{ bookmark.url }}">{{ bookmark.name }}</a> - {{ bookmark.description }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>You have no bookmarks, make one first!</p>
+            {% endif %}
+        </main>
+    </div>
+    <div id="edit-form" class="collapsible">
+        <h2>Edit Bookmark/Folder</h2>
+        <form id="edit-form-content">
+            <input type="text" id="edit-title" placeholder="Title">
+            <input type="text" id="edit-url" placeholder="URL">
+            <textarea id="edit-description" placeholder="Description"></textarea>
+            <input type="text" id="edit-tags" placeholder="Tags (comma separated)">
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    <script>
+        // Initialize the BookmarkManager and load folders and bookmarks
+        const bookmarkManager = new BookmarkManager('http://localhost:3000');
+        // Load folders and bookmarks on page load
+        document.addEventListener('DOMContentLoaded', () => {
+    bookmarkManager.loadDirectories().then(() => {
+        if (bookmarkManager.defaultDirectory) {
+            bookmarkManager.loadBookmarks(bookmarkManager.defaultDirectory.id); // Load bookmarks for the default directory
+        } else {
+            // whether there's default directory or not should only affect that if there are any bookmarks associated with the default directory, then they're displayed with the default directory pre-selected, and if there isn't a default directory, then bookmarks that do not have any directory ID properties set in the database, which are consisted unsorted bookmarks, would be shown in the main area, unless jinja already loaded bookmarks there, which it should have, if the user has any prior saved bookmarks.
+        }
+    });
+});
+        }
+    });
+});
+    </script>
+</body>
+</html>
+```
+
+2 JavaScript framework for the Bookmark Manager module:
+```
+class BookmarkManager {
+    constructor(baseURL) {
+        this.baseURL = baseURL;
+        this.currentDirectories = [];
+        this.currentBookmarks = [];
+        this.currentDirectoryId = null; // To keep track of the selected directory
+    }
+
+    // Fetching Data
+    async fetchDirectories() {
+        return this.fetchData('/api/directories', 'Failed to fetch directories');
+    }
+
+    async fetchBookmarks(directoryId) {
+        return this.fetchData(`/api/bookmarks?directoryId=${directoryId}`, 'Failed to fetch bookmarks');
+    }
+
+    async addBookmark(bookmark) {
+        return this.postData('/api/bookmarks', [bookmark], 'Failed to add bookmark');
+    }
+
+    async deleteBookmark(bookmarkId) {
+        return this.deleteData(`/api/bookmarks/${bookmarkId}`, 'Failed to delete bookmark');
+    }
+
+    async moveBookmark(bookmarkId, newDirectoryId) {
+        return this.postData('/api/bookmarks/move', { bookmark_id: bookmarkId, new_directory_id: newDirectoryId }, 'Failed to move bookmark');
+    }
+
+    async fetchData(endpoint, errorMessage) {
+        const response = await fetch(`${this.baseURL}${endpoint}`);
+        if (!response.ok) throw new Error(errorMessage);
+        return await response.json();
+    }
+
+    async postData (endpoint, body, errorMessage) {
+        const response = await fetch(`${this.baseURL}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body),
+        });
+        if (!response.ok) throw new Error(errorMessage);
+        return await response.json();
+    }
+
+    async deleteData(endpoint, errorMessage) {
+        const response = await fetch(`${this.baseURL}${endpoint}`, { method: 'DELETE' });
+        if (!response.ok) throw new Error(errorMessage);
+        return await response.json();
+    }
+
+    // State Management
+    setDirectories(directories) {
+        this.currentDirectories = directories;
+        this.renderDirectories();
+    }
+
+    setBookmarks(bookmarks) {
+        this.currentBookmarks = bookmarks;
+        this.renderBookmarks();
+    }
+
+    setCurrentDirectory(directoryId) {
+        this.currentDirectoryId = directoryId;
+    }
+
+    // Rendering Functions
+    renderDirectories() {
+        const directoryTree = document.getElementById('directory-tree');
+        directoryTree.innerHTML = ''; // Clear existing directories
+        this.currentDirectories.forEach(directory => {
+            const directoryElement = this.createDraggableElement(directory.name, directory.id, () => {
+                this.setCurrentDirectory(directory.id);
+                this.loadBookmarks(directory.id);
+            });
+            directoryTree.appendChild(directoryElement);
+        });
+    }
+
+    renderBookmarks() {
+        const bookmarksArea = document.getElementById('bookmarks-area');
+        bookmarksArea.innerHTML = ''; // Clear existing bookmarks
+        this.currentBookmarks.forEach(bookmark => {
+            const bookmarkElement = this.createDraggableBookmarkElement(bookmark);
+            bookmarksArea.appendChild(bookmarkElement);
+        });
+    }
+
+    // Create Elements
+    createDraggableElement(name, id, clickHandler) {
+        const element = document.createElement('div');
+        element.textContent = name;
+        element.dataset.id = id;
+        element.draggable = true;
+        element.addEventListener('click', clickHandler);
+        return element;
+    }
+
+    createDraggableBookmarkElement(bookmark) {
+        const element = document.createElement('div');
+        element.innerHTML = `<a href="${bookmark.URL}" target="_blank">${bookmark.Name}</a> - ${bookmark.Description} <span>${bookmark.TagName.join(', ')}</span>`;
+        element.dataset.id = bookmark.id;
+        element.draggable = true;
+        element.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', bookmark.id);
+        });
+        return element;
+    }
+
+    // Load Functions
+    async loadDirectories() {
+    const directories = await this.fetchDirectories();
+    this.setDirectories(directories);
+    this.defaultDirectory = directories.find(dir => dir.is_default); // Set default directory
+}
+
+    // Context Menu Handling
+    createContextMenu(bookmarkId, event) {
+        const contextMenu = document.createElement('div');
+        contextMenu.className = 'context-menu';
+        contextMenu.innerHTML = `<div>Edit</div><div>Delete</div>`;
+        contextMenu.style.position = 'absolute';
+        contextMenu.style.left = `${event.pageX}px`;
+        contextMenu.style.top = `${event.pageY}px`;
+        document.body.appendChild(contextMenu);
+
+        contextMenu.addEventListener('click', (event) => {
+            const action = event.target.textContent;
+            if (action === ' Edit') {
+                this.loadBookmarkForEditing(bookmarkId);
+            } else if (action === 'Delete') {
+                this.deleteBookmark(bookmarkId).then(() => {
+                    this.loadBookmarks(this.currentDirectoryId); // Refresh bookmarks
+                });
+            }
+            document.body.removeChild(contextMenu);
+        });
+
+        document.addEventListener('click', () => {
+            document.body.removeChild(contextMenu);
+        }, { once: true });
+    }
+
+    // Load Bookmark for Editing
+    async loadBookmarkForEditing(bookmarkId) {
+        const bookmark = await this.fetchBookmark(bookmarkId);
+        document.getElementById('edit-title').value = bookmark.Name;
+        document.getElementById('edit-url').value = bookmark.URL;
+        document.getElementById('edit-description').value = bookmark.Description;
+        document.getElementById('edit-tags').value = bookmark.TagName.join(', ');
+        document.getElementById('edit-form').style.display = 'block'; // Show the form
+    }
+
+    // Form Submission Handling
+    async handleFormSubmission(e) {
+        e.preventDefault();
+        const updatedBookmark = {
+            Name: document.getElementById('edit-title').value,
+            URL: document.getElementById('edit-url').value,
+            Description: document.getElementById('edit-description').value,
+            TagName: document.getElementById('edit-tags').value.split(',').map(tag => tag.trim()),
+        };
+        await this.addBookmark(updatedBookmark);
+        this.loadBookmarks(this.currentDirectoryId); // Refresh bookmarks
+        document.getElementById('edit-form').style.display = 'none'; // Hide the form
+    }
+}
+
+// Initialize the BookmarkManager and load directories and bookmarks
+const bookmarkManager = new BookmarkManager('http://localhost:3000');
+document.addEventListener('DOMContentLoaded', () => {
+    bookmarkManager.loadDirectories();
+    bookmarkManager.loadBookmarks(bookmarkManager.currentDirectoryId); // Load bookmarks for the default directory
+});
+
+// Handle form submission
+document.getElementById('edit-form-content').addEventListener('submit', (e) => bookmarkManager.handleFormSubmission(e));
+
+// Handle context menu
+document.addEventListener('contextmenu', (e) => {
+    if (e.target.closest('#bookmarks-area')) {
+        e.preventDefault();
+        const bookmarkId = e.target.dataset.id;
+        bookmarkManager.createContextMenu(bookmarkId, e);
+    }
+});
+
+// Handle drag and drop functionality
+document.getElementById('directory-tree').addEventListener('drop', async (e) => {
+    e.preventDefault();
+    const bookmarkId = e.dataTransfer.getData('text/plain');
+    const newDirectoryId = e.target.dataset.id;
+    if (newDirectoryId) {
+        await bookmarkManager.moveBookmark(bookmarkId, newDirectoryId);
+        bookmarkManager.loadBookmarks(newDirectoryId); // Refresh bookmarks in the new directory
+    }
+});
+```
+
+3. CSS styling for the Bookmark Manager module:
+```
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background: #333;
+    color: white;
+    padding: 10px;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+.container {
+    display: flex;
+}
+
+#directory-tree {
+    width: 200px;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+}
+
+#bookmarks-area {
+    flex: 1;
+    padding: 10px;
+}
+
+.collapsible {
+    display: none; /* Hidden by default */
+    background: #f9f9f9;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+.drag-over {
+    background-color: #e0e0e0; /* Light gray background for drag over */
+}
+
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+.notification.success {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.notification.error {
+    background-color: #f44336;
+    color: white;
+}
+```
+
+Backend:
+
+1. JSON Schema for Flask Application State Management:
+```
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "bookmark": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "description": "Unique identifier for the bookmark." },
+        "name": { "type": "string", "description": "Name of the bookmark." },
+        "url": { "type": "string", "description": "URL of the bookmark." },
+        "description": { "type": "string", "description": "Description of the bookmark." },
+        "directoryName": { "type": "string", "description": "Name of the directory." },
+        "tags": { "type": "array", "items": { "type": "string" }, "description": "List of tags associated with the bookmark." },
+        "isFavorite": { "type": "boolean", "description": "Indicates if the bookmark is a favorite." },
+        "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+        "method": { "type": "string", "description": "Method for encoding the bookmark." }
+      },
+      "required": ["id", "name", "url"]
+    },
+    "note": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "description": "Unique identifier for the note." },
+        "name": { "type": "string", "description": "Name of the note." },
+        "noteContent": { "type": "string", "description": "Content of the note." },
+        "sectionName": { "type": "string", "description": "Name of the section." },
+        "notebookName": { "type": "string", "description": "Name of the notebook." },
+        "tagName": { "type": "string", "description": "Name of the tag." },
+        "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+        "method": { "type": "string", "description": "Method for encoding the note." }
+      },
+      "required": ["id", "name", "noteContent", "notebookName"]
+    },
+    "credential": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "description": "Unique identifier for the credential." },
+        "service": { "type": "string", "description": "Service name." },
+        "identifier": { "type": "string", "description": "Identifier for the credential." },
+        "password": { "type": "string", "description": "Encrypted password." }, 
+        "directoryName": { "type": "string", "description": "Name of the directory." },
+        "displayType": { "type": "string", "description": "Display type for the credential." },
+        "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+        "method": { "type": "string", "description": "Method for encoding the credential." }
+      },
+      "required": ["id", "service", "identifier", "password"]
+    },
+    "directory": {
+  "type": "object",
+  "properties": {
+    "id": { "type": "integer", "description": "Unique identifier for the directory." },
+    "name": { "type": "string", "description": "Name of the directory." },
+    "is_default": { "type": "boolean", "description": "Indicates if this is the default directory." },  // New property
+    "type": { 
+      "type": "string", 
+      "enum": ["standard", "specialized"], 
+      "description": "Type of the directory (standard or specialized)." 
+    },
+    "specialization": {
+      "type": "object",
+      "properties": {
+        "subType": { "type": "string", "description": "Specific subtype for specialized directories." },
+        "details": { "type": "string", "description": "Additional details for the specialization." }
+      },
+      "required": ["subType"],
+      "description": "Details about the specialization if the directory is specialized."
+    },
+    "displayType": { "type": "string", "description": "Display type for the directory." },
+    "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+    "method": { "type": "string", "description": "Method for encoding the directory." }
+  },
+  "required": ["id", "name", "is_default", "type"]  // Include is_default in required properties
+},
+    "tag": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "description": "Unique identifier for the tag." },
+        "name": { "type": "string", "description": "Name of the tag." },
+        "displayType": { "type": "string", "description": "Display type for the tag." },
+        "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+        "method": { "type": "string", "description": "Method for encoding the tag." }
+      },
+      "required": ["id", "name"]
+    },
+    "login": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer", "description": "User ID for login." },
+        "username": { "type": "string", "description": "Username for login." },
+        "password": { "type": "string", "description": "Password for login." },
+        "object": { "type": "boolean", "description": "Indicates if this is a displayed element." },
+        "method": { "type": "string", "description": "Method for encoding the login." }
+      },
+      "required": ["id", "username", "password"]
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+2. Routes and Endpoints for the Bookmark Manager module:
+All API endpoints need to follow this guideline if it applies:
+1. Accept Input: Handle POST requests to accept input.
+2. Log Input: Log the input data to an external file.
+3. Validate Input: Validate the input against the JSON Schema.
+4. Process Input: Add new records to the database or update existing ones.
+5. Log Processed Input: Log the processed data to an external file.
+6. Return Response: Return a confirmation or error message based on the outcome.
+```
+import logging
+from flask import Flask, request, jsonify
+from jsonschema import validate, ValidationError
+from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, ForeignKey
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.exc import IntegrityError
+
+# Configure logging
+logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+Base = declarative_base()
+
+class Directory(Base):
+    __tablename__ = 'directories'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    is_default = Column(Boolean, default=False, nullable=True, unique=True)  # Unique default directory
+    parent_id = Column(Integer, ForeignKey('directories.id'), nullable=True)  # Self-referential foreign key
+
+    # Relationship to allow access to the parent directory
+    parent = relationship("Directory", remote_side=[id], backref="subdirectories")
+
+class Tag(Base):
+    __tablename__ = 'tags'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False, unique=True)
+
+class Bookmark(Base):
+    __tablename__ = 'bookmarks'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    url = Column(String(255), nullable=False, unique=True)
+    description = Column(Text)
+    directory_id = Column(Integer, ForeignKey('directories.id'))
+    is_favorite = Column(Boolean, default=False)
+
+    directory = relationship("Directory", back_populates="bookmarks")
+    tags = relationship("Tag", secondary="bookmark_tags", back_populates="bookmarks")
+
+Directory.bookmarks = relationship("Bookmark", order_by=Bookmark.id, back_populates="directory")
+Tag.bookmarks = relationship("Bookmark", secondary="bookmark_tags", back_populates="tags")
+
+# Database setup
+engine = create_engine('sqlite:///bookmarks.db')  # Use your database URL
+Base.metadata.create_all(engine)
+Session = sessionmaker(bind=engine)
+
+# Define the bookmarks schema
+bookmarks_schema = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "bookmark": { "$ref": "#/properties/bookmark" },
+    "directory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "name": { "type": "string" },
+        "type": { "type": "string", "enum": ["standard"] },
+        "is_default": { "type": "boolean" },  // Indicate if this is the default directory
+        "object": { "type": "boolean" },
+        "method": { "type": "string" }
+      },
+      "required": ["id", "name", "type"]
+    },
+    "tag": { "$ref": "#/properties/tag" }
+  },
+  "required": ["bookmark", "directory", "tag"]
+}
+
+def fetch_default_directory():
+    session = Session()
+    default_directory = session.query(Directory).filter_by(is_default=True).first()
+    session.close()
+    return default_directory
+
+def fetch_bookmarks():
+    session = Session()
+    bookmarks = session.query(Bookmark).all()
+    session.close()
+    return [
+        {
+            "Name": b.name,
+            "URL": b.url,
+            "Description": b.description,
+            "DirectoryName": b.directory.name if b.directory else None,
+            "TagName": [tag.name for tag in b.tags],
+            "IsFavorite": b.is_favorite
+        }
+        for b in bookmarks
+    ]
+
+def fetch_directories():
+    session = Session()
+    directories = session.query(Directory).all()
+    session.close()
+    return [{"id": d.id, "name": d.name, "is_default": d.is_default} for d in directories]
+
+@app.route('/')
+def index():
+    bookmarks = fetch_bookmarks()
+    directories = fetch_directories()
+    default_directory = fetch_default_directory()
+
+    return render_template('bookmark_manager.html', bookmarks=bookmarks, directories=directories, default_directory=default_directory)
+
+@app.route('/api/bookmarks', methods=['GET', 'POST'])
+def handle_bookmarks():
+    session = Session()
+
+    if request.method == 'POST':
+        # Step 1: Accept input
+        data = request.json
+        if not isinstance(data, list):
+            return jsonify({"error": "Payload must be a list of bookmarks."}), 400
+
+        # Step 2: Log input
+        logging.info("Received input: %s", data)
+
+        errors = []
+
+        for bookmark_data in data:
+            try:
+                # Validate input
+                validate(instance=bookmark_data, schema=bookmarks_schema)
+
+                # Check if directory exists or create it
+                directory_name = bookmark_data.get('DirectoryName')
+                directory = session.query(Directory).filter_by(name=directory_name).first() if directory_name else None
+                if directory is None and directory_name:
+                    directory = Directory(name=directory_name)
+                    session.add(directory)
+
+                # Create or update bookmark
+                existing_bookmark = session.query(Bookmark).filter_by(url=bookmark_data['URL']).first()
+
+                if existing_bookmark:
+                    # Update existing bookmark
+                    existing_bookmark.name = bookmark_data['Name']
+                    existing_bookmark.description = bookmark_data.get('Description')
+                    existing_bookmark.directory = directory
+                    existing_bookmark.is_favorite = bookmark_data.get('IsFavorite', False)
+                else:
+                    # Create new bookmark
+                    new_bookmark = Bookmark(
+                        name=bookmark_data['Name'],
+                        url=bookmark_data['URL'],
+                        description=bookmark_data.get('Description'),
+                        directory=directory,
+                        is_favorite=bookmark_data.get('IsFavorite', False)
+                    )
+                    session.add(new_bookmark)
+
+                # Handle tags
+                tags = bookmark_data.get('TagName', [])
+                for tag_name in tags:
+                    tag = session.query(Tag).filter_by(name=tag_name).first()
+                    if not tag:
+                        tag = Tag(name=tag_name)
+                        session.add(tag)
+                    if tag not in new_bookmark.tags:
+                        new_bookmark.tags.append(tag)
+
+                # Log processed input
+                logging.info("Processed input: %s", bookmark_data)
+
+            except ValidationError as e:
+                errors.append({"errors": e.message})
+            except IntegrityError:
+                session.rollback()
+                errors.append({"error": "Database integrity error."})
+
+        if errors:
+            session.close()
+            return jsonify({"errors": errors}), 400
+
+        session.commit()
+        session.close()
+        return jsonify({"message": "Bookmarks processed successfully."}), 201
+
+    elif request.method == 'GET':
+        # Handle GET request to retrieve bookmarks
+        bookmarks = session.query(Bookmark).all()
+        session.close()
+
+        # Convert bookmarks to a list of dictionaries
+        bookmarks_list = [
+            {
+                "Name": b.name,
+                "URL": b.url,
+                "Description": b.description,
+                "DirectoryName": b.directory.name if b.directory else None,
+                "TagName": [tag.name for tag in b.tags],
+                "IsFavorite": b.is_favorite
+            }
+            for b in bookmarks
+        ]
+
+        return jsonify(bookmarks_list), 200
+
+@app.route('/api/directories', methods=['GET', 'POST'])
+def handle_directories():
+    session = Session()
+    if request.method == 'GET':
+        directories = session.query(Directory).all()
+        session.close()
+        return jsonify([{"id": d.id, "name": d.name, "is_default": d.is_default} for d in directories]), 200
+
+    elif request.method == 'POST':
+        data = request.json
+        new_directory = Directory(name=data['name'], is_default=data.get('is_default', False))
+
+        if new_directory.is_default:
+            # Set all other directories to not default
+            session.query(Directory).filter(Directory.is_default == True).update({"is_default": False})
+
+        session.add(new_directory)
+        session.commit()
+        session.close()
+        return jsonify({"message": "Directory created successfully."}), 201
+
+def get_bookmark(bookmark_id):
+    session = Session()
+    bookmark = session.query(Bookmark).get(bookmark_id)
+    if not bookmark:
+        session.close()
+        return jsonify({"error": "Bookmark not found."}), 404
+    session.close()
+    return jsonify({
+        "Name": bookmark.name,
+        "URL": bookmark.url,
+        "Description": bookmark.description,
+        "TagName": [tag.name for tag in bookmark.tags],
+        "IsFavorite": bookmark.is_favorite
+    }), 200
+
+@app.route('/api/bookmarks/<int:bookmark_id>', methods=['DELETE'])
+def delete_bookmark(bookmark_id):
+    session = Session()
+    bookmark = session.query(Bookmark).get(bookmark_id)
+    if not bookmark:
+        session.close()
+        return jsonify({"error": "Bookmark not found."}), 404
+    session.delete(bookmark)
+    session.commit()
+    session.close()
+    return jsonify({"message": "Bookmark deleted successfully."}), 200
+
+@app.route('/api/bookmarks/move', methods=['PUT'])
+def move_bookmark():
+    session = Session()
+    data = request.json
+    bookmark = session.query(Bookmark).get(data['bookmark_id'])
+    if not bookmark:
+        session.close()
+        return jsonify({"error": "Bookmark not found."}), 404
+    bookmark.directory_id = data['new_directory_id']
+    session.commit()
+    session.close()
+    return jsonify({"message": "Bookmark moved successfully."}), 200
+```

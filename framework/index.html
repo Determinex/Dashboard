@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark Manager</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="bookmarkManager.js" defer></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="dashboard.html">Back to Dashboard</a>
+            <select id="create-options">
+                <option value="">Create...</option>
+                <option value="folder">Folder</option>
+                <option value="bookmark">Bookmark</option>
+            </select>
+            <select id="import-export-options">
+                <option value="">Import/Export...</option>
+                <option value="import">Import</option>
+                <option value="export">Export</option>
+            </select>
+            <input type="text" id="search-bar" placeholder="Search bookmarks...">
+        </nav>
+    </header>
+    <div class="container">
+        <aside id="directory-tree">
+            <ul>
+                {% if directories %}
+                    {% macro render_directories(directories, parent_id=None) %}
+                        {% for directory in directories %}
+                            {% if directory.parent_id == parent_id %}
+                                <li>
+                                    {{ directory.name }}
+                                    {% if directories | selectattr('parent_id', 'equalto', directory.id) | list %}
+                                        <ul>
+                                            {{ render_directories(directories, directory.id) }}
+                                        </ul>
+                                    {% endif %}
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    {% endmacro %}
+                    {{ render_directories(directories) }}
+                {% else %}
+                    <p>You have no directories, make a bookmark first!</p>
+                {% endif %}
+            </ul>
+        </aside>
+        <main id="bookmarks-area">
+            {% if bookmarks %}
+                {% for bookmark in bookmarks %}
+                    <div class="bookmark" data-id="{{ bookmark.id }}" data-tags="{{ bookmark.tags | join(',') }}">
+                        <p>
+                            <a href="{{ bookmark.url }}">{{ bookmark.name }}</a> - {{ bookmark.description }}
+                        </p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p>You have no bookmarks, make one first!</p>
+            {% endif %}
+        </main>
+    </div>
+    <div id="edit-form" class="collapsible" role="form" aria-labelledby="edit-form-title">
+    <h2 id="edit-form-title">Edit Bookmark/Folder</h2>
+    <form id="edit-form-content" aria-required="true">
+        <input type="text" id="edit-title" placeholder="Title" aria-label="Bookmark Title" required>
+        <input type="text" id="edit-url" placeholder="URL" aria-label="Bookmark URL" required>
+        <textarea id="edit-description" placeholder="Description" aria-label="Bookmark Description"></textarea>
+        <input type="text" id="edit-tags" placeholder="Tags (comma separated)" aria-label="Bookmark Tags">
+        <button type="submit">Save</button>
+    </form>
+</div>
+    <script>
+        // Initialize the BookmarkManager and load folders and bookmarks
+        const bookmarkManager = new BookmarkManager('http://localhost:3000');
+        // Load folders and bookmarks on page load
+        document.addEventListener('DOMContentLoaded', () => {
+    bookmarkManager.loadDirectories().then(() => {
+        if (bookmarkManager.defaultDirectory) {
+            bookmarkManager.loadBookmarks(bookmarkManager.defaultDirectory.id); // Load bookmarks for the default directory
+        } else {
+            // whether there's default directory or not should only affect that if there are any bookmarks associated with the default directory, then they're displayed with the default directory pre-selected, and if there isn't a default directory, then bookmarks that do not have any directory ID properties set in the database, which are consisted unsorted bookmarks, would be shown in the main area, unless jinja already loaded bookmarks there, which it should have, if the user has any prior saved bookmarks.
+        }
+    });
+});
+        }
+    });
+});
+    </script>
+</body>
+</html>
