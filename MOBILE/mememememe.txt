@@ -1215,7 +1215,6 @@ td.default-table-message {
     if (!activeLi) return directoryTree[0];
     return directoryTree.find(node => node.id === parseInt(activeLi.dataset.id));
 }
-		
 		const DragDropManager = (() => {
   // Private state
   let dragState = null;
@@ -1341,4 +1340,97 @@ td.default-table-message {
     
     dragState = {
       type: 'bookmark',
-      id: parseInt(tr.dataset.
+      id: parseInt(tr.dataset.id),
+      element: tr,
+      currentDirectory: getCurrentDirectory()
+    };
+    
+    e.dataTransfer.effectAllowed = 'move';
+    tr.classList.add('dragging');
+  }
+
+  function handleBookmarkDragOver(e) {
+    if (!dragState || dragState.type !== 'bookmark') return;
+    e.preventDefault();
+    const li = e.target.closest('li');
+    if (li) li.classList.add('drop-target');
+  }
+
+  function handleBookmarkDrop(e) {
+    e.preventDefault();
+    const targetLi = e.target.closest('li');
+    if (!targetLi || !dragState || dragState.type !== 'bookmark') return;
+
+    const [targetDirectory] = findNodeById(parseInt(targetLi.dataset.id));
+    const bookmark = bookmarks.find(b => b.id === dragState.id);
+    
+    if (targetDirectory && bookmark) {
+      // Remove from old directory
+      const oldDirectory = findDirectoryContainingBookmark(bookmark.id);
+      if (oldDirectory) {
+        oldDirectory.bookmarks = oldDirectory.bookmarks.filter(id => id !== bookmark.id);
+      }
+      
+      // Add to new directory
+      if (!targetDirectory.bookmarks.includes(bookmark.id)) {
+        targetDirectory.bookmarks.push(bookmark.id);
+      }
+      
+      updateUICallback();
+    }
+
+    cleanupDragState();
+  }
+  //#endregion
+
+  // Helper functions
+  function findNodeById(id, nodes = directoryTree) {
+    for (const node of nodes) {
+      if (node.id === id) return [node, null];
+      if (node.children) {
+        const [found, parent] = findNodeById(id, node.children);
+        if (found) return [found, parent || node];
+      }
+    }
+    return [null, null];
+  }
+
+  function findDirectoryContainingBookmark(bookmarkId) {
+    function search(nodes) {
+      for (const node of nodes) {
+        if (node.bookmarks?.includes(bookmarkId)) return node;
+        if (node.children) {
+          const found = search(node.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+    return search(directoryTree);
+  }
+
+  function cleanupDragState() {
+    if (dragState) {
+      dragState.element.classList.remove('dragging');
+      document.querySelectorAll('.drop-before, .drop-after, .drop-target')
+        .forEach(el => el.classList.remove('drop-before', 'drop-after', 'drop-target'));
+      dragState = null;
+    }
+  }
+
+  return { initialize };
+})();
+
+// Usage in your existing code
+DragDropManager.initialize({
+  directoryTree: directoryTree,
+  bookmarks: bookmarks,
+  updateUICallback: updateUI
+});
+		
+		// Call the updateUI function to initialize the UI
+		updateUI();
+		</script>
+	
+	</body>
+</html>
