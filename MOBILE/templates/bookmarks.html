@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Dashboard | Bookmark Manager Example</title>
+        <link rel="stylesheet" type="text/css"  href="styles.css">
+        <link rel="stylesheet" href="{{ url_for('bookmarks.static', filename='css/styles.css') }}">
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3399FF"/></svg>
+                    <span class="title">Dashboard</span>
+                </div>
+                <div class="searchbar" alt="Search Bar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                        <path d="M11.742 10.344a5.5 5.5 0 1 1 .707-.707l3.646 3.646a1 1 0 0 1-1.414 1.414l-3.646-3.646zM12.5 6a5.5 5.5 0 1 0-11 0 5.5 5.5 0 0 0 11 0z"/>
+                    </svg>
+                    <input type="text" class="search-bar" placeholder="Search Bookmarks..." />
+                </div>
+                <div class="user-icon" alt="User Profile Icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+                    </svg>
+                </div>
+                <!-- Toggler -->
+                <button data-mdb-button-init data-mdb-toggle="sidenav" data-mdb-target="#sidenav-1"
+                data-mdb-ripple-init class="btn btn-primary" aria-controls="#sidenav-1" aria-haspopup="true">
+                <i class="fas fa-bars"></i>
+                </button>
+                <!-- Toggler -->
+            </header>
+
+        
+            
+            <h2 style="text-align:center;">Bookmark Manager</h2>
+                
+            
+            <div class="directory-listing">
+                <span>Directories</span>
+                <div>
+                    <ul id="directory-structure">
+                        <!-- Directory Structure will be dynamically generated here -->
+                    </ul>
+                </div>
+            </div>
+
+
+            <!-- Bookmarks can be loaded into the table below when the directories are clicked -->
+            <div class="table-wrapper">
+                <table name="bookmarks-table" aria-label="List of bookmarks">
+                    <thead>
+                        <tr>
+                            <th class="favorite-col" scope="col">★</th>
+                            <th class="site-col" scope="col">Site</th>
+                            <th class="desc-col" scope="col">Description</th>
+                            <th class="tags-col" scope="col">Tags</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookmark-table-body">
+                    <!-- Rows get generated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    
+        <!-- What's left to do? -->
+        <!--
+        1. Drag-and-drop functionality of the directories between each other, reordering the directory structure whenever it occurs, causing parts of the structure to be rerendered.
+        2. Drag-and-drop functionality of the individual bookmarks between directories, reordering the bookmarks list whenever it occurs, causing parts of the boommarks table to be reset when the change is rendered, and then rendering the bookmarks of the selected directory once again in the table, if a single table row for said bookmark can't be removed without the entire UI being updated.
+        3. Finish the Importation and Exportation of data on the frontend only.
+        4. Creating the functionality for the Creation Options menu.
+        5. Handle updating individual bookmarks, what triggers the update to occur, how it occurs, what happens after the update occurs, how the UI is rerendered.
+        6. Handle frontend 'search box' functionality, query capture, dictionary traversal, response display (onkeypressdown functionality for auto-suggestion), response selection, and updating the UI (render{search.response.selection}).
+        7. Creating the functionality for the custom [custom_key{alt}]+right-click context menu, and the options of the context menu that essentially reference the already established features and functionality of the application.
+        8. Handling of the User Profile Icon button when clicked, what's supposed to happen, what's expected to happen, what do we need to happen.l
+        -->
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script type="module" src="{{ url_for('bookmarks.static', filename='js/framework.js') }}" defer></script>
+        <script type="module" src="script.js" defer></script>
+        
+    </body>
+</html>

@@ -1,0 +1,356 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box !important;
+}
+
+/* Dark Theme Styles */
+
+:root {
+    --dark-bg: #282c34; /* Slightly darker background */
+    --darker-bg: #21252b; /* Even darker for contrast */
+    --light-text: #abb2bf; /* Softer light text */
+    --lighter-text: #e6edf3; /* Lighter text for better readability */
+    --dark-text: #282c34; /* Softer dark text */
+    --darker-text: #21252b; /* Softer darker text */
+    --light-gray-text: #616e88; /* More muted gray */
+    --subtle-border-color: #3e4451; /* Subtle border color */
+    --blue: #61afef; /* More professional blue */
+    --dark-blue: #3476fc; /* Darker blue for buttons */
+    --subtle-box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    --transition: all 0.3s ease-in-out; /* Smooth transitions */
+    --box-shadow-alt: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); /* Subtle shadow */
+    --site-background: #000000; /* Example Site Background color */
+    --primary-color: #0F0F0F; /* Example primary color */
+    --secondary-color: #0366d6; /* Example secondary color */
+    --background-color: #f9f9f9; /* Example Element Background color */
+    --background-secondary-color: #33669905; /* Example Element Background secondary color */
+    --text-color: #333; /* Default text color */
+    --border-color: #ccc; /* Default border color */
+    --main-color: 0, 186, 255; /* Default application accent color */
+    --alpha-15: 0.15;
+    --alpha-25: 0.25;
+    --alpha-33: 0.33;
+    --alpha-40: 0.4;
+    --alpha-50: 0.5;
+    --alpha-60: 0.6;
+    --alpha-75: 0.75;
+    --alpha-85: 0.85;
+    --alpha-90: 0.9;
+    --alpha-100: 1.0;
+    --text-shadow-length: 2px 2px 4px;
+    --border-basic: 1px solid;
+    --box-shadow-length: 0 4px 8px;
+    /* Header style variables */
+    --header-bg-color: #1e1e2f;
+    --header-text-color: #ffffff;
+    --header-link-color: #89c9b8;
+    --header-link-hover-color: #5aa48c;
+    --header-border-color: #3a3a5a;
+    --header-focus-outline: 2px dashed #89c9b8;
+    --header-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --header-padding: 0.5rem 1rem 0;
+    --header-gap: 1rem;
+}
+
+body {
+    background-color: var(--dark-bg);
+    color: var(--light-text);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Improved font */
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.row {
+    margin: 0;
+    margin-bottom: 2rem;
+
+    & > .col {
+        padding: 15px;
+    }
+}
+
+/* General Styles */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--blue);
+    margin-bottom: 1.25rem; /* Slightly more spacing */
+    text-align: center; /* Align headings to the left */
+    font-weight: 600; /* Slightly bolder font weight */
+}
+
+/* Navbar Styles */
+.navbar {
+    background-color: var(--darker-bg) !important;
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.75rem 1rem; /* Adjust padding */
+    box-shadow: var(--box-shadow); /* Add shadow */
+    transition: var(--transition); /* Smooth transition */
+
+    .navbar-brand {
+        color: var(--light-text) !important;
+        font-weight: 700; /* Bolder brand text */
+        font-size: 1.25rem; /* Slightly larger brand text */
+    }
+
+    .navbar-nav .nav-link {
+        color: var(--light-gray-text) !important;
+        padding: 0.5rem 1rem; /* Adjust padding */
+        transition: var(--transition); /* Smooth transition */
+        margin-right: 1rem; /* Add spacing between links */
+        font-weight: 500; /* Slightly bolder font weight */
+
+        &:hover,
+        &:focus {
+            color: var(--light-text) !important;
+            background-color: rgba(255, 255, 255, 0.05); /* Subtle hover background */
+        }
+    }
+
+    .navbar-toggler {
+        border-color: var(--border-color) !important;
+        transition: var(--transition); /* Smooth transition */
+
+        .navbar-toggler-icon {
+            background-color: var(--light-gray-text) !important;
+        }
+    }
+}
+
+/* Dropdown Styles */
+.dropdown-menu {
+    background-color: var(--darker-bg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--box-shadow); /* Add shadow */
+    transition: var(--transition); /* Smooth transition */
+
+    .dropdown-item {
+        color: var(--light-text);
+        padding: 0 1.25rem; /* Adjust padding */
+        transition: var(--transition); /* Smooth transition */
+
+        &:hover,
+        &:focus {
+            background-color: var(--border-color);
+            color: var(--light-text);
+        }
+    }
+
+    .dropdown-divider {
+        border-color: var(--border-color);
+    }
+
+    .dropdown-header {
+        color: var(--blue);
+        font-size: 0.85rem; /* Slightly smaller header text */
+        padding: 0.5rem 1.25rem; /* Adjust padding */
+    }
+}
+
+/* Form Styles */
+.form-control {
+    background-color: var(--border-color);
+    color: var(--light-text) !important;
+    border: 1px solid #6c757d;
+    flex-grow: 3; /* Allow input to grow */
+
+    &:focus {
+        background-color: var(--border-color);
+        color: var(--light-text);
+        border-color: var(--blue);
+        box-shadow: 0 0 0 0.2rem rgba(128, 189, 255, 0.25);
+    }
+
+    &::placeholder {
+        color: var(--light-text);
+    }
+}
+
+.btn-outline {
+    color: var(--light-text);
+    border-color: var(--blue);
+    padding: 0 1.2rem; /* Adjust padding */
+    transition: var(--transition); /* Smooth transition */
+
+    &:hover,
+    &:focus {
+        background-color: var(--dark-blue);
+        color: var(--lighter-text);
+        border-color: var(--blue);
+        box-shadow: var(--box-shadow); /* Add shadow */
+    }
+}
+
+/* Tab Styles */
+.nav-tabs {
+    border-bottom: 1px solid var(--border-color);
+
+    .nav-link {
+        color: var(--light-gray-text);
+        border: 1px solid transparent;
+        padding: 0.75rem 1rem; /* Adjust padding */
+        transition: var(--transition); /* Smooth transition */
+
+        &:hover,
+        &:focus {
+            border-color: var(--border-color) var(--border-color) var(--border-color);
+            color: var(--light-text);
+        }
+
+        &.active {
+            background-color: var(--darker-bg);
+            color: var(--light-text);
+            border-color: var(--border-color) var(--border-color) var(--border-color);
+            box-shadow: var(--box-shadow-alt); /* Add shadow */
+        }
+    }
+}
+
+.tab-content {
+    background-color: var(--dark-bg);
+    border: 1px solid var(--border-color);
+    border-top: none; /* Remove top border for a cleaner look */
+    padding: 1.5rem; /* Increase padding */
+    border-radius: 0 0 0.5rem 0.5rem; /* Add border radius */
+    box-shadow: var(--box-shadow); /* Add shadow */
+}
+
+/* Style for the directory tree container */
+.directory-listing {
+    background-color: rgba(255, 255, 255, 1); /* Light background for contrast */
+    border: 2px solid rgba(var(--blue), 0.25); /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding around the content */
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+
+    span {
+        display: block; /* Make the span a block-level element */
+        text-align: center; /* Center the text within the span */
+        margin: -5px auto 0; /* Center the span if it has a width */
+        width: 100%; /* Optional: make the span take the full width of the parent */
+    }
+
+    div {
+        margin-top: 5px;
+        border-radius: 5px; /* Slight rounding on hover */
+        border: 1px solid rgba(0, 186, 255, 0.25); /* Slight border */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+    }
+
+    ul {
+        list-style: none;
+        margin-left: 0;
+        padding-left: 0;
+        transition: max-height 0.3s ease; /* Smooth transition for height */
+        overflow: hidden; /* Hide overflow */
+
+        & > li {
+            padding-right: 1rem;
+        }
+    }
+
+    li {
+        padding-left: 2em;
+        text-indent: -1em;
+        margin-top: 0.125rem;
+        margin-bottom: 0.125rem;
+
+        &:selected {
+            background-color: #b4e2f3; /* Dull light blue background on hover */
+            border-radius: 3px; /* Slight rounding on hover */
+        }
+
+        &:before {
+            padding-right: 5px;
+        }
+
+        &.collapsed:before {
+            content: "+"; /* Collapsed state */
+            transition: transform 0.3s; /* Smooth rotation */
+        }
+
+        &:not(.collapsed):before {
+            content: "-"; /* Expanded state */
+            transition: transform 0.3s; /* Smooth rotation */
+        }
+
+        &.collapsed > ul {
+            max-height: 0; /* Collapsed state */
+        }
+
+        &:not(.collapsed) > ul {
+            max-height: 500px; /* Expanded state (adjust as needed) */
+        }
+    }
+}
+
+
+/* Table Styles */
+.table {
+    color: var(--blue);
+    border-collapse: collapse; /* Collapse borders for a cleaner look */
+    font-size: 12px;
+    table-layout: fixed; /* Important for wrapping and consistent column widths */
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+
+    thead th {
+        color: var(--light-text);
+        border-bottom: 2px solid var(--border-color);
+        text-align: left; /* Align header text to the left */
+    }
+
+    tbody tr {
+        transition: var(--transition); /* Smooth transition */
+
+        &:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.025); /* More subtle striped background */
+        }
+
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.05); /* More subtle hover background */
+        }
+
+        td {
+            border-bottom: 1px solid var(--border-color); /* Add subtle borders */
+        }
+    }
+
+    thead th, tbody td {
+        padding: 0.75rem 0.5rem; /* Adjust padding */
+        text-align: left;
+        vertical-align: middle;
+        white-space: normal !important;
+        word-break: break-word !important;
+        hyphens: auto;
+        overflow-wrap: break-word;
+        text-overflow: ellipsis; /* Add ellipsis for overflow text */
+        overflow: hidden; /* Hide overflow */
+    }
+
+    /* Fixed widths for columns */
+    thead th.favorite-col, tbody td.favorite-col {
+        width: 30px;
+        text-align: center;
+        white-space: nowrap !important; /* Keep star column single line */
+    }
+
+    thead th.site-col, tbody td.site-col {
+        width: 25%;
+        overflow-wrap: break-word;
+        text-align: inherit; /* Inherit text alignment */
+    }
+
+    thead th.desc-col, tbody td.desc-col {
+        width: 55%;
+        overflow-wrap: break-word;
+        text-align: inherit; /* Inherit text alignment */
+    }
+}

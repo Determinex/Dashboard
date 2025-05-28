@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmark Manager</title>
+    <link rel="stylesheet" href="{{ url_for('bookmarks.static', filename='css/styles.css') }}">
+</head>
+    <body>
+        <header>
+            <nav role="navigation" aria-label="Main navigation">
+                <div class="top-menu-left">
+                    <a href="/dashboard" title="Go to Dashboard">Dashboard</a>
+                    <select id="creation-options" aria-label="Create new item">
+                        <option value="" selected>Create +</option>
+                        <option value="create_bookmark">Bookmark</option>
+                        <option value="create_folder">Folder</option>
+                        <option value="create_tag">Tag</option>
+                    </select>
+                    <select id="import-export-options" aria-label="Import or Export bookmarks">
+                        <option value="" selected>I/O</option>
+                        <option value="import_bookmarks">Import</option>
+                        <option value="export_bookmarks">Export</option>
+                    </select>
+                </div>
+                <div class="top-menu-right">
+                    <input type="text" id="search-box" placeholder="Search bookmarks..." aria-label="Search bookmarks">
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <section id="directory-column">
+                
+            </section>
+
+            <article id="content-column">
+                <section id="create-bookmark" class="hidden">
+                    <h2>Create Bookmark</h2>
+                    <form id="bookmark-form" aria-label="Bookmark creation form">
+                        <label for="bookmark-name">Name:</label>
+                        <input type="text" id="bookmark-name" name="name" required>
+                        <label for="bookmark-url">URL:</label>
+                        <input type="url" id="bookmark-url" name="url" required>
+                        <label for="bookmark-description">Description:</label>
+                        <textarea id="bookmark-description" name="description"></textarea>
+                        <button type="submit">Create Bookmark</button>
+                    </form>
+                </section>
+                <section id="bookmarks">
+                    <h2>Your Bookmarks</h2>
+                    <div id="loading-spinner" class="hidden" aria-live="polite" aria-busy="true">
+                        <img src="{{ url_for('bookmarks.static', filename='images/loading.gif') }}" alt="Loading...">
+                    </div>
+                    <div id="no-bookmarks-message" class="hidden" aria-live="polite">
+                        <p>No bookmarks found. Please create a bookmark or folder to get started.</p>
+                    </div>
+                    <div id="bookmark-list" role="list" aria-label="Bookmark list">
+                        {% if bookmarks %}
+                            {% for bookmark in bookmarks %}
+                                <div class="bookmark-item" role="listitem" tabindex="0" data-id="{{ bookmark.id }}" data-url="{{ bookmark.url }}" data-tags="{{ bookmark.tags | join(',') }}">
+                                    <a href="{{ bookmark.url }}">{{ bookmark.name }}</a> - {{ bookmark.description }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>You have no bookmarks, make one first!</p>
+                        {% endif %}
+                    </div>
+                </section>
+            </article>
+        </main>
+
+    <div id="notification-container"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="{{ url_for('bookmarks.static', filename='js/state.js') }}" defer></script>
+</body>
+</html>
