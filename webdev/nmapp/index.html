@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Modern Note Manager Overlay Sidebar</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap 5 CSS + Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Quill Editor CSS -->
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <style>
+    body { background: #f8f9fa; }
+    :root { --navbar-height: 56px; }
+    #sidebar {
+      position: fixed;
+      top: var(--navbar-height, 56px);
+      left: -250px;
+      width: 250px;
+      height: calc(100vh - var(--navbar-height, 56px));
+      background: #fff;
+      border-right: 1px solid #dee2e6;
+      z-index: 1050;
+      transition: left 0.3s;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.08);
+      overflow-y: auto;
+    }
+    #sidebar.sidebar-open {
+      left: 0;
+    }
+    #sidebar.sidebar-collapsed {
+      width: 60px;
+    }
+    #sidebar.sidebar-collapsed .sidebar-tree {
+      display: none !important;
+    }
+    #sidebar.sidebar-collapsed .toolbar-collapsed {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 1rem;
+      gap: 1.5rem;
+      height: 100%;
+    }
+    #sidebar.sidebar-collapsed .toolbar-collapsed .btn {
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #sidebar.sidebar-collapsed .toolbar-collapsed .btn span.dir-label {
+      display: none !important;
+    }
+    #sidebar .sidebar-toolbar {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      gap: 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+    }
+    #sidebar .sidebar-toolbar .btn span.dir-label {
+      display: inline !important;
+    }
+    #sidebar-overlay {
+      position: fixed;
+      top: var(--navbar-height, 56px);
+      left: 0;
+      width: 100vw;
+      height: calc(100vh - var(--navbar-height, 56px));
+      background: rgba(0,0,0,0.2);
+      z-index: 1049;
+      display: none;
+    }
+    #sidebar.sidebar-open ~ #sidebar-overlay {
+      display: block;
+    }
+    #main-content {
+      margin-left: 0 !important;
+      margin-top: var(--navbar-height, 56px);
+      padding: 2rem;
+      min-height: calc(100vh - var(--navbar-height, 56px));
+      transition: none;
+    }
+    .fab-btn {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 1050;
+      width: 56px; height: 56px; border-radius: 50%; font-size: 2rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .favorite-star { color: gold; }
+    .card.note-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      border-color: #0d6efd;
+    }
+    .modal-backdrop.show {
+      opacity: 0.2;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+      <button id="sidebarToggle" class="btn btn-outline-light me-2" type="button">
+        <i class="bi bi-list"></i>
+      </button>
+      <a class="navbar-brand" href="#">Note Manager</a>
+      <form class="d-flex ms-auto" role="search" onsubmit="return false;">
+        <input id="searchInput" class="form-control me-2" type="search" placeholder="Search notes..." aria-label="Search">
+      </form>
+    </div>
+  </nav>
+
+  <!-- Sidebar (rendered by JS) -->
+  <div id="sidebar"></div>
+  <div id="sidebar-overlay"></div>
+
+  <!-- Main Content -->
+  <div id="main-content">
+    <div id="notes-list"></div>
+    <!-- Note Editor Modal -->
+    <div id="note-editor-modal" class="modal fade" tabindex="-1">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <input type="text" id="note-title" class="form-control" placeholder="Note Title">
+            <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div id="quill-editor" style="height: 300px"></div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" id="save-note-btn">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Action Button -->
+  <button class="btn btn-primary fab-btn shadow" onclick="showNoteEditor()" title="New Note">
+    <i class="bi bi-plus-lg"></i>
+  </button>
+
+  <!-- Bootstrap JS, Quill JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <script>
+    // --- Data ---
+    let directories = [
+      {
+        id: 1,
+        name: "First Notebook",
+        type: "Notebook",
+        isOpen: true,
+        notes: [1, 2],
+        children: [
+          {
+            id: 2,
+            name: "Section A",
+            type: "Section",
+            isOpen: false,
+            notes: [3],
+            children: []
+          }
+        ]
+      }
+    ];
+    let notes = [
+      { id: 1, name: "Welcome", content: "Welcome to your notes!", isFavorite: true, createdAt: new Date(), tags: [] },
+      { id: 2, name: "Todo", content: "Try pinning notes with the star.", isFavorite: false, createdAt: new Date(), tags: [] },
+      { id: 3, name: "Nested Note", content: "This note is in a section.", isFavorite: false, createdAt: new Date(), tags: [] }
+    ];
+
+    // --- Sidebar Rendering ---
+    let sidebarCollapsed = false;
+    function renderSidebarExpanded() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.className = 'sidebar sidebar-open sidebar-expanded';
+      sidebar.innerHTML = `
+        <div class="sidebar-tree p-2">
+          <ul id="directory-structure" class="list-unstyled"></ul>
+        </div>
+        <div class="sidebar-toolbar">
+          <button class="btn btn-outline-primary mb-2" onclick="showNoteEditor()" title="New Note">
+            <i class="bi bi-plus-lg"></i> <span class="dir-label ms-2">New Note</span>
+          </button>
+          <button class="btn btn-outline-secondary" onclick="filterFavorites()" title="Show Favorites">
+            <i class="bi bi-star-fill"></i> <span class="dir-label ms-2">Favorites</span>
+          </button>
+        </div>
+      `;
+      renderDirectories();
+    }
+
+    function renderSidebarCollapsed() {
+      const sidebar = document.getElementById('sidebar');
+      sidebar.className = 'sidebar sidebar-open sidebar-collapsed';
+      sidebar.innerHTML = `
+        <div class="toolbar-collapsed">
+          <button class="btn btn-outline-primary" onclick="showNoteEditor()" title="New Note">
+            <i class="bi bi-plus-lg"></i>
+          </button>
+          <button class="btn btn-outline-secondary" onclick="filterFavorites()" title="Show Favorites">
+            <i class="bi bi-star-fill"></i>
+          </button>
+        </div>
+      `;
+    }
+
+    function openSidebar(expanded = true) {
+      sidebarCollapsed = !expanded;
+      document.getElementById('sidebar-overlay').style.display = 'block';
+      if (expanded) {
+        renderSidebarExpanded();
+      } else {
+        renderSidebarCollapsed();
+      }
+      setLayoutPositions();
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').className = 'sidebar';
+      document.getElementById('sidebar').innerHTML = '';
+      document.getElementById('sidebar-overlay').style.display = 'none';
+    }
+
+    // --- Toggle Button ---
+    document.getElementById('sidebarToggle').onclick = function() {
+      // Toggle between expanded/collapsed overlay
+      if (document.getElementById('sidebar').classList.contains('sidebar-open')) {
+        closeSidebar();
+      } else {
+        openSidebar(true); // Always open expanded by default; you can add your own logic
+      }
+    };
+    document.getElementById('sidebar-overlay').onclick = closeSidebar;
+
+    // --- Directory Rendering ---
+    function renderDirectories() {
+      const ul = document.getElementById('directory-structure');
+      if (!ul) return;
+      ul.innerHTML = '';
+      function renderDir(dir, parentUl) {
+        const li = document.createElement('li');
+        li.className = 'mb-1';
+        li.innerHTML = `
+          <span class="fw-bold dir-label">${dir.name}</span>
+          <button class="btn btn-sm btn-outline-secondary ms-1" data-action="toggle" data-id="${dir.id}" title="Expand/collapse">${dir.isOpen ? '<i class="bi bi-caret-down"></i>' : '<i class="bi bi-caret-right"></i>'}</button>
+          <button class="btn btn-sm btn-outline-primary ms-1" data-action="add-section" data-id="${dir.id}" title="Add Section"><i class="bi bi-folder-plus"></i></button>
+          <button class="btn btn-sm btn-outline-success ms-1" data-action="add-note" data-id="${dir.id}" title="Add Note"><i class="bi bi-file-earmark-plus"></i></button>
+        `;
+        // Notes in this directory
+        if (dir.isOpen && dir.notes && dir.notes.length) {
+          const notesUl = document.createElement('ul');
+          notesUl.className = 'list-unstyled ms-3';
+          dir.notes.forEach(nid => {
+            const note = notes.find(n => n.id === nid);
+            if (note) {
+              const noteLi = document.createElement('li');
+              noteLi.innerHTML = `<a href="#" class="note-link" data-id="${note.id}"><i class="bi bi-file-earmark"></i> <span class="dir-label">${note.name}</span></a>`;
+              notesUl.appendChild(noteLi);
+            }
+          });
+          li.appendChild(notesUl);
+        }
+        // Children directories
+        if (dir.isOpen && dir.children && dir.children.length) {
+          const childrenUl = document.createElement('ul');
+          childrenUl.className = 'list-unstyled ms-3';
+          dir.children.forEach(child => renderDir(child, childrenUl));
+          li.appendChild(childrenUl);
+        }
+        parentUl.appendChild(li);
+      }
+      directories.forEach(dir => renderDir(dir, ul));
+    }
+
+    // --- Notes Rendering ---
+    function renderNotes(filteredNotes = null) {
+      let notesToRender = filteredNotes || notes;
+      const notesContainer = document.getElementById('notes-list');
+      notesContainer.innerHTML = '';
+      if (notesToRender.length === 0) {
+        notesContainer.innerHTML = '<p class="text-muted">No notes found.</p>';
+        return;
+      }
+      notesToRender.forEach(note => {
+        const card = document.createElement('div');
+        card.className = 'card note-card mb-3';
+        card.innerHTML = `
+          <div class="card-body d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="card-title">${note.name}
+                <button class="btn btn-link p-0 ms-2" onclick="toggleFavorite(${note.id})" title="Favorite">
+                  <i class="bi bi-star${note.isFavorite ? '-fill favorite-star' : ''}"></i>
+                </button>
+              </h5>
+              <div class="card-text small text-muted">${note.content.replace(/<[^>]+>/g, '').substring(0, 80)}...</div>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="showNoteEditor(notes.find(n=>n.id==${note.id}))" title="Edit"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteNote(${note.id})" title="Delete"><i class="bi bi-trash"></i></button>
+            </div>
+          </div>
+        `;
+        notesContainer.appendChild(card);
+      });
+    }
+
+    // --- Favorites Filter ---
+    function filterFavorites() {
+      renderNotes(notes.filter(n => n.isFavorite));
+    }
+
+    // --- Note Editor (Modal + Quill) ---
+    let quill, currentEditingNoteId = null, currentParentDirId = null;
+    function showNoteEditor(note = null, parentDirId = null) {
+      currentEditingNoteId = note ? note.id : null;
+      currentParentDirId = parentDirId || null;
+      document.getElementById('note-title').value = note ? note.name : '';
+      if (!quill) {
+        quill = new Quill('#quill-editor', { theme: 'snow' });
+      }
+      quill.root.innerHTML = note ? note.content : '';
+      new bootstrap.Modal(document.getElementById('note-editor-modal')).show();
+    }
+    document.getElementById('save-note-btn').onclick = function() {
+      let title = document.getElementById('note-title').value.trim();
+      let content = quill.root.innerHTML.trim();
+      if (!title || !content) { alert('Title and content required!'); return; }
+      if (currentEditingNoteId) {
+        let note = notes.find(n => n.id === currentEditingNoteId);
+        note.name = title;
+        note.content = content;
+      } else {
+        let newNote = { id: Date.now(), name: title, content, isFavorite: false, createdAt: new Date(), tags: [] };
+        notes.push(newNote);
+        // Attach to directory if applicable
+        if (currentParentDirId) {
+          let dir = findDirectory(Number(currentParentDirId));
+          if (dir) dir.notes.push(newNote.id);
+        }
+      }
+      renderNotes();
+      if (!sidebarCollapsed && document.getElementById('sidebar').classList.contains('sidebar-open')) renderDirectories();
+      bootstrap.Modal.getInstance(document.getElementById('note-editor-modal')).hide();
+    };
+
+    // --- Directory Utilities ---
+    function findDirectory(dirId, dirs = directories) {
+      for (const dir of dirs) {
+        if (dir.id === dirId) return dir;
+        if (dir.children && dir.children.length) {
+          const found = findDirectory(dirId, dir.children);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    // --- Directory Actions ---
+    document.body.addEventListener('click', function(e) {
+      // Directory actions (only when expanded)
+      if (!sidebarCollapsed && document.getElementById('sidebar').classList.contains('sidebar-open')) {
+        let btn = e.target.closest('button[data-action]');
+        if (btn) {
+          let dirId = Number(btn.dataset.id);
+          let dir = findDirectory(dirId);
+          if (!dir) return;
+          if (btn.dataset.action === 'toggle') {
+            dir.isOpen = !dir.isOpen;
+            renderDirectories();
+          }
+          if (btn.dataset.action === 'add-section') {
+            let sectionName = prompt('Section name?');
+            if (sectionName) {
+              dir.children.push({ id: Date.now(), name: sectionName, type: "Section", isOpen: false, notes: [], children: [] });
+              renderDirectories();
+            }
+          }
+          if (btn.dataset.action === 'add-note') {
+            showNoteEditor(null, dirId);
+          }
+        }
+        let a = e.target.closest('a.note-link');
+        if (a) {
+          let noteId = Number(a.dataset.id);
+          let note = notes.find(n => n.id === noteId);
+          if (note) showNoteEditor(note);
+          e.preventDefault();
+        }
+      }
+    });
+
+    // --- Note Actions ---
+    function deleteNote(noteId) {
+      if (!confirm('Delete this note?')) return;
+      notes = notes.filter(n => n.id !== noteId);
+      // Remove from directories
+      function removeNoteFromDirs(dirs) {
+        dirs.forEach(dir => {
+          dir.notes = dir.notes.filter(nid => nid !== noteId);
+          if (dir.children) removeNoteFromDirs(dir.children);
+        });
+      }
+      removeNoteFromDirs(directories);
+      renderNotes();
+      if (!sidebarCollapsed && document.getElementById('sidebar').classList.contains('sidebar-open')) renderDirectories();
+    }
+    function toggleFavorite(noteId) {
+      let note = notes.find(n => n.id === noteId);
+      if (note) note.isFavorite = !note.isFavorite;
+      renderNotes();
+    }
+
+    // --- Search ---
+    document.getElementById('searchInput').oninput = function(e) {
+      const query = e.target.value.toLowerCase();
+      renderNotes(notes.filter(note =>
+        note.name.toLowerCase().includes(query) ||
+        note.content.toLowerCase().includes(query)
+      ));
+    };
+
+    // --- Layout Position Fix ---
+    function setLayoutPositions() {
+      const navbar = document.querySelector('.navbar');
+      if (navbar) {
+        const navHeight = navbar.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-height', navHeight + 'px');
+        document.getElementById('sidebar').style.top = navHeight + 'px';
+        document.getElementById('sidebar').style.height = `calc(100vh - ${navHeight}px)`;
+        document.getElementById('sidebar-overlay').style.top = navHeight + 'px';
+        document.getElementById('sidebar-overlay').style.height = `calc(100vh - ${navHeight}px)`;
+        document.getElementById('main-content').style.marginTop = navHeight + 'px';
+        document.getElementById('main-content').style.minHeight = `calc(100vh - ${navHeight}px)`;
+      }
+    }
+    window.addEventListener('DOMContentLoaded', function() {
+      renderNotes();
+      setLayoutPositions();
+    });
+    window.addEventListener('resize', setLayoutPositions);
+  </script>
+</body>
+</html>

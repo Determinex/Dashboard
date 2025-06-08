@@ -1,0 +1,2642 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enclave Core: Personal Data Vanguard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    <style>
+                /* --- Root Variables: Theme Definitions --- */
+:root {
+    /* Color Palette */
+    --primary-dark: #2C3E50; /* Deep charcoal blue for primary elements */
+    --primary-light: #34495E; /* Slightly lighter for backgrounds/hover */
+    --accent-color: #3498DB; /* A vibrant, professional blue for accents */
+    --accent-hover: #2980B9; /* Darker accent on hover */
+    --danger-color: #E74C3C; /* Flat red for danger actions */
+    --danger-hover: #C0392B; /* Darker red on hover */
+    --success-color: #27AE60; /* Example: Green for success */
+    --warning-color: #F39C12; /* Example: Orange for warning */
+
+    /* Text Colors */
+    --text-dark: #34495E; /* Dark text for readability */
+    --text-light: #ECF0F1; /* Light text on dark backgrounds */
+    --text-muted: #7F8C8D; /* Muted text */
+
+    /* Background Colors */
+    --background-body: #ECF0F1; /* Light gray for main background */
+    --background-card: #FFFFFF; /* Pure white for cards */
+    --background-accent-light: rgba(52, 152, 219, 0.05); /* Very light accent background */
+    --background-danger-light: rgba(231, 76, 60, 0.1); /* Light danger background */
+    --background-white-15: rgba(255, 255, 255, 0.15); /* White with 15% opacity */
+    --background-white-25: rgba(255, 255, 255, 0.25); /* White with 25% opacity */
+
+    /* Border Colors */
+    --border-light: #BDC3C7; /* Light border color */
+    --border-white-40: rgba(255, 255, 255, 0.4); /* White with 40% opacity */
+    --border-white-60: rgba(255, 255, 255, 0.6); /* White with 60% opacity */
+
+    /* Shadows */
+    --shadow-subtle: rgba(0, 0, 0, 0.05); /* Very light shadow */
+    --shadow-medium: rgba(0, 0, 0, 0.1); /* Medium shadow for depth */
+    --shadow-strong: rgba(0, 0, 0, 0.15); /* Stronger shadow for elevation */
+    --shadow-accent-light: rgba(52, 152, 219, 0.2); /* Accent-colored light shadow */
+    --shadow-accent-medium: rgba(52, 152, 219, 0.3); /* Accent-colored medium shadow */
+    --shadow-accent-strong: rgba(52, 152, 219, 0.4); /* Accent-colored strong shadow */
+    --shadow-danger-medium: rgba(231, 76, 60, 0.3); /* Danger-colored medium shadow */
+    --shadow-inset-dark: rgba(0,0,0,0.3); /* Dark inset shadow */
+
+    /* Dark Mode Specific Variables (Default to light values) */
+    --dm-primary-dark: var(--primary-dark);
+    --dm-primary-light: var(--primary-light);
+    --dm-accent-color: var(--accent-color);
+    --dm-accent-hover: var(--accent-hover);
+    --dm-danger-color: var(--danger-color);
+    --dm-danger-hover: var(--danger-hover);
+    --dm-success-color: var(--success-color);
+    --dm-warning-color: var(--warning-color);
+
+    --dm-text-dark: var(--text-dark);
+    --dm-text-light: var(--text-light);
+    --dm-text-muted: var(--text-muted);
+
+    --dm-background-body: var(--background-body);
+    --dm-background-card: var(--background-card);
+    --dm-background-accent-light: var(--background-accent-light);
+    --dm-background-danger-light: var(--background-danger-light);
+    --dm-background-white-15: var(--background-white-15);
+    --dm-background-white-25: var(--background-white-25);
+
+    --dm-border-light: var(--border-light);
+    --dm-border-white-40: var(--border-white-40);
+    --dm-border-white-60: var(--border-white-60);
+
+    --dm-shadow-subtle: var(--shadow-subtle);
+    --dm-shadow-medium: var(--shadow-medium);
+    --dm-shadow-strong: var(--shadow-strong);
+    --dm-shadow-accent-light: var(--shadow-accent-light);
+    --dm-shadow-accent-medium: var(--shadow-accent-medium);
+    --dm-shadow-accent-strong: var(--shadow-accent-strong);
+    --dm-shadow-danger-medium: var(--shadow-danger-medium);
+    --dm-shadow-inset-dark: var(--shadow-inset-dark);
+
+    /* Spacing */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 2.5rem;
+
+    /* Border Radii */
+    --radius-default: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-pill: 2rem;
+
+    /* Transitions */
+    --transition-speed: 0.2s ease-in-out;
+    --transition-fast: 0.15s ease-out;
+    --transition-slow: 0.3s ease-in-out;
+
+    /* Font Sizes (Base) */
+    --font-size-sm: 0.8rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.1rem;
+    --font-size-xl: 1.2rem;
+    --font-size-xxl: 1.4rem;
+
+    /* Line Heights */
+    --line-height-tight: 1.2;
+    --line-height-normal: 1.5;
+    --line-height-loose: 1.8;
+}
+
+/* Dark Mode Specific Overrides */
+body.dark-mode {
+    --primary-dark: #BB86FC; /* A softer purple for primary elements in dark mode */
+    --primary-light: #3700B3; /* Deep purple for backgrounds/hover in dark mode */
+    --accent-color: #03DAC6; /* Teal for accents in dark mode */
+    --accent-hover: #018786; /* Darker teal on hover in dark mode */
+    --danger-color: #CF6679; /* Soft red for danger actions in dark mode */
+    --danger-hover: #B00020; /* Darker red on hover in dark mode */
+    --success-color: #00C853; /* Bright green for success in dark mode */
+    --warning-color: #FFC107; /* Amber for warning in dark mode */
+
+    --text-dark: #E0E0E0; /* Light gray text for readability in dark mode */
+    --text-light: #212121; /* Dark text on light backgrounds (not common in DM) */
+    --text-muted: #A0A0A0; /* Slightly lighter muted text in dark mode */
+
+    --background-body: #121212; /* Very dark gray for main background in dark mode */
+    --background-card: #1E1E1E; /* Darker gray for cards in dark mode */
+    --background-accent-light: rgba(3, 218, 198, 0.1); /* Very light accent background in dark mode */
+    --background-danger-light: rgba(207, 102, 121, 0.15); /* Light danger background in dark mode */
+    --background-white-15: rgba(255, 255, 255, 0.1); /* White with 10% opacity in dark mode */
+    --background-white-25: rgba(255, 255, 255, 0.2); /* White with 20% opacity in dark mode */
+
+    --border-light: #424242; /* Darker border color in dark mode */
+    --border-white-40: rgba(255, 255, 255, 0.2); /* White with 20% opacity in dark mode */
+    --border-white-60: rgba(255, 255, 255, 0.3); /* White with 30% opacity in dark mode */
+
+    --shadow-subtle: rgba(0, 0, 0, 0.2); /* Slightly more prominent shadow in dark mode */
+    --shadow-medium: rgba(0, 0, 0, 0.35); /* Medium shadow for depth in dark mode */
+    --shadow-strong: rgba(0, 0, 0, 0.5); /* Stronger shadow for elevation in dark mode */
+    --shadow-accent-light: rgba(3, 218, 198, 0.25); /* Accent-colored light shadow in dark mode */
+    --shadow-accent-medium: rgba(3, 218, 198, 0.4); /* Accent-colored medium shadow in dark mode */
+    --shadow-accent-strong: rgba(3, 218, 198, 0.55); /* Accent-colored strong shadow in dark mode */
+    --shadow-danger-medium: rgba(207, 102, 121, 0.4); /* Danger-colored medium shadow in dark mode */
+    --shadow-inset-dark: rgba(255,255,255,0.1); /* Light inset shadow in dark mode */
+}
+
+/* --- Base Styles (Mobile-First) --- */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-body);
+    color: var(--text-dark);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4rem; /* Space for fixed navbar on mobile */
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* --- Utility Classes --- */
+.shadow-sm { box-shadow: 0 2px 4px var(--shadow-subtle) !important; }
+.shadow-md { box-shadow: 0 4px 10px var(--shadow-medium) !important; }
+.shadow-lg { box-shadow: 0 8px 20px var(--shadow-strong) !important; }
+.rounded-lg { border-radius: var(--radius-lg) !important; }
+.transition-all { transition: all var(--transition-speed); }
+
+/* --- Layout: App Container --- */
+.app-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column; /* Stack on mobile */
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+}
+
+/* --- Component: Navbar --- */
+.navbar {
+    background: linear-gradient(to right, var(--primary-dark), var(--primary-light)) !important;
+    box-shadow: 0 4px 15px var(--shadow-medium);
+    z-index: 1050;
+    padding: var(--spacing-sm) var(--spacing-md); /* Mobile padding */
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: var(--font-size-xxl); /* Mobile font size */
+    color: var(--text-light) !important;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    font-size: 1.6rem; /* Mobile icon size */
+    margin-right: var(--spacing-sm);
+}
+
+.navbar-buttons { /* Renamed for clarity, assuming btn-group acts as a container */
+    gap: var(--spacing-sm);
+    display: none; /* Hidden on mobile by default */
+}
+
+.navbar-buttons .btn {
+    border: 1px solid var(--border-white-40);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-default);
+    padding: var(--spacing-sm) var(--spacing-md);
+    min-width: 44px; /* Ensure touch target */
+    transition: background-color var(--transition-speed), color var(--transition-speed);
+}
+
+.navbar-buttons .btn:hover {
+    background-color: var(--background-white-15);
+    color: #fff;
+    transform: translateY(-1px);
+}
+
+.navbar-buttons .btn.active {
+    background-color: var(--background-white-25);
+    color: #fff;
+    box-shadow: inset 0 0 8px var(--shadow-inset-dark);
+    border-color: var(--border-white-60);
+}
+
+.navbar-buttons .btn-outline-light i {
+    font-size: var(--font-size-lg);
+}
+
+/* --- Component: Sidebar --- */
+.sidebar {
+    width: 100%; /* Full width on mobile */
+    order: 2; /* Below main content on mobile */
+    flex-shrink: 0;
+    background-color: var(--background-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-medium);
+    padding: var(--spacing-md); /* Mobile padding */
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.sidebar-nav-link { /* Renamed for clarity */
+    padding: 0.85rem 1.2rem; /* Specific padding values */
+    border-radius: var(--radius-default);
+    color: var(--text-dark);
+    transition: all var(--transition-speed);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+}
+
+.sidebar-nav-link:hover {
+    background-color: var(--background-body);
+    color: var(--accent-color);
+    transform: translateX(3px);
+}
+
+.sidebar-nav-link.active {
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    font-weight: 600;
+    box-shadow: 0 2px 8px var(--shadow-accent-medium);
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-nav-link.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #fff;
+    animation: expandBorder 0.3s ease-out forwards;
+}
+
+@keyframes expandBorder {
+    from { height: 0; }
+    to { height: 100%; }
+}
+
+.sidebar-nav-link i {
+    font-size: var(--font-size-xl);
+    color: var(--text-muted);
+    transition: color var(--transition-speed);
+}
+
+.sidebar-nav-link.active i {
+    color: var(--text-light);
+}
+
+/* --- Component: Main Content Area --- */
+.main-content {
+    flex-grow: 1;
+    background-color: var(--background-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-medium);
+    padding: var(--spacing-md); /* Mobile padding */
+    order: 1; /* First on mobile */
+}
+
+/* --- Component: Dashboard --- */
+.dashboard-header {
+    display: flex;
+    flex-direction: column; /* Stack on mobile */
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.dashboard-header h2 {
+    font-size: var(--font-size-xxl); /* Mobile font size */
+    color: var(--primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); /* Adjusted for mobile */
+    gap: var(--spacing-md);
+}
+
+.dashboard-card {
+    background-color: var(--background-body);
+    border-radius: var(--radius-default);
+    padding: 1.25rem; /* Mobile internal spacing */
+    box-shadow: inset 0 0 8px var(--shadow-subtle);
+    border: 1px solid var(--border-light);
+    transition: all var(--transition-speed);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px var(--shadow-strong);
+    border-color: var(--accent-color);
+}
+
+.dashboard-card h5 {
+    color: var(--primary-dark);
+    margin-bottom: 0.75rem;
+    font-size: var(--font-size-xl); /* Mobile font size */
+}
+
+.dashboard-card-count { /* Renamed for clarity */
+    font-size: 2.8rem; /* Mobile impactful size */
+    font-weight: 700;
+    color: var(--accent-color);
+    line-height: var(--line-height-tight);
+    margin-bottom: var(--spacing-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.dashboard-card-count i {
+    font-size: 2.4rem; /* Mobile icon size */
+    color: var(--text-muted);
+}
+
+.dashboard-card-description { /* Renamed for clarity */
+    color: var(--text-muted);
+    font-size: var(--font-size-sm);
+    margin-top: var(--spacing-md);
+}
+
+/* --- Component: List View (General and Vault) --- */
+.list-view-header {
+    display: flex;
+    flex-direction: column; /* Stack on mobile */
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--border-light);
+}
+
+.list-view-header h2 {
+    font-size: var(--font-size-xxl); /* Mobile font size */
+    color: var(--primary-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.vault-list-group {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-default);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+}
+
+.vault-list-item { /* Renamed for clarity */
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--spacing-md) 1.2rem; /* Mobile padding */
+    background-color: var(--background-card);
+    transition: all var(--transition-speed);
+    display: flex;
+    flex-direction: column; /* Stack details and actions on mobile */
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--spacing-sm); /* Smaller gap on mobile */
+    color: var(--text-dark);
+    position: relative;
+    overflow: hidden;
+}
+
+.vault-list-item:last-child {
+    border-bottom: none;
+}
+
+.vault-list-item:hover {
+    background-color: var(--background-body);
+    transform: translateX(3px);
+}
+
+.vault-list-item.active {
+    background-color: var(--accent-color);
+    color: var(--text-light);
+    font-weight: 500;
+    box-shadow: inset 0 0 10px var(--shadow-inset-dark);
+    transform: translateX(0);
+}
+
+.vault-list-item.active h6,
+.vault-list-item.active small {
+    color: var(--text-light) !important;
+}
+
+.vault-list-item-details { /* Renamed for clarity */
+    flex-grow: 1;
+    overflow: hidden;
+    z-index: 1;
+    width: 100%; /* Full width on mobile */
+}
+
+.vault-list-item-details h6 {
+    margin-bottom: 0.2rem;
+    font-size: var(--font-size-lg); /* Mobile font size */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+}
+
+.vault-list-item-details small {
+    font-size: var(--font-size-sm); /* Mobile font size */
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: inherit;
+}
+
+.vault-list-item-actions { /* Renamed for clarity */
+    flex-shrink: 0;
+    opacity: 1; /* Always show actions on mobile for easier tapping */
+    transform: translateX(0);
+    display: flex;
+    gap: var(--spacing-sm);
+    align-self: flex-end; /* Align actions to the right on mobile */
+}
+
+.vault-list-item:hover .vault-list-item-actions {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.vault-list-item.active .vault-list-item-actions {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.vault-list-item-actions .btn {
+    background-color: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: var(--font-size-lg);
+    padding: 0.4rem;
+    border-radius: var(--radius-default);
+    transition: all var(--transition-speed);
+}
+
+.vault-list-item-actions .btn:hover {
+    color: var(--accent-color);
+    background-color: var(--background-accent-light);
+}
+
+.vault-list-item-actions .btn-danger:hover {
+    color: var(--danger-color);
+    background-color: var(--background-danger-light);
+}
+
+.vault-list-item.active .vault-list-item-actions .btn {
+    color: var(--text-light);
+}
+
+.vault-list-item.active .vault-list-item-actions .btn:hover {
+    background-color: var(--background-white-25);
+}
+
+/* --- Component: Card (Detail & Form) --- */
+.detail-card,
+.form-card {
+    background-color: var(--background-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-medium);
+    padding: var(--spacing-lg); /* Mobile padding */
+    width: 100%;
+    max-width: none; /* No max-width on mobile */
+    margin: 0 auto;
+}
+
+.detail-card-title,
+.form-card-title { /* Renamed for clarity */
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-xxl); /* Mobile font size */
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: var(--spacing-sm);
+}
+
+.detail-card-subtitle,
+.form-card-subtitle { /* Renamed for clarity */
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+    font-size: var(--font-size-xl);
+    color: var(--primary-dark);
+}
+
+.detail-card p strong {
+    color: var(--primary-dark);
+}
+
+.detail-card hr {
+    border-top: 1px dashed var(--border-light);
+}
+/* --- Component: Form Elements --- */
+.form-control,
+.form-select,
+.ql-toolbar.ql-snow,
+.ql-container.ql-snow {
+    border-color: var(--border-light);
+    border-radius: var(--radius-default);
+    box-shadow: inset 0 1px 3px var(--shadow-subtle);
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 0.25rem var(--shadow-accent-light);
+}
+
+.form-label {
+    font-weight: 500;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-sm);
+}
+
+.form-nested-card { /* Renamed .card.card-body.bg-light for specificity */
+    background-color: var(--background-body) !important;
+    border: 1px solid var(--border-light);
+    padding: var(--spacing-md); /* Mobile padding */
+    border-radius: var(--radius-default);
+}
+
+.password-field {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: var(--spacing-md); /* Adjusted for mobile */
+    top: 60%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: var(--font-size-lg); /* Slightly smaller */
+    transition: color var(--transition-speed);
+}
+
+.password-toggle:hover {
+    color: var(--primary-dark);
+}
+
+.password-mask {
+    letter-spacing: 0.15rem; /* Slightly less wide spacing for masked */
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--background-body);
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-default);
+    display: inline-block;
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* --- Component: Modals & Offcanvas --- */
+.modal-content,
+.offcanvas {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-strong);
+    overflow: hidden;
+}
+
+.modal-header,
+.offcanvas-header {
+    border-bottom: 1px solid var(--border-light);
+    padding: var(--spacing-md); /* Mobile padding */
+}
+
+.modal-title,
+.offcanvas-title {
+    font-size: var(--font-size-xxl); /* Mobile font size */
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.modal-header.bg-danger {
+    background-color: var(--danger-color) !important;
+    color: #fff !important;
+    border-bottom-color: rgba(255,255,255,0.3);
+}
+
+.modal-header.bg-danger .modal-title {
+    color: #fff;
+}
+
+.modal-header.bg-danger .btn-close {
+    filter: invert(1);
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-light);
+    padding: var(--spacing-sm) var(--spacing-md); /* Mobile padding */
+}
+
+/* --- Component: Buttons --- */
+.btn { /* General button styles, applied to all */
+    font-weight: 600;
+    border-radius: var(--radius-default);
+    transition: all var(--transition-speed);
+    padding: 0.6rem var(--spacing-md); /* Adjusted padding for better touch targets on mobile */
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #fff; /* Ensure text is white */
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    border-color: var(--accent-hover);
+    box-shadow: 0 4px 10px var(--shadow-accent-medium);
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: #fff; /* Ensure text is white */
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+    border-color: var(--danger-hover);
+    box-shadow: 0 4px 10px var(--shadow-danger-medium);
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: var(--text-muted);
+    border-color: var(--text-muted);
+    color: #fff; /* Ensure text is white */
+    font-weight: 500;
+}
+
+.btn-secondary:hover {
+    background-color: #616A6B; /* Hardcoded for slightly darker grey */
+    border-color: #616A6B;
+}
+
+.btn-outline-primary {
+    color: var(--accent-color);
+    border-color: var(--accent-color);
+    background-color: transparent; /* Explicitly set for outline */
+    font-weight: 500;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--accent-color);
+    color: #fff;
+    box-shadow: 0 2px 8px var(--shadow-accent-light);
+}
+
+.btn-link {
+    color: var(--accent-color);
+    font-weight: 500;
+    transition: color var(--transition-speed);
+}
+
+.btn-link:hover {
+    color: var(--accent-hover);
+}
+
+/* --- Component: Media Gallery --- */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); /* Smaller items for mobile */
+    gap: var(--spacing-sm);
+    padding: var(--spacing-xs);
+}
+
+.media-item {
+    background-color: var(--background-body);
+    border-radius: var(--radius-default);
+    overflow: hidden;
+    box-shadow: var(--shadow-subtle);
+    cursor: pointer;
+    transition: all var(--transition-speed);
+    position: relative;
+    border: 1px solid var(--border-light);
+}
+
+.media-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--accent-color);
+}
+
+.media-item-image { /* Renamed for clarity */
+    width: 100%;
+    height: 6rem; /* Smaller height for mobile */
+    object-fit: cover;
+    display: block;
+}
+
+.media-item-icon { /* Renamed for clarity */
+    font-size: 2.5rem; /* Smaller icon */
+    color: var(--accent-color);
+    text-align: center;
+    padding: var(--spacing-md);
+    height: 6rem; /* Match image height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-accent-light);
+}
+
+.media-item-content {
+    padding: 0.6rem;
+    text-align: center;
+}
+
+.media-item-content h6 {
+    margin-bottom: 0.2rem;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--primary-dark);
+}
+
+.media-item-content small {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+}
+
+/* --- Component: Unified Search Overlay --- */
+#unifiedSearchOverlay {
+    background-color: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding-top: 4rem; /* Account for fixed navbar */
+}
+
+#unifiedSearchOverlay .search-input-group {
+    max-width: 90%; /* Adjust width for mobile */
+    margin: 0 auto var(--spacing-md);
+}
+
+#unifiedSearchOverlay .form-control-lg {
+    border-radius: var(--radius-pill) !important; /* Smaller pill */
+    padding-left: 1.5rem !important;
+    padding-right: 2.5rem !important;
+    font-size: var(--font-size-md);
+    height: 2.5rem; /* Smaller input */
+    box-shadow: 0 4px 10px var(--shadow-medium);
+    border: 1px solid var(--accent-color);
+}
+
+#unifiedSearchOverlay .form-control-lg:focus {
+    box-shadow: 0 4px 10px var(--shadow-accent-strong);
+}
+
+#unifiedSearchOverlay .btn-link {
+    position: absolute;
+    right: 0.3rem;
+    font-size: 1.4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    padding: var(--spacing-sm);
+    color: var(--text-muted);
+}
+
+#unifiedSearchOverlay .btn-link:hover {
+    color: var(--primary-dark);
+}
+
+#unifiedSearchOverlay .search-results-container {
+    border-radius: var(--radius-default);
+    box-shadow: var(--shadow-subtle);
+    background-color: var(--background-card);
+    padding: var(--spacing-md); /* Mobile padding */
+    max-width: 90%; /* Adjust width for mobile */
+    margin: 0 auto;
+}
+
+#unifiedSearchOverlay .search-section-title {
+    color: var(--primary-dark);
+    margin-top: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
+    font-size: var(--font-size-lg);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+#unifiedSearchOverlay .search-result-item {
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius-default);
+    transition: background-color var(--transition-speed), transform var(--transition-speed);
+    margin-bottom: 0.15rem;
+}
+
+#unifiedSearchOverlay .search-result-item:hover {
+    background-color: var(--background-body);
+    transform: translateX(3px);
+}
+
+#unifiedSearchOverlay .search-result-item i {
+    font-size: var(--font-size-xl);
+    color: var(--accent-color);
+}
+
+#unifiedSearchOverlay .search-result-item .item-text h6 {
+    font-size: var(--font-size-md);
+    color: var(--primary-dark);
+}
+
+#unifiedSearchOverlay .search-result-item .item-text small {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* --- Component: Empty States --- */
+.empty-state {
+    background-color: var(--background-card);
+    border: 1px dashed var(--border-light);
+    padding: var(--spacing-xxl); /* Reduced padding for mobile */
+    margin-top: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 200px; /* Reduced min-height */
+}
+
+.empty-state i {
+    font-size: 4rem; /* Smaller icon */
+    margin-bottom: var(--spacing-md);
+    color: var(--border-light);
+    opacity: 0.8;
+}
+
+.empty-state p {
+    font-size: var(--font-size-md);
+    color: var(--text-muted);
+    max-width: 300px;
+}
+
+/* --- Component: Quill Editor --- */
+.ql-toolbar.ql-snow {
+    border-radius: var(--radius-default) var(--radius-default) 0 0;
+    border: 1px solid var(--border-light);
+    background-color: var(--background-body);
+    border-bottom: none; /* Integrate better */
+}
+
+.ql-container.ql-snow {
+    border-radius: 0 0 var(--radius-default) var(--radius-default);
+    border: 1px solid var(--border-light);
+    border-top: none;
+    box-shadow: inset 0 1px 3px var(--shadow-subtle);
+}
+
+.ql-editor {
+    min-height: 200px; /* Smaller height for mobile */
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    line-height: var(--line-height-normal);
+    padding: 0.8rem;
+}
+
+.ql-editor.ql-blank::before {
+    color: var(--text-muted);
+    font-style: normal;
+}
+
+/* --- Responsive Adjustments: Small Tablets (min-width: 576px) --- */
+@media (min-width: 576px) {
+    body {
+        padding-top: 4.5rem; /* Slightly more space for navbar */
+    }
+
+    .navbar {
+        padding: 0.6rem 1.2rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.5rem;
+    }
+
+    .navbar-brand i {
+        font-size: 1.7rem;
+    }
+
+    .app-container {
+        padding: 1.2rem;
+        gap: 1.2rem;
+    }
+
+    .sidebar {
+        padding: 1.2rem;
+    }
+
+    .main-content {
+        padding: 1.2rem;
+    }
+
+    .dashboard-header h2,
+    .list-view-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .dashboard-grid {
+        grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+        gap: 1.2rem;
+    }
+
+    .dashboard-card {
+        padding: 1.5rem;
+    }
+
+    .dashboard-card-count {
+        font-size: 3rem;
+    }
+
+    .dashboard-card-count i {
+        font-size: 2.6rem;
+    }
+
+    .vault-list-item {
+        padding: 1.1rem 1.4rem;
+        flex-direction: row; /* Layout side-by-side */
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .vault-list-item-actions {
+        opacity: 0; /* Hide actions on hover for lists again */
+        transform: translateX(10px);
+        align-self: auto;
+    }
+
+    .vault-list-item:hover .vault-list-item-actions,
+    .vault-list-item.active .vault-list-item-actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .detail-card,
+    .form-card {
+        padding: 1.8rem;
+    }
+
+    .detail-card-title,
+    .form-card-title {
+        font-size: 1.6rem;
+    }
+
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+        gap: 1rem;
+    }
+
+    .media-item-image,
+    .media-item-icon {
+        height: 8rem;
+    }
+
+    .media-item-content {
+        padding: 0.75rem;
+    }
+
+    .media-item-content h6 {
+        font-size: 1rem; /* Re-enable default font size */
+    }
+}
+
+/* --- Responsive Adjustments: Medium Desktops/Tablets (min-width: 992px) --- */
+@media (min-width: 992px) {
+    body {
+        padding-top: 4.5rem; /* Original larger padding */
+    }
+
+    .app-container {
+        flex-direction: row; /* Side-by-side layout */
+        padding: var(--spacing-lg);
+        gap: var(--spacing-lg);
+    }
+
+    .sidebar {
+        width: 19rem; /* Original larger width */
+        order: 0; /* Reset order for desktop */
+        padding: var(--spacing-lg);
+    }
+
+    .main-content {
+        order: 0; /* Reset order for desktop */
+        padding: var(--spacing-xl); /* Original larger padding */
+    }
+
+    .navbar-buttons {
+        display: flex; /* Show mode buttons on larger screens */
+    }
+
+    #unifiedSearchOverlay {
+        padding-top: 1.5rem; /* Original padding */
+    }
+
+    #unifiedSearchOverlay .search-input-group,
+    #unifiedSearchOverlay .search-results-container {
+        max-width: 700px; /* Original wider search bar */
+    }
+
+    #unifiedSearchOverlay .form-control-lg {
+        border-radius: var(--radius-pill) !important; /* Original pill-like */
+        padding-left: 1.8rem !important;
+        padding-right: 3rem !important;
+        font-size: var(--font-size-lg);
+        height: 3rem; /* Original taller input */
+    }
+
+    #unifiedSearchOverlay .btn-link {
+        right: 0.5rem;
+        font-size: 1.6rem;
+    }
+
+    .detail-card,
+    .form-card {
+        padding: var(--spacing-xxl); /* Original larger padding */
+        max-width: 750px; /* Original max-width */
+    }
+
+    .dashboard-card {
+        padding: 1.8rem; /* Original internal spacing */
+    }
+
+    .dashboard-card-count {
+        font-size: 3.2rem; /* Original larger count */
+    }
+
+    .dashboard-card-count i {
+        font-size: 2.8rem;
+    }
+
+    .media-grid {
+        grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); /* Original larger items */
+        gap: 1.25rem;
+        padding: 0.5rem;
+    }
+
+    .media-item-image,
+    .media-item-icon {
+        height: 10rem; /* Original consistent height */
+    }
+}
+.shield { fill: none; stroke: #333; stroke-width: 3; }
+    .circuit { stroke: #666; stroke-width: 1; fill: none; }
+    .text { font-size: 12px; fill: #333; font-family: sans-serif; text-anchor: middle; }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-shield-lock-fill me-2"></i>Enclave Core
+            </a>
+          <svg viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+		  <path class="shield" d="M10 10 L50 5 L90 10 L95 100 L5 100 Z" />
+		  <path class="circuit" d="M30 20 L30 80 M40 25 L40 75 M20 30 L20 70" />
+		  <path class="circuit" d="M60 20 L60 80 M70 25 L70 75 M80 30 L80 70" />
+		  <text class="text" x="50" y="115">Enclave Core</text>
+	  	</svg>
+            <button class="btn btn-outline-light d-md-none" type="button" id="mobileSearchToggleBtn" title="Search">
+                <i class="bi bi-search"></i>
+            </button>
+            <div id="modeSelectorContainer" class="d-none d-md-flex align-items-center">
+                </div>
+                <div id="modeSelectorContainer" class="d-none d-md-flex align-items-center">
+    <button class="btn btn-outline-light ms-3" id="darkModeToggleBtn" type="button" title="Toggle Dark Mode">
+        <i class="bi bi-moon-fill"></i>
+    </button>
+</div>
+        </div>
+    </nav>
+
+    <div class="app-container">
+        <aside class="sidebar" id="appSidebar">
+            <h5 class="mb-3">Categories</h5>
+            <div class="nav flex-column mb-auto" id="sidebarNavLinks">
+                </div>
+            <button class="btn btn-primary w-100 mt-auto" id="addNewEntryBtn">
+                <i class="bi bi-plus-circle me-2"></i> Add New Entry
+            </button>
+        </aside>
+
+        <main class="main-content" id="mainContentDynamicArea">
+            </main>
+    </div>
+
+    <div id="unifiedSearchOverlay">
+        <div class="input-group search-input-group mb-4">
+            <input type="text" class="form-control form-control-lg rounded-pill ps-4" placeholder="Search across all vault categories..." id="unifiedSearchInput">
+            <button class="btn btn-link text-decoration-none text-muted" type="button" id="closeSearchOverlayBtn">
+                <i class="bi bi-x-lg fs-4"></i>
+            </button>
+        </div>
+        <div class="search-results-container">
+            </div>
+    </div>
+
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="entryFormOffcanvas" aria-labelledby="offcanvasLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasLabel"></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form id="offcanvasEntryForm">
+                </form>
+        </div>
+    </div>
+
+    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="deleteConfirmModalLabel"><i class="bi bi-exclamation-triangle-fill me-2"></i>Confirm Deletion</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <p class="lead">Are you sure you want to delete this entry?</p>
+                    <p class="text-muted">This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer justify-content-center border-top-0">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
+        <script>
+        /**
+         * @fileoverview This script implements "Enclave Core: Your Personal Data Vanguard,"
+         * a complete overhaul of the Digital Vault Pro application. It manages six distinct
+         * personal data types using a reactive component pattern in vanilla JavaScript,
+         * with all data persisting to localStorage. The redesign emphasizes a dashboard-centric
+         * approach, contextual offcanvas forms/modals, a unified search overlay, and an
+         * enhanced visual design for a modern, intuitive user experience.
+         */
+
+        // --- Core Reactive Component Function ---
+        /**
+         * Creates a "reactive component" that updates its DOM representation
+         * based on internal state changes.
+         * @param {HTMLElement} targetElement The DOM element that will act as the parent
+         * or container for this reactive component. Its innerHTML will be replaced on each render.
+         * @param {Object} initialState The initial state object for the component.
+         * @param {Function} renderFunction A function that takes the current state object
+         * as an argument and returns an HTML string representing the component's UI.
+         * @returns {Object} An object exposing the component's current state (read-only)
+         * and a `setState` method to update the state and trigger a re-render.
+         */
+        function createReactiveComponent(targetElement, initialState, renderFunction) {
+            let _state = { ...initialState };
+
+            const render = () => {
+                targetElement.innerHTML = renderFunction(_state);
+            };
+
+            const setState = (newState) => {
+                _state = { ..._state, ...newState };
+                render();
+            };
+
+            render(); // Initial render
+
+            return {
+                get state() { return _state; },
+                setState: setState
+            };
+        }
+
+        // --- Data Managers (using localStorage for persistence and unique IDs) ---
+        /**
+         * Factory function to create data managers for different vault types.
+         * Ensures each entry has a unique ID and handles localStorage persistence.
+         * @param {string} key The localStorage key for this data type.
+         * @returns {Object} An object with add, update, list, get, and remove methods.
+         */
+        const VaultDataManager = (key) => {
+            let data = JSON.parse(localStorage.getItem(key)) || [];
+
+            // Ensure all existing entries have a unique ID (for migration of old data)
+            let needsSave = false;
+            data.forEach(entry => {
+                if (!entry.id) {
+                    entry.id = crypto.randomUUID();
+                    needsSave = true;
+                }
+            });
+            if (needsSave) {
+                localStorage.setItem(key, JSON.stringify(data));
+            }
+
+            function add(entry) {
+                entry.id = crypto.randomUUID(); // Assign unique ID on creation
+                data.push(entry);
+                save();
+                return entry.id; // Return the new ID
+            }
+
+            function update(id, updatedFields) {
+                const index = data.findIndex(item => item.id === id);
+                if (index !== -1) {
+                    data[index] = { ...data[index], ...updatedFields }; // Merge updates
+                    save();
+                }
+            }
+
+            function list() {
+                return data;
+            }
+
+            function get(id) {
+                return data.find(item => item.id === id);
+            }
+
+            function save() {
+                localStorage.setItem(key, JSON.stringify(data));
+            }
+
+            function remove(id) {
+                data = data.filter(item => item.id !== id);
+                save();
+            }
+
+            return { add, update, list, get, remove };
+        };
+
+        const PersonalInfoManager = VaultDataManager('aegisPersonalInfo');
+        const AddressBookManager = VaultDataManager('aegisAddressBook');
+        const MediaManager = VaultDataManager('aegisMedia');
+        const BookmarkManager = VaultDataManager('aegisBookmarks');
+        const NoteManager = VaultDataManager('aegisNotes');
+        const CredentialManager = VaultDataManager('aegisCredentials');
+
+        // --- Placeholder Data for initial load (remove in production) ---
+        (function addInitialData() {
+            if (PersonalInfoManager.list().length === 0) {
+                PersonalInfoManager.add({
+                    name: "John Doe",
+                    addresses: [
+                        { id: crypto.randomUUID(), street: "123 Main St", city: "Anytown", state: "CA", zip: "90210", country: "USA", periodStart: "2010-01-01", periodEnd: "2020-12-31" },
+                        { id: crypto.randomUUID(), street: "456 Oak Ave", city: "Someville", state: "NY", zip: "10001", country: "USA", periodStart: "2021-01-01", periodEnd: "" }
+                    ],
+                    phoneNumbers: [
+                        { id: crypto.randomUUID(), number: "555-123-4567", carrier: "Verizon", durationStart: "2015-01-01", durationEnd: "" },
+                        { id: crypto.randomUUID(), number: "555-987-6543", carrier: "AT&T", durationStart: "2018-05-01", durationEnd: "2022-04-30" }
+                    ]
+                });
+            }
+            if (AddressBookManager.list().length === 0) {
+                AddressBookManager.add({
+                    name: "Alice Smith", email: "alice@example.com", notes: "Friend from college",
+                    address: { street: "789 Pine Ln", city: "Villagetown", state: "TX", zip: "75001", country: "USA" },
+                    phoneNumbers: [{ id: crypto.randomUUID(), number: "555-111-2222", type: "Mobile" }]
+                });
+                AddressBookManager.add({
+                    name: "Bob Johnson", email: "bob@example.com", notes: "Work colleague",
+                    address: {street: "101 Tech Way", city: "Metropolis", state: "CA", zip: "90001", country: "USA"},
+                    phoneNumbers: [{ id: crypto.randomUUID(), number: "555-333-4444", type: "Work" }]
+                });
+            }
+            if (MediaManager.list().length === 0) {
+                MediaManager.add({ title: "Sunset Beach", type: "image", description: "Beautiful sunset at the beach", collection: "Vacation" });
+                MediaManager.add({ title: "Hiking Trail", type: "image", description: "Scenic view from the mountain", collection: "Nature" });
+                MediaManager.add({ title: "My Favorite Song", type: "audio", description: "Relaxing instrumental", playlist: "Chill Vibes" });
+                MediaManager.add({ title: "Travel Vlog Episode 1", type: "video", description: "Exploring new cities", collection: "Travel Vlogs" });
+            }
+            if (BookmarkManager.list().length === 0) {
+                BookmarkManager.add({ title: "Google", url: "https://www.google.com", tags: ["search", "tools"], category: "Productivity" });
+                BookmarkManager.add({ title: "MDN Web Docs", url: "https://developer.mozilla.org/", tags: ["dev", "docs", "js"], category: "Development" });
+                BookmarkManager.add({ title: "OpenAI", url: "https://openai.com/", tags: ["ai", "research"], category: "AI" });
+            }
+            if (NoteManager.list().length === 0) {
+                NoteManager.add({ title: "Meeting Notes - Project X", content: "<p>Discussed Q3 goals. Need to follow up on action items.</p>" });
+                NoteManager.add({ title: "Groceries List", content: "<p><ul><li>Milk</li><li>Eggs</li><li>Bread</li></ul></p>" });
+            }
+            if (CredentialManager.list().length === 0) {
+                CredentialManager.add({ service: "MyBank", username: "john.doe", password: "securepassword123", notes: "Remember security questions" });
+                CredentialManager.add({ service: "GitHub", username: "johndev", password: "github_pass", notes: "Use 2FA" });
+                CredentialManager.add({ service: "Netflix", username: "john.doe@email.com", password: "streaming_password", notes: "" });
+            }
+        })();
+
+        // --- UI Helper Functions (for HTML templating and escaping) ---
+        const UIHelpers = (() => {
+            /**
+             * Escapes HTML special characters in a string to prevent XSS.
+             * @param {string} str The string to escape.
+             * @returns {string} The escaped string.
+             */
+            function escapeHTML(str) {
+                return String(str || '')
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#39;");
+            }
+
+            /**
+             * Formats a date string into a more readable local format.
+             * @param {string} isoString An ISO 8601 date string.
+             * @returns {string} Formatted date string or empty string if invalid.
+             */
+            function formatDate(isoString) {
+                try {
+                    if (!isoString) return 'N/A';
+                    return new Date(isoString).toLocaleDateString();
+                } catch (e) {
+                    return 'N/A';
+                }
+            }
+
+            return {
+                escapeHTML,
+                formatDate
+            };
+        })();
+
+        // --- Reactive Components Definitions ---
+
+        // 1. Mode Selector Component (Top Navbar Buttons for larger screens)
+        const modeSelectorComponent = createReactiveComponent(
+            document.getElementById('modeSelectorContainer'),
+            { currentMode: 'dashboard' },
+            (state) => `
+                <div class="btn-group">
+                    <button class="btn btn-outline-light ${state.currentMode === 'dashboard' ? 'active' : ''}" data-mode="dashboard" type="button" title="Dashboard">
+                        <i class="bi bi-grid-1x2-fill"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'personal-info' ? 'active' : ''}" data-mode="personal-info" type="button" title="Personal Info">
+                        <i class="bi bi-person-lines-fill"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'address-book' ? 'active' : ''}" data-mode="address-book" type="button" title="Address Book">
+                        <i class="bi bi-address-book"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'media' ? 'active' : ''}" data-mode="media" type="button" title="Media Gallery">
+                        <i class="bi bi-image"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'bookmarks' ? 'active' : ''}" data-mode="bookmarks" type="button" title="Bookmarks">
+                        <i class="bi bi-bookmarks"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'notes' ? 'active' : ''}" data-mode="notes" type="button" title="Notes">
+                        <i class="bi bi-journal-text"></i>
+                    </button>
+                    <button class="btn btn-outline-light ${state.currentMode === 'credentials' ? 'active' : ''}" data-mode="credentials" type="button" title="Credentials">
+                        <i class="bi bi-shield-lock"></i>
+                    </button>
+                </div>
+            `
+        );
+
+        // 2. Sidebar Navigation Component
+        const sidebarNavComponent = createReactiveComponent(
+            document.getElementById('sidebarNavLinks'),
+            { currentMode: 'dashboard' },
+            (state) => `
+                <a class="nav-link ${state.currentMode === 'dashboard' ? 'active' : ''}" href="#" data-mode="dashboard">
+                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                </a>
+                <a class="nav-link ${state.currentMode === 'personal-info' ? 'active' : ''}" href="#" data-mode="personal-info">
+                    <i class="bi bi-person-lines-fill"></i> Personal Info
+                </a>
+                <a class="nav-link ${state.currentMode === 'address-book' ? 'active' : ''}" href="#" data-mode="address-book">
+                    <i class="bi bi-address-book"></i> Address Book
+                </a>
+                <a class="nav-link ${state.currentMode === 'media' ? 'active' : ''}" href="#" data-mode="media">
+                    <i class="bi bi-image"></i> Media Gallery
+                </a>
+                <a class="nav-link ${state.currentMode === 'bookmarks' ? 'active' : ''}" href="#" data-mode="bookmarks">
+                    <i class="bi bi-bookmarks"></i> Bookmarks
+                </a>
+                <a class="nav-link ${state.currentMode === 'notes' ? 'active' : ''}" href="#" data-mode="notes">
+                    <i class="bi bi-journal-text"></i> Notes
+                </a>
+                <a class="nav-link ${state.currentMode === 'credentials' ? 'active' : ''}" href="#" data-mode="credentials">
+                    <i class="bi bi-shield-lock"></i> Credentials
+                </a>
+            `
+        );
+
+        // 3. Main Content Component (Dashboard, List Views, Detail Views)
+        const mainContentComponent = createReactiveComponent(
+            document.getElementById('mainContentDynamicArea'),
+            { currentMode: 'dashboard', selectedEntry: null },
+            (state) => {
+                const entry = state.selectedEntry || {};
+                let htmlOutput = '';
+
+                // Helper functions for rendering details specific to each data type
+                const renderAddressDetail = (addr) => `
+                    <p class="mb-1">${UIHelpers.escapeHTML(addr.street || '')}</p>
+                    <p class="mb-1">${UIHelpers.escapeHTML(addr.city || '')}, ${UIHelpers.escapeHTML(addr.state || '')} ${UIHelpers.escapeHTML(addr.zip || '')}</p>
+                    <p class="mb-1">${UIHelpers.escapeHTML(addr.country || '')}</p>
+                    <small class="text-muted">Periods: ${UIHelpers.formatDate(addr.periodStart)} to ${UIHelpers.formatDate(addr.periodEnd)}</small>
+                    <hr class="my-2">
+                `;
+
+                const renderPhoneDetail = (phone) => `
+                    <p class="mb-1"><strong>Number:</strong> ${UIHelpers.escapeHTML(phone.number || '')}</p>
+                    <p class="mb-1"><strong>Carrier:</strong> ${UIHelpers.escapeHTML(phone.carrier || 'N/A')}</p>
+                    <small class="text-muted">Periods: ${UIHelpers.formatDate(phone.durationStart)} to ${UIHelpers.formatDate(phone.durationEnd)}</small>
+                    <hr class="my-2">
+                `;
+
+                const renderDetailView = (currentMode, entry) => {
+                    let detailHtml = '';
+                    switch (currentMode) {
+                        case 'personal-info':
+                            entry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                            detailHtml = `
+                                <h4 class="mb-4">My Personal Information</h4>
+                                <h5 class="mt-4">Addresses:</h5>
+                                ${entry.addresses && entry.addresses.length > 0 ? entry.addresses.map(renderAddressDetail).join('') : '<p class="text-muted">No addresses added.</p>'}
+                                <h5 class="mt-4">Phone Numbers:</h5>
+                                ${entry.phoneNumbers && entry.phoneNumbers.length > 0 ? entry.phoneNumbers.map(renderPhoneDetail).join('') : '<p class="text-muted">No phone numbers added.</p>'}
+                            `;
+                            break;
+                        case 'address-book':
+                            detailHtml = `
+                                <h5 class="mb-3">${UIHelpers.escapeHTML(entry.name || 'Unnamed Contact')}</h5>
+                                <p><strong>Email:</strong> ${UIHelpers.escapeHTML(entry.email || 'N/A')}</p>
+                                <h6 class="mt-4">Address:</h6>
+                                ${entry.address && (entry.address.street || entry.address.city) ? renderAddressDetail(entry.address) : '<p class="text-muted">No address added.</p>'}
+                                <h6 class="mt-4">Phone Numbers:</h6>
+                                ${entry.phoneNumbers && entry.phoneNumbers.length > 0 ? entry.phoneNumbers.map(phone => `<p class="mb-1"><strong>${UIHelpers.escapeHTML(phone.type || 'Phone')}:</strong> ${UIHelpers.escapeHTML(phone.number || '')}</p>`).join('') : '<p class="text-muted">No phone numbers added.</p>'}
+                                <h6 class="mt-4">Notes:</h6>
+                                <p>${UIHelpers.escapeHTML(entry.notes || 'N/A')}</p>
+                            `;
+                            break;
+                        case 'media':
+                            let mediaElement = '';
+                            if (entry.type === 'image') {
+                                mediaElement = `<img src="https://placehold.co/400x300/e0e0e0/000000?text=${UIHelpers.escapeHTML(entry.title || 'Image')}" alt="${UIHelpers.escapeHTML(entry.title || 'Media')}" class="img-fluid rounded mb-3">`;
+                            } else if (entry.type === 'video') {
+                                mediaElement = `<video controls class="img-fluid rounded mb-3" style="max-height: 300px; background-color: #000;">
+                                                    <source src="" type="video/mp4">
+                                                    Your browser does not support the video tag.
+                                                </video><p class="text-muted text-center">Video placeholder</p>`;
+                            } else if (entry.type === 'audio') {
+                                mediaElement = `<audio controls class="w-100 mb-3">
+                                                    <source src="" type="audio/mpeg">
+                                                    Your browser does not support the audio element.
+                                                </audio><p class="text-muted text-center">Audio placeholder</p>`;
+                            }
+                            detailHtml = `
+                                <h5 class="mb-3">${UIHelpers.escapeHTML(entry.title || 'Untitled Media')}</h5>
+                                <p><strong>Type:</strong> ${UIHelpers.escapeHTML(entry.type || 'N/A')}</p>
+                                <p><strong>Group:</strong> ${UIHelpers.escapeHTML(entry.collection || entry.playlist || 'N/A')}</p>
+                                <p><strong>Description:</strong> ${UIHelpers.escapeHTML(entry.description || 'N/A')}</p>
+                                ${mediaElement}
+                            `;
+                            break;
+                        case 'bookmarks':
+                            detailHtml = `
+                                <h5 class="mb-3">${UIHelpers.escapeHTML(entry.title || 'Untitled Bookmark')}</h5>
+                                <div class="mb-2">
+                                    <a href="${UIHelpers.escapeHTML(entry.url)}" target="_blank" class="text-primary">${UIHelpers.escapeHTML(entry.url)}</a>
+                                </div>
+                                <div class="mb-2">
+                                    ${entry.tags && entry.tags.length ? entry.tags.map(tag => `<span class="badge bg-secondary me-1">${UIHelpers.escapeHTML(tag)}</span>`).join('') : ''}
+                                </div>
+                                <p class="mt-3"><strong>Category:</strong> ${UIHelpers.escapeHTML(entry.category || 'N/A')}</p>
+                            `;
+                            break;
+                        case 'notes':
+                            detailHtml = `
+                                <h5 class="mb-3">${UIHelpers.escapeHTML(entry.title || 'Untitled Note')}</h5>
+                                <div class="mt-3 ql-editor border-0 p-0" style="min-height: auto;">${entry.content}</div>
+                            `;
+                            break;
+                        case 'credentials':
+                            detailHtml = `
+                                <h5 class="mb-3">${UIHelpers.escapeHTML(entry.service || 'Unnamed Service')}</h5>
+                                <div class="mb-2"><strong>Username:</strong> ${UIHelpers.escapeHTML(entry.username || 'N/A')}</div>
+                                <div class="mb-2">
+                                    <strong>Password:</strong>
+                                    <span class="password-mask">••••••••</span>
+                                    <i class="bi bi-eye password-toggle ms-2" data-password-toggle="true"></i>
+                                </div>
+                                <p class="mt-3"><strong>Notes:</strong> ${UIHelpers.escapeHTML(entry.notes || 'N/A')}</p>
+                            `;
+                            break;
+                    }
+
+                    return `
+                        <div class="detail-card">
+                            ${detailHtml}
+                            <div class="d-flex mt-4">
+                                <button id="editEntry" class="btn btn-primary me-2" data-id="${entry.id}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                ${currentMode !== 'personal-info' ? `
+                                <button id="deleteEntry" class="btn btn-danger" data-id="${entry.id}">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>` : ''}
+                            </div>
+                        </div>
+                    `;
+                };
+
+                // Main Content Rendering Logic
+                if (state.currentMode === 'dashboard') {
+                    const personalInfo = PersonalInfoManager.list()[0];
+                    const addressBookCount = AddressBookManager.list().length;
+                    const mediaCount = MediaManager.list().length;
+                    const bookmarkCount = BookmarkManager.list().length;
+                    const noteCount = NoteManager.list().length;
+                    const credentialCount = CredentialManager.list().length;
+
+                    htmlOutput = `
+                        <div class="dashboard-header">
+                            <h2>Welcome, ${UIHelpers.escapeHTML(personalInfo?.name || 'Vault User')}!</h2>
+                            <button class="btn btn-outline-primary d-none d-md-block" id="fullSearchBtn">
+                                <i class="bi bi-search me-2"></i> Unified Search
+                            </button>
+                        </div>
+                        <div class="dashboard-grid">
+                            <div class="dashboard-card" data-mode="personal-info">
+                                <h5>Personal Info</h5>
+                                <p class="count"><i class="bi bi-person-lines-fill"></i></p>
+                                <p class="description">Your core profile details</p>
+                            </div>
+                            <div class="dashboard-card" data-mode="address-book">
+                                <h5>Address Book</h5>
+                                <p class="count">${addressBookCount}</p>
+                                <p class="description">Contacts and connections</p>
+                            </div>
+                            <div class="dashboard-card" data-mode="media">
+                                <h5>Media Gallery</h5>
+                                <p class="count">${mediaCount}</p>
+                                <p class="description">Photos, videos, audio</p>
+                            </div>
+                            <div class="dashboard-card" data-mode="bookmarks">
+                                <h5>Bookmarks</h5>
+                                <p class="count">${bookmarkCount}</p>
+                                <p class="description">Saved links and websites</p>
+                            </div>
+                            <div class="dashboard-card" data-mode="notes">
+                                <h5>Notes</h5>
+                                <p class="count">${noteCount}</p>
+                                <p class="description">Your thoughts and memos</p>
+                            </div>
+                            <div class="dashboard-card" data-mode="credentials">
+                                <h5>Credentials</h5>
+                                <p class="count">${credentialCount}</p>
+                                <p class="description">Passwords and logins</p>
+                            </div>
+                        </div>
+                    `;
+                } else if (state.currentMode === 'media' && !state.selectedEntry) {
+                    // Media gallery grid view (when not showing a single media item detail)
+                    const allMedia = MediaManager.list();
+                    if (allMedia.length === 0) {
+                        htmlOutput = `<div class="empty-state">
+                                        <i class="bi bi-image text-muted"></i>
+                                        <p class="text-muted">No media added yet. Click "Add New Entry" to upload (simulate) your first image, video, or audio!</p>
+                                      </div>`;
+                    } else {
+                        htmlOutput = `
+                            <div class="list-view-header">
+                                <h2>Media Gallery</h2>
+                                <button class="btn btn-primary" id="addNewEntryContextBtn" data-mode="media">
+                                    <i class="bi bi-plus-circle me-2"></i> Add New Media
+                                </button>
+                            </div>
+                            <div class="media-grid">
+                                ${allMedia.map(item => `
+                                    <div class="media-item" data-id="${item.id}" data-type="${item.type}">
+                                        ${item.type === 'image' ? `<img src="https://placehold.co/150x100/e0e0e0/000000?text=${UIHelpers.escapeHTML(item.title || 'Image')}" alt="${UIHelpers.escapeHTML(item.title || 'Media')}" class="img-fluid">` : ''}
+                                        ${item.type === 'video' ? `<div class="media-icon"><i class="bi bi-film"></i></div>` : ''}
+                                        ${item.type === 'audio' ? `<div class="media-icon"><i class="bi bi-file-earmark-music"></i></div>` : ''}
+                                        <div class="media-item-content">
+                                            <h6>${UIHelpers.escapeHTML(item.title || 'Untitled')}</h6>
+                                            <small>${UIHelpers.escapeHTML(item.collection || item.playlist || 'General')}</small>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                } else if (state.selectedEntry) {
+                    // Render detail view for a selected entry
+                    htmlOutput = renderDetailView(state.currentMode, entry);
+                } else {
+                    // Render generic list view for other modes
+                    const currentDataManager = appState.getCurrentDataManager();
+                    const entries = currentDataManager.list();
+
+                    if (entries.length === 0) {
+                        htmlOutput = `<div class="empty-state">
+                                        <i class="bi bi-emoji-frown"></i>
+                                        <p>No ${state.currentMode.replace('-', ' ')} entries yet. Click "Add New Entry" to create one!</p>
+                                      </div>`;
+                    } else {
+                        htmlOutput = `
+                            <div class="list-view-header">
+                                <h2>${state.currentMode.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}</h2>
+                                <button class="btn btn-primary" id="addNewEntryContextBtn" data-mode="${state.currentMode}">
+                                    <i class="bi bi-plus-circle me-2"></i> Add New
+                                </button>
+                            </div>
+                            <div class="list-group vault-list-group">
+                                ${entries.map(item => {
+                                    let title = '';
+                                    let subtitle = '';
+
+                                    switch (state.currentMode) {
+                                        case 'address-book':
+                                            title = item.name || '(Unnamed Contact)';
+                                            subtitle = item.email || (item.phoneNumbers && item.phoneNumbers.length > 0 ? item.phoneNumbers[0].number : '');
+                                            break;
+                                        case 'bookmarks':
+                                            title = item.title || item.url;
+                                            subtitle = item.url;
+                                            break;
+                                        case 'notes':
+                                            title = item.title || '(Untitled Note)';
+                                            subtitle = item.timestamp ? UIHelpers.formatDate(item.timestamp) : '';
+                                            break;
+                                        case 'credentials':
+                                            title = item.service || item.username;
+                                            subtitle = item.username;
+                                            break;
+                                    }
+
+                                    return `
+                                        <a href="#" class="list-group-item list-group-item-action ${state.selectedEntry?.id === item.id ? 'active' : ''}" data-id="${item.id}">
+                                            <div class="item-details">
+                                                <h6 class="mb-1 text-truncate">${UIHelpers.escapeHTML(title)}</h6>
+                                                <small class="text-muted text-truncate">${UIHelpers.escapeHTML(subtitle)}</small>
+                                            </div>
+                                            <div class="item-actions">
+                                                <button class="btn btn-sm btn-link" data-action="edit" data-id="${item.id}" title="Edit"><i class="bi bi-pencil"></i></button>
+                                                <button class="btn btn-sm btn-link text-danger" data-action="delete" data-id="${item.id}" title="Delete"><i class="bi bi-trash"></i></button>
+                                            </div>
+                                        </a>
+                                    `;
+                                }).join('')}
+                            </div>
+                        `;
+                    }
+                }
+                return htmlOutput;
+            }
+        );
+        // 4. Offcanvas Form Component
+        const offcanvasFormComponent = createReactiveComponent(
+            document.getElementById('offcanvasEntryForm'),
+            { currentMode: 'bookmarks', selectedEntry: null },
+            (state) => {
+                const entry = state.selectedEntry || {};
+                let fieldsHtml = '';
+
+                const renderAddressSubForm = (addr = {}, index = 0) => `
+                    <div class="card card-body bg-light mb-2">
+                        <h6 class="card-title">Address ${index + 1}</h6>
+                        <input type="hidden" name="addressId_${index}" value="${addr.id || crypto.randomUUID()}">
+                        <input type="text" name="street_${index}" class="form-control form-control-sm mb-2" placeholder="Street" value="${UIHelpers.escapeHTML(addr.street || '')}">
+                        <div class="row gx-2">
+                            <div class="col-md-6 mb-2"><input type="text" name="city_${index}" class="form-control form-control-sm" placeholder="City" value="${UIHelpers.escapeHTML(addr.city || '')}"></div>
+                            <div class="col-md-3 mb-2"><input type="text" name="state_${index}" class="form-control form-control-sm" placeholder="State" value="${UIHelpers.escapeHTML(addr.state || '')}"></div>
+                            <div class="col-md-3 mb-2"><input type="text" name="zip_${index}" class="form-control form-control-sm" placeholder="ZIP" value="${UIHelpers.escapeHTML(addr.zip || '')}"></div>
+                        </div>
+                        <input type="text" name="country_${index}" class="form-control form-control-sm mb-2" placeholder="Country" value="${UIHelpers.escapeHTML(addr.country || '')}">
+                        <div class="row gx-2">
+                            <div class="col-md-6 mb-2"><label class="form-label">From</label><input type="date" name="addrPeriodStart_${index}" class="form-control form-control-sm" value="${addr.periodStart || ''}"></div>
+                            <div class="col-md-6 mb-2"><label class="form-label">To</label><input type="date" name="addrPeriodEnd_${index}" class="form-control form-control-sm" value="${addr.periodEnd || ''}"></div>
+                        </div>
+                    </div>
+                `;
+
+                const renderPhoneSubForm = (phone = {}, index = 0) => `
+                    <div class="card card-body bg-light mb-2">
+                        <h6 class="card-title">Phone ${index + 1}</h6>
+                        <input type="hidden" name="phoneId_${index}" value="${phone.id || crypto.randomUUID()}">
+                        <input type="text" name="number_${index}" class="form-control form-control-sm mb-2" placeholder="Number" value="${UIHelpers.escapeHTML(phone.number || '')}">
+                        <input type="text" name="carrier_${index}" class="form-control form-control-sm mb-2" placeholder="Carrier" value="${UIHelpers.escapeHTML(phone.carrier || '')}">
+                        <div class="row gx-2">
+                            <div class="col-md-6 mb-2"><label class="form-label">From</label><input type="date" name="phonePeriodStart_${index}" class="form-control form-control-sm" value="${phone.durationStart || ''}"></div>
+                            <div class="col-md-6 mb-2"><label class="form-label">To</label><input type="date" name="phonePeriodEnd_${index}" class="form-control form-control-sm" value="${phone.durationEnd || ''}"></div>
+                        </div>
+                    </div>
+                `;
+
+                switch (state.currentMode) {
+                    case 'personal-info':
+                        const personalInfoEntry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                        fieldsHtml = `
+                            <input type="hidden" name="personalInfoId" value="${personalInfoEntry.id || ''}">
+                            <div class="mb-3">
+                                <label for="personalInfoName" class="form-label">Your Name</label>
+                                <input type="text" id="personalInfoName" name="name" class="form-control" placeholder="Your Full Name" value="${UIHelpers.escapeHTML(personalInfoEntry.name || '')}" required>
+                            </div>
+                            <h5 class="mb-3">Addresses</h5>
+                            <div id="addressesContainer" class="mb-3">
+                                ${(personalInfoEntry.addresses || []).map(renderAddressSubForm).join('')}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mb-3" id="addAddressBtn"><i class="bi bi-plus-lg"></i> Add Address</button>
+
+                            <h5 class="mt-4 mb-3">Phone Numbers</h5>
+                            <div id="phoneNumbersContainer" class="mb-3">
+                                ${(personalInfoEntry.phoneNumbers || []).map(renderPhoneSubForm).join('')}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mb-4" id="addPhoneBtn"><i class="bi bi-plus-lg"></i> Add Phone</button>
+                        `;
+                        break;
+                    case 'address-book':
+                        fieldsHtml = `
+                            <div class="mb-3">
+                                <label for="contactName" class="form-label">Name</label>
+                                <input type="text" id="contactName" name="name" class="form-control" placeholder="Contact Name" value="${UIHelpers.escapeHTML(entry.name || '')}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactEmail" class="form-label">Email</label>
+                                <input type="email" id="contactEmail" name="email" class="form-control" placeholder="Email" value="${UIHelpers.escapeHTML(entry.email || '')}">
+                            </div>
+                            <h5 class="mt-4">Address</h5>
+                            <div class="card card-body bg-light mb-3">
+                                <input type="text" name="addrStreet" class="form-control form-control-sm mb-2" placeholder="Street" value="${UIHelpers.escapeHTML(entry.address?.street || '')}">
+                                <div class="row gx-2">
+                                    <div class="col-md-6 mb-2"><input type="text" name="addrCity" class="form-control form-control-sm" placeholder="City" value="${UIHelpers.escapeHTML(entry.address?.city || '')}"></div>
+                                    <div class="col-md-3 mb-2"><input type="text" name="addrState" class="form-control form-control-sm" placeholder="State" value="${UIHelpers.escapeHTML(entry.address?.state || '')}"></div>
+                                    <div class="col-md-3 mb-2"><input type="text" name="addrZip" class="form-control form-control-sm" placeholder="ZIP" value="${UIHelpers.escapeHTML(entry.address?.zip || '')}"></div>
+                                </div>
+                                <input type="text" name="addrCountry" class="form-control form-control-sm" placeholder="Country" value="${UIHelpers.escapeHTML(entry.address?.country || '')}">
+                            </div>
+                            <h5 class="mt-4">Phone Numbers</h5>
+                            <div id="contactPhoneNumbersContainer" class="mb-3">
+                                ${(entry.phoneNumbers || []).map((phone, i) => `
+                                    <div class="card card-body bg-light mb-2">
+                                        <input type="hidden" name="contactPhoneId_${i}" value="${phone.id || crypto.randomUUID()}">
+                                        <div class="row gx-2">
+                                            <div class="col-md-6 mb-2"><input type="text" name="contactPhoneNumber_${i}" class="form-control form-control-sm" placeholder="Number" value="${UIHelpers.escapeHTML(phone.number || '')}"></div>
+                                            <div class="col-md-6 mb-2"><input type="text" name="contactPhoneType_${i}" class="form-control form-control-sm" placeholder="Type (e.g., Mobile)" value="${UIHelpers.escapeHTML(phone.type || '')}"></div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary mb-4" id="addContactPhoneBtn"><i class="bi bi-plus-lg"></i> Add Phone</button>
+                            <div class="mb-4">
+                                <label for="contactNotes" class="form-label">Notes</label>
+                                <textarea id="contactNotes" name="notes" class="form-control" rows="3" placeholder="Additional notes">${UIHelpers.escapeHTML(entry.notes || '')}</textarea>
+                            </div>
+                        `;
+                        break;
+                    case 'media':
+                        fieldsHtml = `
+                            <div class="mb-3">
+                                <label for="mediaTitle" class="form-label">Title</label>
+                                <input type="text" id="mediaTitle" name="title" class="form-control" placeholder="Media Title" value="${UIHelpers.escapeHTML(entry.title || '')}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mediaType" class="form-label">Type</label>
+                                <select id="mediaType" name="type" class="form-select" required>
+                                    <option value="">Select Type</option>
+                                    <option value="image" ${entry.type === 'image' ? 'selected' : ''}>Image</option>
+                                    <option value="video" ${entry.type === 'video' ? 'selected' : ''}>Video</option>
+                                    <option value="audio" ${entry.type === 'audio' ? 'selected' : ''}>Audio</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="mediaGroup" class="form-label">Collection/Playlist</label>
+                                <input type="text" id="mediaGroup" name="group" class="form-control" placeholder="e.g., Family Photos, Workout Playlist" value="${UIHelpers.escapeHTML(entry.collection || entry.playlist || '')}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="mediaDescription" class="form-label">Description</label>
+                                <textarea id="mediaDescription" name="description" class="form-control" rows="3" placeholder="Description of media">${UIHelpers.escapeHTML(entry.description || '')}</textarea>
+                            </div>
+                        `;
+                        break;
+                    case 'bookmarks':
+                        fieldsHtml = `
+                            <div class="mb-3">
+                                <label for="bookmarkTitle" class="form-label">Title</label>
+                                <input type="text" id="bookmarkTitle" name="title" class="form-control" placeholder="Title" value="${UIHelpers.escapeHTML(entry.title || '')}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bookmarkUrl" class="form-label">URL</label>
+                                <input type="url" id="bookmarkUrl" name="url" class="form-control" placeholder="URL" value="${UIHelpers.escapeHTML(entry.url || '')}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bookmarkTags" class="form-label">Tags (comma-separated)</label>
+                                <input type="text" id="bookmarkTags" name="tags" class="form-control" placeholder="Tags (comma-separated)" value="${UIHelpers.escapeHTML(entry.tags ? entry.tags.join(', ') : '')}">
+                            </div>
+                            <div class="mb-4">
+                                <label for="bookmarkCategory" class="form-label">Category</label>
+                                <input type="text" id="bookmarkCategory" name="category" class="form-control" placeholder="e.g., Tech, News" value="${UIHelpers.escapeHTML(entry.category || '')}">
+                            </div>
+                        `;
+                        break;
+                    case 'notes':
+                        fieldsHtml = `
+                            <div class="mb-3">
+                                <label for="noteTitle" class="form-label">Note Title</label>
+                                <input type="text" id="noteTitle" name="title" class="form-control" placeholder="Note Title" value="${UIHelpers.escapeHTML(entry.title || '')}" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="editor" class="form-label">Content</label>
+                                <div id="editor" style="height: 300px;"></div>
+                            </div>
+                        `;
+                        break;
+                    case 'credentials':
+                        fieldsHtml = `
+                            <div class="mb-3">
+                                <label for="credentialService" class="form-label">Service Name</label>
+                                <input type="text" id="credentialService" name="service" class="form-control" placeholder="Service Name" value="${UIHelpers.escapeHTML(entry.service || '')}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="credentialUsername" class="form-label">User Identifier</label>
+                                <input type="text" id="credentialUsername" name="username" class="form-control" placeholder="Username / Email" value="${UIHelpers.escapeHTML(entry.username || '')}" required>
+                            </div>
+                            <div class="password-field mb-4">
+                                <label for="credentialPassword" class="form-label">Password / Passcode</label>
+                                <input type="password" id="credentialPassword" name="password" class="form-control" placeholder="Password / Passcode" value="${UIHelpers.escapeHTML(entry.password || '')}" required>
+                                <i class="bi bi-eye password-toggle" data-password-toggle="true"></i>
+                            </div>
+                            <div class="mb-4">
+                                <label for="credentialNotes" class="form-label">Notes</label>
+                                <textarea id="credentialNotes" name="notes" class="form-control" rows="3" placeholder="Any additional notes for this credential">${UIHelpers.escapeHTML(entry.notes || '')}</textarea>
+                            </div>
+                        `;
+                        break;
+                }
+                return `
+                    ${fieldsHtml}
+                    <button type="submit" class="btn btn-primary w-100 mt-3">
+                        <i class="bi bi-save"></i> ${state.selectedEntry ? 'Update' : 'Save'}
+                    </button>
+                `;
+            }
+        );
+
+
+        // 5. Unified Search Overlay Component
+        const unifiedSearchOverlayComponent = createReactiveComponent(
+            document.querySelector('#unifiedSearchOverlay .search-results-container'),
+            { searchTerm: '', searchResults: {} },
+            (state) => {
+                if (!state.searchTerm) {
+                    return `<div class="empty-state">
+                                <i class="bi bi-search text-muted"></i>
+                                <p>Start typing to search across all your vault entries.</p>
+                            </div>`;
+                }
+
+                const renderSection = (title, icon, items, mode) => {
+                    if (items.length === 0) return '';
+                    return `
+                        <h5 class="search-section-title">${title}</h5>
+                        <div class="list-group">
+                            ${items.map(item => {
+                                let itemTitle = '';
+                                let itemSubtitle = '';
+                                switch (mode) {
+                                    case 'personal-info':
+                                        itemTitle = item.name || 'Personal Info';
+                                        itemSubtitle = item.addresses.map(a => a.street).join(', ') || item.phoneNumbers.map(p => p.number).join(', ');
+                                        break;
+                                    case 'address-book':
+                                        itemTitle = item.name;
+                                        itemSubtitle = item.email || (item.phoneNumbers && item.phoneNumbers.length ? item.phoneNumbers[0].number : '');
+                                        break;
+                                    case 'media':
+                                        itemTitle = item.title;
+                                        itemSubtitle = `${item.type} - ${item.collection || item.playlist || 'Uncategorized'}`;
+                                        break;
+                                    case 'bookmarks':
+                                        itemTitle = item.title;
+                                        itemSubtitle = item.url;
+                                        break;
+                                    case 'notes':
+                                        itemTitle = item.title;
+                                        itemSubtitle = new Date(item.timestamp).toLocaleDateString();
+                                        break;
+                                    case 'credentials':
+                                        itemTitle = item.service;
+                                        itemSubtitle = item.username;
+                                        break;
+                                }
+
+                                return `
+                                    <a href="#" class="list-group-item search-result-item" data-id="${item.id}" data-mode="${mode}">
+                                        <i class="bi bi-${icon}"></i>
+                                        <div class="item-text">
+                                            <h6 class="text-truncate">${UIHelpers.escapeHTML(itemTitle)}</h6>
+                                            <small class="text-muted text-truncate">${UIHelpers.escapeHTML(itemSubtitle)}</small>
+                                        </div>
+                                    </a>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                };
+
+                const { personalInfo, addressBook, media, bookmarks, notes, credentials } = state.searchResults;
+
+                const resultsCount = (personalInfo?.length || 0) + (addressBook?.length || 0) + (media?.length || 0) + (bookmarks?.length || 0) + (notes?.length || 0) + (credentials?.length || 0);
+
+                if (resultsCount === 0) {
+                    return `<div class="empty-state">
+                                <i class="bi bi-x-circle-fill text-muted"></i>
+                                <p>No results found for "${UIHelpers.escapeHTML(state.searchTerm)}".</p>
+                            </div>`;
+                }
+
+                return `
+                    ${renderSection('Personal Info', 'person-lines-fill', personalInfo, 'personal-info')}
+                    ${renderSection('Address Book', 'address-book', addressBook, 'address-book')}
+                    ${renderSection('Media Gallery', 'image', media, 'media')}
+                    ${renderSection('Bookmarks', 'bookmarks', bookmarks, 'bookmarks')}
+                    ${renderSection('Notes', 'journal-text', notes, 'notes')}
+                    ${renderSection('Credentials', 'shield-lock', credentials, 'credentials')}
+                `;
+            }
+        );
+
+
+        // --- Main App Controller (Manages Global State and Orchestrates Components) ---
+        const VaultApp = (() => {
+            // Global application state
+            let appState = {
+                currentMode: 'dashboard', // Default to dashboard
+                selectedEntryId: null,    // ID of the currently selected entry
+                isEditing: false,         // True if showing an edit form in offcanvas, false if showing a detail view
+                searchTerm: '',           // Current search term for unified search
+                isSearchOverlayOpen: false, // Controls visibility of the unified search overlay
+                quillInstance: null,      // Reference to Quill editor instance
+                deleteModalInstance: null, // Reference to Bootstrap Modal instance
+                formOffcanvasInstance: null, // Reference to Bootstrap Offcanvas instance
+                entryToDeleteId: null,    // Stores the ID of the entry to be deleted
+                isDarkMode: false, // Stores the Dark Mode variable
+            };
+
+            /**
+             * Initializes the application: sets up event listeners and initial UI state.
+             */
+            function init() {
+                // Initialize Bootstrap modals/offcanvas
+                appState.deleteModalInstance = new bootstrap.Modal(document.getElementById('deleteConfirmModal'), {});
+                appState.formOffcanvasInstance = new bootstrap.Offcanvas(document.getElementById('entryFormOffcanvas'), { backdrop: true, scroll: true });
+
+                bindGlobalEvents();
+                // Set initial state, which will trigger all components to render
+                setAppState({
+                    currentMode: 'dashboard',
+                    selectedEntryId: null,
+                    isEditing: false,
+                    searchTerm: '',
+                    isSearchOverlayOpen: false
+                });
+            }
+
+            /**
+             * Central function to update the application's global state.
+             * This is the single point of truth for state changes.
+             * @param {Object} newState An object containing properties to merge into the current state.
+             */
+            function setAppState(newState) {
+                // Update global state
+                appState = { ...appState, ...newState };
+                console.log('App State Updated:', appState); // For debugging
+
+                // --- Orchestrate Component Re-renders based on new global state ---
+
+                // 1. Update Mode Selector Component (top navbar)
+                modeSelectorComponent.setState({ currentMode: appState.currentMode });
+
+                // 2. Update Sidebar Navigation Component
+                sidebarNavComponent.setState({ currentMode: appState.currentMode });
+
+                // 3. Update Main Content Component
+                let selectedEntry = null;
+                if (appState.currentMode === 'personal-info') {
+                    selectedEntry = PersonalInfoManager.list()[0];
+                } else if (appState.selectedEntryId) {
+                    selectedEntry = getCurrentDataManager().get(appState.selectedEntryId);
+                }
+                mainContentComponent.setState({
+                    currentMode: appState.currentMode,
+                    selectedEntry: selectedEntry
+                });
+
+                // 4. Update Offcanvas Form Component
+                // This component doesn't automatically re-render its state because its visibility
+                // is controlled by Bootstrap's Offcanvas JS. We manually trigger its rendering
+                // when it's about to be shown based on `appState.isEditing` and `appState.selectedEntryId`.
+                // The actual form fields are rendered when the offcanvas is preparing to show.
+
+                // 5. Update Unified Search Overlay Component
+                const searchResults = performUnifiedSearch(appState.searchTerm);
+                const searchOverlayElement = document.getElementById('unifiedSearchOverlay');
+                if (searchOverlayElement) {
+                    if (appState.isSearchOverlayOpen) {
+                        searchOverlayElement.classList.add('active');
+                    } else {
+                        searchOverlayElement.classList.remove('active');
+                    }
+                }
+                unifiedSearchOverlayComponent.setState({
+                    searchTerm: appState.searchTerm,
+                    searchResults: searchResults
+                });
+
+
+                // --- Handle Quill.js specific initialization/teardown for Notes ---
+                // Quill needs to be initialized *after* its #editor div is in the DOM.
+                // The `offcanvasFormComponent` renders into the offcanvas, which might
+                // destroy and recreate #editor.
+                // We use a small setTimeout to ensure the DOM is updated before Quill attempts to initialize.
+                // This logic is now managed by the offcanvas `show.bs.offcanvas` event.
+            }
+
+            /**
+             * Returns the appropriate data manager based on the currentMode.
+             * @returns {Object} The data manager.
+             */
+            function getCurrentDataManager() {
+                switch (appState.currentMode) {
+                    case 'personal-info': return PersonalInfoManager;
+                    case 'address-book': return AddressBookManager;
+                    case 'media': return MediaManager;
+                    case 'bookmarks': return BookmarkManager;
+                    case 'notes': return NoteManager;
+                    case 'credentials': return CredentialManager;
+                    default: return null; // Should not happen in a defined mode
+                }
+            }
+
+            /**
+             * Binds global event listeners using event delegation for efficiency.
+             * Handles clicks on mode buttons, form submissions, sidebar clicks, etc.
+             */
+            function bindGlobalEvents() {
+                // --- Navbar & Global Search ---
+                document.getElementById('mobileSearchToggleBtn').addEventListener('click', () => {
+                    setAppState({ isSearchOverlayOpen: true });
+                });
+
+                document.getElementById('fullSearchBtn')?.addEventListener('click', () => {
+                    setAppState({ isSearchOverlayOpen: true });
+                });
+
+                document.getElementById('unifiedSearchInput').addEventListener('input', (event) => {
+                    setAppState({ searchTerm: event.target.value.trim() });
+                });
+
+                document.getElementById('closeSearchOverlayBtn').addEventListener('click', () => {
+                    setAppState({ isSearchOverlayOpen: false, searchTerm: '' });
+                    document.getElementById('unifiedSearchInput').value = ''; // Clear input on close
+                });
+
+                document.getElementById('unifiedSearchOverlay').addEventListener('click', (event) => {
+                    const resultItem = event.target.closest('.search-result-item');
+                    if (resultItem) {
+                        event.preventDefault();
+                        const id = resultItem.dataset.id;
+                        const mode = resultItem.dataset.mode;
+
+                        // If personal info, open form directly
+                        if (mode === 'personal-info') {
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: id,
+                                isEditing: true, // Personal info always opens in edit mode
+                                isSearchOverlayOpen: false,
+                                searchTerm: ''
+                            });
+                            // Prepare and show offcanvas for personal info
+                            const personalInfoEntry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                            offcanvasFormComponent.setState({ currentMode: 'personal-info', selectedEntry: personalInfoEntry });
+                            document.getElementById('offcanvasLabel').textContent = `Edit Personal Information`;
+                            appState.formOffcanvasInstance.show();
+                        } else {
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: id,
+                                isEditing: false, // Show detail view
+                                isSearchOverlayOpen: false,
+                                searchTerm: ''
+                            });
+                        }
+                        document.getElementById('unifiedSearchInput').value = ''; // Clear search input
+                    }
+                });
+
+                // Mode selection buttons (delegated from modeSelectorContainer for desktop)
+                document.getElementById('modeSelectorContainer').addEventListener('click', (event) => {
+                    const targetButton = event.target.closest('[data-mode]');
+                    if (targetButton) {
+                        const mode = targetButton.dataset.mode;
+                        if (mode === 'personal-info') {
+                             // Personal info always opens in edit mode via offcanvas when selected from header
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: PersonalInfoManager.list()[0]?.id,
+                                isEditing: true,
+                                searchTerm: ''
+                            });
+                            const personalInfoEntry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                            offcanvasFormComponent.setState({ currentMode: 'personal-info', selectedEntry: personalInfoEntry });
+                            document.getElementById('offcanvasLabel').textContent = `Edit Personal Information`;
+                            appState.formOffcanvasInstance.show();
+                        } else {
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: null, // Clear selection when changing mode
+                                isEditing: false,
+                                searchTerm: ''
+                            });
+                        }
+                    }
+                });
+
+                // --- Sidebar Navigation ---
+                document.getElementById('appSidebar').addEventListener('click', (event) => {
+                    const navLink = event.target.closest('.nav-link');
+                    if (navLink) {
+                        event.preventDefault();
+                        const mode = navLink.dataset.mode;
+                        if (mode === 'personal-info') {
+                            // Personal info always opens in edit mode via offcanvas when selected from sidebar
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: PersonalInfoManager.list()[0]?.id,
+                                isEditing: true,
+                                searchTerm: ''
+                            });
+                            const personalInfoEntry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                            offcanvasFormComponent.setState({ currentMode: 'personal-info', selectedEntry: personalInfoEntry });
+                            document.getElementById('offcanvasLabel').textContent = `Edit Personal Information`;
+                            appState.formOffcanvasInstance.show();
+                        } else {
+                            setAppState({
+                                currentMode: mode,
+                                selectedEntryId: null, // Clear selection when changing mode
+                                isEditing: false,
+                                searchTerm: ''
+                            });
+                        }
+                    }
+                });
+
+
+                // --- Add New Entry Button (Sidebar Global) ---
+                document.getElementById('addNewEntryBtn').addEventListener('click', () => {
+                    const modeToAdd = appState.currentMode === 'dashboard' ? 'bookmarks' : appState.currentMode; // Default to bookmarks if on dashboard
+                    if (modeToAdd === 'personal-info') {
+                        // Personal info is always an edit, not "add new"
+                        const personalInfoEntry = PersonalInfoManager.list()[0] || { addresses: [], phoneNumbers: [] };
+                        setAppState({ currentMode: modeToAdd, selectedEntryId: personalInfoEntry.id, isEditing: true });
+                        offcanvasFormComponent.setState({ currentMode: modeToAdd, selectedEntry: personalInfoEntry });
+                        document.getElementById('offcanvasLabel').textContent = `Edit Personal Information`;
+                    } else {
+                        setAppState({ currentMode: modeToAdd, selectedEntryId: null, isEditing: true }); // New entry mode
+                        offcanvasFormComponent.setState({ currentMode: modeToAdd, selectedEntry: null }); // Render empty form
+                        document.getElementById('offcanvasLabel').textContent = `Add New ${modeToAdd.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`;
+                    }
+                    appState.formOffcanvasInstance.show();
+                });
+
+                // --- Add New Entry Button (Contextual in List Views) ---
+                document.getElementById('mainContentDynamicArea').addEventListener('click', (event) => {
+                    const addNewContextBtn = event.target.closest('#addNewEntryContextBtn');
+                    if (addNewContextBtn) {
+                        const mode = addNewContextBtn.dataset.mode;
+                        setAppState({ currentMode: mode, selectedEntryId: null, isEditing: true });
+                        offcanvasFormComponent.setState({ currentMode: mode, selectedEntry: null }); // Render empty form
+                        document.getElementById('offcanvasLabel').textContent = `Add New ${mode.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`;
+                        appState.formOffcanvasInstance.show();
+                    }
+                });
+
+                // --- Main Content Area Interactions (List Item Clicks, Edit/Delete Buttons) ---
+                document.getElementById('mainContentDynamicArea').addEventListener('click', (event) => {
+                    const listItem = event.target.closest('.list-group-item');
+                    const mediaItem = event.target.closest('.media-item');
+                    const editBtn = event.target.closest('#editEntry');
+                    const deleteBtn = event.target.closest('#deleteEntry');
+
+                    if (listItem) { // Click on list item to view details
+                        event.preventDefault();
+                        const entryId = listItem.dataset.id;
+                        if (entryId) {
+                            setAppState({ selectedEntryId: entryId, isEditing: false }); // Show detail view
+                        }
+                    } else if (mediaItem) { // Click on media item to view details
+                        const mediaId = mediaItem.dataset.id;
+                        if (mediaId) {
+                            setAppState({ currentMode: 'media', selectedEntryId: mediaId, isEditing: false });
+                        }
+                    } else if (editBtn) { // Click on Edit button in detail view
+                        const idToEdit = editBtn.dataset.id;
+                        setAppState({ selectedEntryId: idToEdit, isEditing: true });
+                        offcanvasFormComponent.setState({
+                            currentMode: appState.currentMode,
+                            selectedEntry: getCurrentDataManager().get(idToEdit)
+                        });
+                        document.getElementById('offcanvasLabel').textContent = `Edit ${appState.currentMode.replace('-', ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}`;
+                        appState.formOffcanvasInstance.show();
+                    } else if (deleteBtn) { // Click on Delete button in detail view
+                        const idToDelete = deleteBtn.dataset.id;
+                        appState.entryToDeleteId = idToDelete; // Store ID for modal confirmation
+                        appState.deleteModalInstance.show();
+                    }
+                });
+                // --- Offcanvas Form Event Listeners ---
+                // Event for when the offcanvas is about to be shown
+                document.getElementById('entryFormOffcanvas').addEventListener('show.bs.offcanvas', () => {
+                    // Manually render the form into the offcanvas body
+                    offcanvasFormComponent.render();
+
+                    // If it's a note, initialize Quill
+                    if (appState.currentMode === 'notes') {
+                        setTimeout(() => { // Small delay to ensure #editor is in DOM
+                            const editorElement = document.getElementById('editor');
+                            if (editorElement) {
+                                if (!appState.quillInstance) {
+                                    appState.quillInstance = new Quill(editorElement, {
+                                        modules: {
+                                            toolbar: [
+                                                ['bold', 'italic', 'underline'],
+                                                ['blockquote', 'code-block'],
+                                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                                                ['link', 'image'],
+                                                ['clean']
+                                            ]
+                                        },
+                                        theme: 'snow',
+                                        placeholder: 'Compose your note here...'
+                                    });
+                                }
+                                // Set content if editing existing note
+                                const noteEntry = appState.selectedEntryId ? NoteManager.get(appState.selectedEntryId) : null;
+                                appState.quillInstance.root.innerHTML = noteEntry ? noteEntry.content : '';
+                            }
+                        }, 0);
+                    }
+                });
+
+                // Event for when the offcanvas is hidden
+                document.getElementById('entryFormOffcanvas').addEventListener('hidden.bs.offcanvas', () => {
+                    // Destroy Quill instance if it exists to prevent memory leaks and issues
+                    if (appState.quillInstance) {
+                        appState.quillInstance.destroy();
+                        appState.quillInstance = null;
+                        console.log('Quill instance destroyed on offcanvas close.');
+                    }
+                });
+
+
+                // Add Address / Add Phone buttons in Personal Info form (delegated from offcanvas form)
+                document.getElementById('offcanvasEntryForm').addEventListener('click', (event) => {
+                    if (event.target.id === 'addAddressBtn') {
+                        const container = document.getElementById('addressesContainer');
+                        if (container) container.insertAdjacentHTML('beforeend', offcanvasFormComponent.renderAddressSubForm({}, container.children.length));
+                    }
+                    if (event.target.id === 'addPhoneBtn') {
+                        const container = document.getElementById('phoneNumbersContainer');
+                        if (container) container.insertAdjacentHTML('beforeend', offcanvasFormComponent.renderPhoneSubForm({}, container.children.length));
+                    }
+                    if (event.target.id === 'addContactPhoneBtn') { // For Address Book
+                        const container = document.getElementById('contactPhoneNumbersContainer');
+                        const currentIndex = container ? container.querySelectorAll('.card.card-body.bg-light').length : 0;
+                        const newPhoneHtml = `
+                            <div class="card card-body bg-light mb-2">
+                                <input type="hidden" name="contactPhoneId_${currentIndex}" value="${crypto.randomUUID()}">
+                                <div class="row gx-2">
+                                    <div class="col-md-6 mb-2"><input type="text" name="contactPhoneNumber_${currentIndex}" class="form-control form-control-sm" placeholder="Number"></div>
+                                    <div class="col-md-6 mb-2"><input type="text" name="contactPhoneType_${currentIndex}" class="form-control form-control-sm" placeholder="Type (e.g., Mobile)"></div>
+                                </div>
+                            </div>
+                        `;
+                        if (container) container.insertAdjacentHTML('beforeend', newPhoneHtml);
+                    }
+                });
+
+                // Password toggle (delegated from offcanvas form)
+                document.getElementById('offcanvasEntryForm').addEventListener('click', (event) => {
+                    const toggleIcon = event.target.closest('[data-password-toggle="true"]');
+                    if (toggleIcon) {
+                        const passwordInput = toggleIcon.previousElementSibling;
+                        if (passwordInput && (passwordInput.name === 'password' || passwordInput.name === 'credentialPassword')) {
+                            const type = passwordInput.type === 'password' ? 'text' : 'password';
+                            passwordInput.type = type;
+                            toggleIcon.classList.toggle('bi-eye');
+                            toggleIcon.classList.toggle('bi-eye-slash');
+                        }
+                    }
+                });
+
+                // --- Form Submission (from offcanvas) ---
+                document.getElementById('offcanvasEntryForm').addEventListener('submit', (event) => {
+                    event.preventDefault();
+                    handleFormSubmit(event.target);
+                    appState.formOffcanvasInstance.hide(); // Hide offcanvas after submission
+                });
+
+                // --- Delete Confirmation Modal ---
+                document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+                    handleDeleteEntry(appState.entryToDeleteId); // Use stored ID
+                    appState.deleteModalInstance.hide();
+                    appState.entryToDeleteId = null; // Clear the stored ID
+                });
+            }
+
+            /**
+             * Handles the submission of the entry form (add or update).
+             * @param {HTMLFormElement} formElement The form element that was submitted.
+             */
+            function handleFormSubmit(formElement) {
+                let entry = {};
+                const formData = new FormData(formElement);
+                let currentDataManager = getCurrentDataManager();
+
+                switch (appState.currentMode) {
+                    case 'personal-info':
+                        entry.id = formData.get('personalInfoId') || PersonalInfoManager.list()[0]?.id || crypto.randomUUID();
+                        entry.name = formData.get('name') || 'My Personal Info'; // Name is now fixed
+                        entry.addresses = [];
+                        entry.phoneNumbers = [];
+                        // Collect addresses
+                        formElement.querySelectorAll('#addressesContainer .card.card-body.bg-light').forEach((addrCard, i) => {
+                            const address = {
+                                id: formData.get(`addressId_${i}`),
+                                street: formData.get(`street_${i}`).trim(),
+                                city: formData.get(`city_${i}`).trim(),
+                                state: formData.get(`state_${i}`).trim(),
+                                zip: formData.get(`zip_${i}`).trim(),
+                                country: formData.get(`country_${i}`).trim(),
+                                periodStart: formData.get(`addrPeriodStart_${i}`),
+                                periodEnd: formData.get(`addrPeriodEnd_${i}`)
+                            };
+                            if (address.street || address.city || address.country || address.periodStart || address.periodEnd) { // Only add if not entirely empty
+                                entry.addresses.push(address);
+                            }
+                        });
+
+                        // Collect phone numbers
+                        formElement.querySelectorAll('#phoneNumbersContainer .card.card-body.bg-light').forEach((phoneCard, i) => {
+                            const phone = {
+                                id: formData.get(`phoneId_${i}`),
+                                number: formData.get(`number_${i}`).trim(),
+                                carrier: formData.get(`carrier_${i}`).trim(),
+                                durationStart: formData.get(`phonePeriodStart_${i}`),
+                                durationEnd: formData.get(`phonePeriodEnd_${i}`)
+                            };
+                            if (phone.number || phone.carrier || phone.durationStart || phone.durationEnd) { // Only add if not entirely empty
+                                entry.phoneNumbers.push(phone);
+                            }
+                        });
+
+                        if (PersonalInfoManager.list().length > 0) {
+                             currentDataManager.update(entry.id, entry);
+                        } else {
+                             currentDataManager.add(entry);
+                        }
+                        // After saving personal info, go to its detail view
+                        setAppState({ currentMode: 'personal-info', selectedEntryId: entry.id, isEditing: false, searchTerm: '' });
+                        break;
+                    case 'address-book':
+                        entry.name = formData.get('name').trim();
+                        entry.email = formData.get('email').trim();
+                        entry.notes = formData.get('notes').trim();
+                        entry.address = {
+                            street: formData.get('addrStreet').trim(),
+                            city: formData.get('addrCity').trim(),
+                            state: formData.get('addrState').trim(),
+                            zip: formData.get('addrZip').trim(),
+                            country: formData.get('addrCountry').trim()
+                        };
+                        entry.phoneNumbers = [];
+                        formElement.querySelectorAll('#contactPhoneNumbersContainer .card.card-body.bg-light').forEach((phoneCard, i) => {
+                            const phone = {
+                                id: formData.get(`contactPhoneId_${i}`),
+                                number: formData.get(`contactPhoneNumber_${i}`).trim(),
+                                type: formData.get(`contactPhoneType_${i}`).trim()
+                            };
+                            if (phone.number || phone.type) entry.phoneNumbers.push(phone);
+                        });
+                        break;
+                    case 'media':
+                        entry.title = formData.get('title').trim();
+                        entry.type = formData.get('type').trim();
+                        entry.description = formData.get('description').trim();
+                        if (entry.type === 'image' || entry.type === 'video') {
+                            entry.collection = formData.get('group').trim();
+                            entry.playlist = '';
+                        } else if (entry.type === 'audio') {
+                            entry.playlist = formData.get('group').trim();
+                            entry.collection = '';
+                        }
+                        break;
+                    case 'bookmarks':
+                        entry.title = formData.get('title').trim();
+                        entry.url = formData.get('url').trim();
+                        entry.tags = formData.get('tags').split(',').map(t => t.trim()).filter(Boolean);
+                        entry.category = formData.get('category').trim();
+                        break;
+                    case 'notes':
+                        entry.title = formData.get('title').trim();
+                        entry.content = appState.quillInstance ? appState.quillInstance.root.innerHTML : '';
+                        break;
+                    case 'credentials':
+                        entry.service = formData.get('service').trim();
+                        entry.username = formData.get('username').trim();
+                        entry.password = formData.get('password');
+                        entry.notes = formData.get('notes').trim();
+                        break;
+                }
+                entry.timestamp = new Date().toISOString();
+
+                if (appState.selectedEntryId) {
+                    currentDataManager.update(appState.selectedEntryId, entry);
+                } else {
+                    const newId = currentDataManager.add(entry);
+                    appState.selectedEntryId = newId; // Set newly created ID as selected
+                }
+
+                // After saving, go to the detail view of the newly added/updated item
+                // For personal info, it automatically goes to its view mode.
+                // For others, set selectedEntryId to null to go back to list view,
+                // or to the new ID to show its detail view.
+                setAppState({
+                    selectedEntryId: appState.selectedEntryId, // Stay on the detail view if editing, or show new item
+                    isEditing: false,
+                    searchTerm: ''
+                });
+            }
+
+            /**
+             * Handles deleting a specified entry.
+             * @param {string} id The ID of the entry to delete.
+             */
+            function handleDeleteEntry(id) {
+                if (!id) return;
+                if (appState.currentMode === 'personal-info') return; // Personal info cannot be deleted
+
+                let currentDataManager = getCurrentDataManager();
+                currentDataManager.remove(id);
+
+                // Reset to default state after deletion
+                setAppState({ selectedEntryId: null, isEditing: false, searchTerm: '' });
+            }
+
+            /**
+             * Performs a unified search across all vault categories.
+             * @param {string} searchTerm The term to search for.
+             * @returns {Object} An object with search results grouped by category.
+             */
+            function performUnifiedSearch(searchTerm) {
+                const searchLower = searchTerm.toLowerCase();
+                if (!searchLower) {
+                    return {
+                        personalInfo: [], addressBook: [], media: [],
+                        bookmarks: [], notes: [], credentials: []
+                    };
+                }
+
+                const filterAndMap = (manager, fields) => {
+                    return manager.list().filter(item => {
+                        return fields.some(field =>
+                            item[field] && String(item[field]).toLowerCase().includes(searchLower)
+                        );
+                    });
+                };
+
+                const personalInfoResults = PersonalInfoManager.list().filter(pi => {
+                    const searchable = [pi.name];
+                    if (pi.addresses) pi.addresses.forEach(a => searchable.push(a.street, a.city, a.state, a.zip, a.country));
+                    if (pi.phoneNumbers) pi.phoneNumbers.forEach(p => searchable.push(p.number, p.carrier));
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                const addressBookResults = AddressBookManager.list().filter(contact => {
+                    const searchable = [contact.name, contact.email, contact.notes];
+                    if (contact.address) searchable.push(contact.address.street, contact.address.city, contact.address.state, contact.address.zip, contact.address.country);
+                    if (contact.phoneNumbers) contact.phoneNumbers.forEach(p => searchable.push(p.number, p.type));
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                const mediaResults = MediaManager.list().filter(media => {
+                    const searchable = [media.title, media.description, media.type, media.collection, media.playlist];
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                const bookmarkResults = BookmarkManager.list().filter(bookmark => {
+                    const searchable = [bookmark.title, bookmark.url, bookmark.category, ...bookmark.tags];
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                const noteResults = NoteManager.list().filter(note => {
+                    const searchable = [note.title, note.content];
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                const credentialResults = CredentialManager.list().filter(credential => {
+                    const searchable = [credential.service, credential.username, credential.notes];
+                    // Do NOT search by password for security reasons
+                    return searchable.some(field => field && String(field).toLowerCase().includes(searchLower));
+                });
+
+                return {
+                    personalInfo: personalInfoResults,
+                    addressBook: addressBookResults,
+                    media: mediaResults,
+                    bookmarks: bookmarkResults,
+                    notes: noteResults,
+                    credentials: credentialResults
+                };
+            }
+
+            return { init, getCurrentDataManager };
+        })();
+        
+        // Function to apply/remove dark mode class and save preference
+function applyDarkMode(isDark) {
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('aegis-dark-mode', 'true');
+        // Update button icon if necessary
+        document.getElementById('darkModeToggleBtn').querySelector('i').classList.replace('bi-moon-fill', 'bi-sun-fill');
+    } else {
+        document.body.classList.remove('dark-mode');
+        localStorage.removeItem('aegis-dark-mode');
+        // Update button icon if necessary
+        document.getElementById('darkModeToggleBtn').querySelector('i').classList.replace('bi-sun-fill', 'bi-moon-fill');
+    }
+}
+
+// Initial check for dark mode preference
+const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+const savedDarkMode = localStorage.getItem('aegis-dark-mode');
+
+if (savedDarkMode === 'true') {
+    applyDarkMode(true);
+} else if (savedDarkMode === null && prefersDarkScheme.matches) {
+    // If no preference saved, use system preference
+    applyDarkMode(true);
+} else {
+    applyDarkMode(false);
+}
+
+// Event listener for the dark mode toggle button
+document.getElementById('darkModeToggleBtn').addEventListener('click', () => {
+    const isCurrentlyDark = document.body.classList.contains('dark-mode');
+    applyDarkMode(!isCurrentlyDark);
+});
+
+// Listen for changes in system preference
+prefersDarkScheme.addEventListener('change', (event) => {
+    if (localStorage.getItem('aegis-dark-mode') === null) { // Only change if user hasn't explicitly set a preference
+        applyDarkMode(event.matches);
+    }
+});
+
+        // Initialize the app when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            VaultApp.init();
+        });
+    </script>
+</body>
+</html>
