@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Quantum SPA Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <style>
+        body { background: #f6f7fb; }
+        .sidebar { min-height: 100vh; background: #212529; color: #fff; }
+        .sidebar .nav-link { color: #fff; }
+        .sidebar .nav-link.active { background: #495057; }
+        .dashboard-card { cursor: pointer; transition: box-shadow .2s; }
+        .dashboard-card:hover { box-shadow: 0 0 0 2px #0d6efd; }
+        .media-item { cursor: pointer; }
+        .search-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1050; display: none; }
+        .search-overlay.active { display: flex; align-items: flex-start; justify-content: center; }
+        .search-results-container { background: #fff; border-radius: 8px; margin-top: 60px; min-width: 400px; max-width: 700px; box-shadow: 0 8px 32px rgba(0,0,0,0.15);}
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <nav class="col-2 sidebar d-flex flex-column p-3">
+                <div id="modeSelectorContainer"></div>
+                <hr>
+                <div id="sidebarNavLinks"></div>
+            </nav>
+            <main class="col-10">
+                <div class="d-flex justify-content-between align-items-center my-3">
+                    <h2 class="mb-0">Quantum SPA Demo</h2>
+                    <button id="openSearchBtn" class="btn btn-outline-primary"><i class="bi bi-search"></i> Search</button>
+                </div>
+                <div id="mainContentDynamicArea"></div>
+            </main>
+        </div>
+    </div>
+    <div id="unifiedSearchOverlay" class="search-overlay">
+        <div class="search-results-container p-4">
+            <div class="d-flex mb-3">
+                <input id="unifiedSearchInput" class="form-control me-2" placeholder="Search everything...">
+                <button id="closeSearchOverlayBtn" class="btn btn-outline-secondary"><i class="bi bi-x"></i></button>
+            </div>
+            <div class="search-results-list"></div>
+        </div>
+    </div>
+    <script>
+        // --- QuantumStatePipeline ---
+        function QuantumStatePipeline(initial) {
+            let state = structuredClone(initial);
+            const middleware = new Set();
+            const quantumState = new Map();
+            const history = [];
+            return {
+                through(fn) { middleware.add(fn); return this; },
+                async execute() {
+                    for (const fn of middleware) {
+                        state = await fn(state, { history: [...history], quantum: new Map(quantumState) });
+                        history.push(structuredClone(state));
+                    }
+                    middleware.clear();
+                    return structuredClone(state);
+                },
+                observe(key, fn) { quantumState.set(key, fn); return this; },
+                collapse(key) { return quantumState.get(key)?.(structuredClone(state)) ?? null; },
+                get state() { return structuredClone(state); }
+            };
+        }
+
+        // --- Component Factory ---
+        function createComposableComponent(definition) {
+            const parentContainer = document.querySelector(definition.target);
+            if (!parentContainer) return [];
+            if (definition.clearContainer) parentContainer.innerHTML = '';
+            function build(children, defaultParent) {
+                const generatedInstances = [];
+                (children || []).forEach(childDef => {
+                    if (!childDef || !childDef.type) return;
+                    const componentElement = document.createElement(childDef.type);
+                    if (childDef.baseClasses) componentElement.classList.add(...childDef.baseClasses.filter(Boolean));
+                    if (childDef.props) Object.entries(childDef.props).forEach(([key, value]) => {
+                        if (value !== undefined && value !== null && value !== false)
+                            componentElement.setAttribute(key, value === true ? '' : String(value));
+                    });
+                    if (typeof childDef.composition === 'function') componentElement.innerHTML = childDef.composition(childDef.props || {});
+                    else if (childDef.composition) componentElement.appendChild(document.createTextNode(childDef.composition));
+                    if (childDef.events) Object.keys(childDef.events).forEach(eventType => {
+                        componentElement.addEventListener(eventType, (event) => childDef.events[eventType](event, { element: componentElement, definition: childDef, props: childDef.props || {} }));
+                    });
+                    if (childDef.children && childDef.children.length > 0) build(childDef.children, componentElement);
+                    let attachTarget = defaultParent;
+                    if (childDef.attachTo) {
+                        const newTarget = parentContainer.querySelector(childDef.attachTo);
+                        if (newTarget) attachTarget = newTarget;
+                    }
+                    attachTarget.appendChild(componentElement);
+                    generatedInstances.push({ element: componentElement, definition: childDef, props: childDef.props || {} });
+                });
+                return generatedInstances;
+            }
+            return build(definition.children, parentContainer);
+        }
+
+        // --- Render Functions ---
+        function renderMainContent(state) {
+            const { currentMode, entryId, bookmarkCategory, notebook, section, data } = state;
+            const keyMap = { 'personal-info': 'personalInfo', 'address-book': 'addressBook', 'media': 'media', 'bookmarks': 'bookmarks', 'notes': 'notes', 'credentials': 'credentials' };
+            const dataKey = keyMap[currentMode];
+            const selectedEntry = entryId && dataKey ? (data[dataKey] || []).find(e => e.id === entryId) : null;
+            let viewChildren = [];
+            if (selectedEntry) {
+                viewChildren = renderDetailView(currentMode, selectedEntry);
+            } else {
+                switch (currentMode) {
+                    case 'dashboard': viewChildren = renderDashboardView(data); break;
+                    case 'media': viewChildren = renderMediaListView(data.media || []); break;
+                    case 'bookmarks': viewChildren = renderBookmarksListView(data.bookmarks || [], bookmarkCategory); break;
+                    case 'notes': viewChildren = renderNotesListView(data.notes || [], notebook, section); break;
+                    default: viewChildren = renderGenericListView(currentMode, data[dataKey] || []);
+                }
+            }
+            return { target: '#mainContentDynamicArea', clearContainer: true, children: viewChildren };
+        }
+
+        function renderModeSelector(state) {
+            const modes = ['dashboard', 'personal-info', 'address-book', 'media', 'bookmarks', 'notes', 'credentials'];
+            const icons = ['grid-1x2-fill', 'person-circle', 'person-lines-fill', 'image', 'bookmarks', 'journal-text', 'shield-lock'];
+            const titles = ['Dashboard', 'Personal Info', 'Address Book', 'Media Gallery', 'Bookmarks', 'Notes', 'Credentials'];
+            return {
+                target: '#modeSelectorContainer',
+                clearContainer: true,
+                children: [{
+                    type: 'div', baseClasses: ['btn-group'],
+                    children: modes.map((mode, i) => ({
+                        type: 'button',
+                        baseClasses: ['btn', 'btn-outline-light', state.currentMode === mode ? 'active' : null],
+                        props: { 'data-mode-target': mode, type: 'button', title: titles[i] },
+                        children: [{ type: 'i', baseClasses: ['bi', `bi-${icons[i]}`] }]
+                    }))
+                }]
+            };
+        }
+
+        function renderSidebarNav(state) {
+            const modes = ['dashboard', 'personal-info', 'address-book', 'media', 'bookmarks', 'notes', 'credentials'];
+            const icons = ['grid-1x2-fill', 'person-circle', 'person-lines-fill', 'image', 'bookmarks', 'journal-text', 'shield-lock'];
+            const titles = ['Dashboard', 'Personal Info', 'Address Book', 'Media Gallery', 'Bookmarks', 'Notes', 'Credentials'];
+            return {
+                target: '#sidebarNavLinks',
+                clearContainer: true,
+                children: modes.map((mode, i) => ({
+                    type: 'a',
+                    baseClasses: ['nav-link', state.currentMode === mode ? 'active' : null],
+                    props: { href: '#', 'data-mode-target': mode, 'aria-current': state.currentMode === mode ? 'page' : 'false' },
+                    composition: ` ${titles[i]}`,
+                    children: [{ type: 'i', baseClasses: ['bi', `bi-${icons[i]}`, 'me-2'] }]
+                }))
+            };
+        }
+
+        function renderDashboardView(data) {
+            const categories = [
+                { key: 'personalInfo', label: 'Personal Info', icon: 'person-circle' },
+                { key: 'addressBook', label: 'Address Book', icon: 'person-lines-fill' },
+                { key: 'media', label: 'Media Gallery', icon: 'image' },
+                { key: 'bookmarks', label: 'Bookmarks', icon: 'bookmarks' },
+                { key: 'notes', label: 'Notes', icon: 'journal-text' },
+                { key: 'credentials', label: 'Credentials', icon: 'shield-lock' }
+            ];
+            return [{
+                type: 'div',
+                baseClasses: ['row', 'g-4'],
+                children: categories.map(cat => ({
+                    type: 'div',
+                    baseClasses: ['col-12', 'col-md-6', 'col-lg-4'],
+                    children: [{
+                        type: 'div',
+                        baseClasses: ['dashboard-card', 'card', 'shadow', 'h-100'],
+                        props: { 'data-mode-target': cat.key.replace(/[A-Z]/g, m => '-' + m.toLowerCase()) },
+                        children: [
+                            { type: 'div', baseClasses: ['card-body', 'd-flex', 'align-items-center'], children: [
+                                { type: 'i', baseClasses: ['bi', `bi-${cat.icon}`, 'display-5', 'me-3'] },
+                                { type: 'div', children: [
+                                    { type: 'h5', baseClasses: ['card-title', 'mb-0'], composition: cat.label },
+                                    { type: 'p', baseClasses: ['card-text', 'text-muted'], composition: `${data[cat.key]?.length || 0} items` }
+                                ]}
+                            ]}
+                        ]
+                    }]
+                }))
+            }];
+        }
+
+        function renderDetailView(mode, entry) {
+            switch (mode) {
+                case 'personal-info':
+                    return [
+                        { type: 'h2', composition: entry.name },
+                        { type: 'h5', composition: 'Addresses:' },
+                        ...(entry.addresses || []).map(address => (
+                            { type: 'p', composition: `${address.street}, ${address.city}, ${address.state}, ${address.zip}` }
+                        )),
+                        { type: 'h5', composition: 'Phone Numbers:' },
+                        ...(entry.phoneNumbers || []).map(phone => (
+                            { type: 'p', composition: phone.number }
+                        ))
+                    ];
+                case 'address-book':
+                    return [
+                        { type: 'h2', composition: entry.name },
+                        entry.pictureUrl && { type: 'img', props: { src: entry.pictureUrl, alt: entry.name, class: 'img-fluid' } },
+                        { type: 'h5', composition: 'Emails:' },
+                        ...(entry.emails || []).map(email => (
+                            { type: 'p', composition: email.address }
+                        )),
+                        { type: 'h5', composition: 'Addresses:' },
+                        ...(entry.addresses || []).map(address => (
+                            { type: 'p', composition: `${address.street}, ${address.city}` }
+                        )),
+                        { type: 'h5', composition: 'Phone Numbers:' },
+                        ...(entry.phoneNumbers || []).map(phone => (
+                            { type: 'p', composition: phone.number }
+                        )),
+                        { type: 'p', composition: entry.notes }
+                    ];
+                case 'media':
+                    return [
+                        { type: 'h2', composition: entry.title },
+                        entry.description && { type: 'p', composition: entry.description },
+                        entry.type === "image" && { type: 'img', props: { src: entry.url, alt: entry.title, class: 'img-fluid' } },
+                        entry.type !== "image" && { type: 'a', props: { href: entry.url, target: '_blank' }, composition: 'Play / View Media' }
+                    ];
+                case 'bookmarks':
+                    return [
+                        { type: 'h2', composition: entry.title },
+                        { type: 'p', composition: `URL: ${entry.url}` },
+                        entry.description && { type: 'p', composition: entry.description },
+                        { type: 'p', composition: `Category: ${entry.category}` },
+                        { type: 'p', composition: `Tags: ${(entry.tags || []).join(', ')}` }
+                    ];
+                case 'notes':
+                    return [
+                        { type: 'h2', composition: entry.title },
+                        { type: 'p', composition: `Notebook: ${entry.notebook}` },
+                        { type: 'p', composition: `Section: ${entry.section || 'General'}` },
+                        { type: 'div', composition: entry.content }
+                    ];
+                case 'credentials':
+                    return [
+                        { type: 'h2', composition: entry.service },
+                        { type: 'p', composition: `Username: ${entry.username}` },
+                        { type: 'p', composition: `Notes: ${entry.notes}` }
+                    ];
+                default:
+                    return [];
+            }
+        }
+
+        function renderMediaListView(mediaItems) {
+            const groups = {};
+            (mediaItems || []).forEach(item => {
+                const group = item.collection || item.playlist || 'Ungrouped';
+                if (!groups[group]) groups[group] = [];
+                groups[group].push(item);
+            });
+            return Object.entries(groups).map(([group, items]) => ({
+                type: 'div',
+                baseClasses: ['media-group', 'mb-4'],
+                children: [
+                    { type: 'h4', composition: group },
+                    {
+                        type: 'div',
+                        baseClasses: ['row', 'g-3'],
+                        children: items.map(item => ({
+                            type: 'div',
+                            baseClasses: ['col-6', 'col-md-4', 'col-lg-3'],
+                            children: [{
+                                type: 'div',
+                                baseClasses: ['media-item', 'card', 'h-100', 'shadow-sm'],
+                                props: { 'data-action': 'media-detail', id: item.id },
+                                children: [
+                                    item.type === 'image'
+                                        ? { type: 'img', props: { src: item.url, alt: item.title, class: 'card-img-top' } }
+                                        : { type: 'div', baseClasses: ['card-img-top', 'bg-light', 'd-flex', 'align-items-center', 'justify-content-center', 'p-5'], children: [
+                                            { type: 'i', baseClasses: ['bi', item.type === 'audio' ? 'bi-music-note-beamed' : 'bi-film', 'display-4', 'text-muted'] }
+                                          ] },
+                                    { type: 'div', baseClasses: ['card-body'], children: [
+                                        { type: 'h6', baseClasses: ['card-title'], composition: item.title }
+                                    ]}
+                                ]
+                            }]
+                        }))
+                    }
+                ]
+            }));
+        }
+
+        function renderBookmarksListView(bookmarks, selectedCategory) {
+            if (!selectedCategory) return renderBookmarksCategoryListView(bookmarks);
+            const filtered = (bookmarks || []).filter(b => (b.category || 'Uncategorized') === selectedCategory);
+            return [{
+                type: 'div',
+                baseClasses: ['list-group'],
+                children: filtered.map(b => ({
+                    type: 'a',
+                    baseClasses: ['list-group-item', 'list-group-item-action'],
+                    props: { 'data-action': 'select-entry', id: b.id },
+                    children: [
+                        { type: 'span', composition: b.title },
+                        { type: 'span', baseClasses: ['text-muted'], composition: b.url }
+                    ]
+                }))
+            }];
+        }
+
+        function renderBookmarksCategoryListView(bookmarks) {
+            const categories = {};
+            (bookmarks || []).forEach(b => {
+                const cat = b.category || 'Uncategorized';
+                if (!categories[cat]) categories[cat] = [];
+                categories[cat].push(b);
+            });
+            return [{
+                type: 'div',
+                baseClasses: ['row', 'g-3'],
+                children: Object.entries(categories).map(([category, items]) => ({
+                    type: 'div',
+                    baseClasses: ['col-12', 'col-md-6', 'col-lg-4'],
+                    children: [{
+                        type: 'div',
+                        baseClasses: ['bookmark-category-card', 'card', 'h-100'],
+                        props: { 'data-action': 'select-category', category },
+                        children: [
+                            { type: 'div', baseClasses: ['card-body'], children: [
+                                { type: 'i', baseClasses: ['bi', 'bi-folder', 'display-6', 'me-2'] },
+                                { type: 'span', composition: category },
+                                { type: 'span', baseClasses: ['badge', 'bg-secondary', 'ms-2'], composition: items.length }
+                            ]}
+                        ]
+                    }]
+                }))
+            }];
+        }
+
+        function renderNotesListView(notes, notebook, section) {
+            if (!notebook) return renderNotesNotebookListView(notes);
+            if (notebook && !section) return renderNotesSectionListView(notes, notebook);
+            const filtered = (notes || []).filter(n =>
+                (n.notebook || 'General') === notebook && (n.section || 'General') === section
+            );
+            return [{
+                type: 'div',
+                baseClasses: ['list-group'],
+                children: filtered.map(n => ({
+                    type: 'a',
+                    baseClasses: ['list-group-item', 'list-group-item-action'],
+                    props: { 'data-action': 'select-entry', id: n.id },
+                    children: [
+                        { type: 'span', composition: n.title },
+                        { type: 'span', baseClasses: ['text-muted'], composition: n.section }
+                    ]
+                }))
+            }];
+        }
+
+        function renderNotesNotebookListView(notes) {
+            const notebooks = {};
+            (notes || []).forEach(n => {
+                const nb = n.notebook || 'General';
+                if (!notebooks[nb]) notebooks[nb] = [];
+                notebooks[nb].push(n);
+            });
+            return [{
+                type: 'div',
+                baseClasses: ['row', 'g-3'],
+                children: Object.entries(notebooks).map(([notebook, items]) => ({
+                    type: 'div',
+                    baseClasses: ['col-12', 'col-md-6', 'col-lg-4'],
+                    children: [{
+                        type: 'div',
+                        baseClasses: ['note-notebook-card', 'card', 'h-100'],
+                        props: { 'data-action': 'select-notebook', notebook },
+                        children: [
+                            { type: 'div', baseClasses: ['card-body'], children: [
+                                { type: 'i', baseClasses: ['bi', 'bi-journal', 'display-6', 'me-2'] },
+                                { type: 'span', composition: notebook },
+                                { type: 'span', baseClasses: ['badge', 'bg-secondary', 'ms-2'], composition: items.length }
+                            ]}
+                        ]
+                    }]
+                }))
+            }];
+        }
+
+        function renderNotesSectionListView(notes, notebook) {
+            const sections = {};
+            (notes || []).filter(n => (n.notebook || 'General') === notebook)
+                .forEach(n => {
+                    const sec = n.section || 'General';
+                    if (!sections[sec]) sections[sec] = [];
+                    sections[sec].push(n);
+                });
+            return [{
+                type: 'div',
+                baseClasses: ['row', 'g-3'],
+                children: Object.entries(sections).map(([section, items]) => ({
+                    type: 'div',
+                    baseClasses: ['col-12', 'col-md-6'],
+                    children: [{
+                        type: 'div',
+                        baseClasses: ['note-section-card', 'card', 'h-100'],
+                        props: { 'data-action': 'select-section', section },
+                        children: [
+                            { type: 'div', baseClasses: ['card-body'], children: [
+                                { type: 'span', composition: section },
+                                { type: 'span', baseClasses: ['badge', 'bg-secondary', 'ms-2'], composition: items.length }
+                            ]}
+                        ]
+                    }]
+                }))
+            }];
+        }
+
+        function renderGenericListView(mode, items) {
+            return items.map(item => ({
+                type: 'div',
+                props: { class: 'generic-item' },
+                children: [
+                    { type: 'p', composition: item.title },
+                    { type: 'button', props: { 'data-action': 'edit', id: item.id }, composition: 'Edit' },
+                    { type: 'button', props: { 'data-action': 'delete', id: item.id }, composition: 'Delete' }
+                ]
+            }));
+        }
+
+        // --- App State and Bootstrapping ---
+        const mockData = {
+            personalInfo: [{ id: '1', name: 'Jane Doe', addresses: [{ street: '123 Main', city: 'Springfield', state: 'IL', zip: '62701' }], phoneNumbers: [{ number: '555-1234' }] }],
+            addressBook: [{ id: '2', name: 'John Smith', nickname: 'Johnny', pictureUrl: '', emails: [{ address: 'john@example.com' }], addresses: [{ street: '456 Oak', city: 'Springfield' }], phoneNumbers: [{ number: '555-5678' }], notes: 'Work friend' }],
+            media: [{ id: '3', title: 'Sunset', type: 'image', url: 'https://picsum.photos/id/1015/400/300', collection: 'Nature' }, { id: '4', title: 'Chill Beats', type: 'audio', url: '', collection: 'Music' }],
+            bookmarks: [{ id: '5', title: 'Perplexity', url: 'https://www.perplexity.ai', category: 'AI', description: 'AI search', tags: ['ai', 'search'] }],
+            notes: [{ id: '6', title: 'Meeting Notes', notebook: 'Work', section: 'Meetings', content: 'Discuss project X' }],
+            credentials: [{ id: '7', service: 'Email', username: 'janedoe', notes: 'Primary email account' }]
+        };
+
+        const appState = QuantumStatePipeline({
+            ui: { currentMode: 'dashboard', isSearchOverlayOpen: false, searchTerm: '' },
+            selection: { entryId: null, bookmarkCategory: null, notebook: null, section: null },
+            data: mockData
+        });
+
+        function renderAll() {
+            const state = { ...appState.state.ui, ...appState.state.selection, data: appState.state.data };
+            createComposableComponent(renderModeSelector(state));
+            createComposableComponent(renderSidebarNav(state));
+            createComposableComponent(renderMainContent(state));
+            if (state.isSearchOverlayOpen) {
+                document.getElementById('unifiedSearchOverlay').classList.add('active');
+                createComposableComponent(renderSearchOverlay({ ...state, searchTerm: state.searchTerm }));
+            } else {
+                document.getElementById('unifiedSearchOverlay').classList.remove('active');
+                document.querySelector('.search-results-list').innerHTML = '';
+            }
+        }
+
+        // --- Event Handling ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            document.getElementById('openSearchBtn').addEventListener('click', () => {
+                appState.through(state => ({ ...state, ui: { ...state.ui, isSearchOverlayOpen: true } })).execute().then(renderAll);
+            });
+            document.getElementById('closeSearchOverlayBtn').addEventListener('click', () => {
+                appState.through(state => ({ ...state, ui: { ...state.ui, isSearchOverlayOpen: false, searchTerm: '' } })).execute().then(renderAll);
+            });
+            document.getElementById('unifiedSearchInput').addEventListener('input', e => {
+                appState.through(state => ({ ...state, ui: { ...state.ui, searchTerm: e.target.value } })).execute().then(renderAll);
+            });
+            document.body.addEventListener('click', e => {
+                const modeBtn = e.target.closest('[data-mode-target]');
+                if (modeBtn) {
+                    appState.through(state => ({
+                        ...state,
+                        ui: { ...state.ui, currentMode: modeBtn.dataset.modeTarget, searchTerm: '', isSearchOverlayOpen: false },
+                        selection: { entryId: null, bookmarkCategory: null, notebook: null, section: null }
+                    })).execute().then(renderAll);
+                }
+                const entryBtn = e.target.closest('[data-action="select-entry"]');
+                if (entryBtn) {
+                    appState.through(state => ({
+                        ...state,
+                        selection: { ...state.selection, entryId: entryBtn.getAttribute('id') }
+                    })).execute().then(renderAll);
+                }
+                const catBtn = e.target.closest('[data-action="select-category"]');
+                if (catBtn) {
+                    appState.through(state => ({
+                        ...state,
+                        selection: { ...state.selection, bookmarkCategory: catBtn.getAttribute('category'), entryId: null }
+                    })).execute().then(renderAll);
+                }
+                const notebookBtn = e.target.closest('[data-action="select-notebook"]');
+                if (notebookBtn) {
+                    appState.through(state => ({
+                        ...state,
+                        selection: { ...state.selection, notebook: notebookBtn.getAttribute('notebook'), section: null, entryId: null }
+                    })).execute().then(renderAll);
+                }
+                const sectionBtn = e.target.closest('[data-action="select-section"]');
+                if (sectionBtn) {
+                    appState.through(state => ({
+                        ...state,
+                        selection: { ...state.selection, section: sectionBtn.getAttribute('section'), entryId: null }
+                    })).execute().then(renderAll);
+                }
+            });
+        });
+    </script>
+</body>
+<!-- https://www.perplexity.ai/search/i-need-to-know-how-to-use-vani-gquZjssqThK2YFu14PIndQ#14 -->
+</html>
