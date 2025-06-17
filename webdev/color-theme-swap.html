@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comprehensive Color Theme Demo with Pseudo-states</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /*
+     * CSS Variables Definition
+     * All theme colors are defined as CSS variables on the :root.
+     * Fallback values are provided for initial rendering before JS applies a theme.
+     */
+    :root {
+      /* Core UI Colors */
+      --background: #fff;
+      --foreground: #333;
+      --highlight: #eaeaea; /* Lighter background for elements like card headers, hovered items */
+      --border: #ccc;
+      --accent: #1a73e8; /* Primary interactive/highlight color (e.g., buttons, links) */
+      --primary: #333;   /* Main text/heading color, often dark for light themes, light for dark themes */
+      --contrast: #f2f7fd; /* Used for sections that stand out slightly (e.g., hero) */
+      --darkerBackground: #f3f3f3; /* For footers or deeper backgrounds */
+      --darkerContrast: #e6effa; /* A slightly darker version of contrast, for more depth */
+
+      /* Text and Link Colors */
+      --linkColor: #1155cc;
+      --textColor: #8097bd; /* For placeholders or less prominent text */
+      --selectForeground: #333; /* For text within select elements if different from foreground */
+
+      /* Pseudo-state Colors (NEW & EXPANDED) */
+      --hoverBackground: var(--highlight);
+      --hoverForeground: var(--primary);
+      --activeBackground: var(--primary);
+      --activeForeground: var(--accent);
+      --focusOutline: var(--accent); /* General focus outline color */
+      --disabledBackground: #e9ecef;
+      --disabledForeground: #6c757d;
+      --disabledBorder: #dee2e6;
+      --readOnlyBackground: #f8f9fa;
+      --readOnlyForeground: #495057;
+      --invalidBorder: #dc3545; /* Red for invalid states */
+      --invalidBackground: #fff0f0;
+      --validBorder: #198754; /* Green for valid states */
+      --validBackground: #f0fff0;
+      --placeholderColor: var(--textColor); /* Specific variable for placeholders */
+      --checkedBackground: var(--accent);
+      --checkedBorder: var(--accent);
+      --checkedForeground: var(--background); /* Text color on checked items (e.g. checkbox checkmark) */
+      --selectionBackground: var(--accent);
+      --selectionForeground: var(--background);
+
+      /* Syntax Highlighting Colors (Customizable) */
+      --keywordColor: #881280;
+      --stringColor: #1a1aa6;
+      --numberColor: #1c00cf;
+      --operatorColor: #808080;
+      --commentColor: #236e25;
+      --functionColor: #222;
+      --varColor: #c80000;
+      --tagNameColor: #881280;
+      --attributeNameColor: #994500;
+
+      /* Console Log Colors (Specific to dev tools or custom console) */
+      --consoleWarnBackground: #fffbe5;
+      --consoleWarnForeground: #5c5c00;
+      --consoleWarnBorder: #fff5c2;
+      --consoleErrorBackground: #fff0f0;
+      --consoleErrorForeground: #f00;
+      --consoleErrorBorder: #ffd6d6;
+
+      /* Generic Light/Dark Hints */
+      --light: #fff;
+      --dark: #eee;
+
+      /* RGB value of accent color for dynamic RGBA shadows (calculated by JS) */
+      --accent-rgb: 26, 115, 232;
+    }
+
+    /* Base styles for the body */
+    body {
+      background: var(--background);
+      color: var(--foreground);
+      transition: background 0.3s ease, color 0.3s ease; /* Smooth transition on theme change */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column; /* For footer to stick to bottom */
+    }
+
+    /* Universal border color for various components */
+    .container,
+    .card,
+    .hero-section,
+    .footer,
+    .card-header,
+    .form-control,
+    .form-select,
+    .btn {
+      border-color: var(--border);
+    }
+
+    /* Section title styling */
+    .section-title {
+      color: var(--accent);
+      border-left: 5px solid var(--primary);
+      background: var(--background);
+      padding-left: 10px;
+      margin-top: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Hero section specific styles */
+    .hero-section {
+      background: var(--contrast);
+      color: var(--primary);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+      padding: 2rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hero-section h1 {
+        color: var(--primary);
+    }
+
+    .hero-section .cta-btn {
+      background: var(--accent);
+      color: var(--background);
+      border: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.25rem;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 1rem;
+    }
+
+    .hero-section .cta-btn:hover {
+      background: var(--hoverBackground);
+      color: var(--hoverForeground);
+    }
+
+    .hero-section .cta-btn:active { /* NEW: Active state for CTA button */
+      background: var(--activeBackground);
+      color: var(--activeForeground);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); /* Inset shadow for press effect */
+    }
+
+    /* Link and button link styles */
+    a, .btn-link {
+      color: var(--linkColor);
+      transition: color 0.2s;
+    }
+
+    a:hover, .btn-link:hover {
+      color: var(--accent);
+    }
+
+    a:active, .btn-link:active { /* NEW: Active state for links */
+      color: var(--activeForeground);
+    }
+
+    /* Card component styles */
+    .card {
+      background: var(--background);
+      color: var(--foreground);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card-header {
+      background: var(--highlight);
+      color: var(--primary);
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Button styles (primary, danger) */
+    .btn-primary,
+    .btn-danger {
+      background: var(--accent);
+      color: var(--background);
+      border-color: var(--accent);
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+
+    .btn-primary:hover,
+    .btn-danger:hover {
+      background: var(--hoverBackground);
+      color: var(--hoverForeground);
+      border-color: var(--hoverBackground); /* Usually, hover border matches background */
+    }
+
+    .btn-primary:focus-visible, /* NEW: Using :focus-visible for better accessibility */
+    .btn-danger:focus-visible {
+      outline: 2px solid var(--focusOutline);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.25);
+    }
+
+    .btn-primary:active, /* NEW: Active state for primary/danger buttons */
+    .btn-danger:active {
+      background: var(--activeBackground);
+      color: var(--activeForeground);
+      border-color: var(--activeBackground);
+      box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    /* Form control styles */
+    .form-control,
+    .form-select {
+      background: var(--background);
+      color: var(--foreground);
+      border-color: var(--border);
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .form-control:focus-visible, /* NEW: Using :focus-visible */
+    .form-select:focus-visible {
+      background: var(--highlight);
+      border-color: var(--accent);
+      color: var(--primary);
+      box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.25);
+      outline: none; /* Remove default outline, using box-shadow instead */
+    }
+
+    /* NEW: Placeholder text color pseudo-element */
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--placeholderColor);
+      opacity: 1; /* Ensures placeholder is not faded by default */
+      transition: color 0.3s ease;
+    }
+
+    /* NEW: Disabled form elements */
+    .form-control:disabled,
+    .form-select:disabled {
+      background: var(--disabledBackground);
+      color: var(--disabledForeground);
+      border-color: var(--disabledBorder);
+      opacity: 0.7; /* Optionally reduce opacity */
+      cursor: not-allowed;
+    }
+
+    /* NEW: Read-only form elements */
+    .form-control[readonly],
+    .form-control[readonly]:focus-visible { /* Read-only should not change much on focus */
+      background: var(--readOnlyBackground);
+      color: var(--readOnlyForeground);
+      border-color: var(--border); /* Or a specific readOnlyBorder */
+      box-shadow: none;
+      cursor: default;
+    }
+
+    /* NEW: Validation states */
+    .form-control:invalid {
+      border-color: var(--invalidBorder);
+      background-color: var(--invalidBackground);
+    }
+    .form-control:valid:not(:placeholder-shown) { /* Valid only if not empty and has content */
+      border-color: var(--validBorder);
+      background-color: var(--validBackground);
+    }
+
+    /* NEW: Checkbox & Radio Button Styling */
+    /* This requires custom styling since native checkboxes are hard to theme */
+    .form-check-input {
+      border-color: var(--border);
+      background-color: var(--background);
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+
+    .form-check-input:checked {
+      background-color: var(--checkedBackground);
+      border-color: var(--checkedBorder);
+    }
+
+    .form-check-input:checked[type="checkbox"] {
+      /* Specific styling for the checkmark */
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+      background-size: 100% 100%; /* Adjust as needed */
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: invert(var(--checked-invert-filter, 0)); /* Will be set by JS based on checkedForeground */
+    }
+
+    .form-check-input:checked[type="radio"] {
+      /* Specific styling for radio dot */
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='2' fill='%23ffffff'/%3e%3c/svg%3e");
+      background-size: 100% 100%; /* Adjust as needed */
+      background-position: center;
+      background-repeat: no-repeat;
+      filter: invert(var(--checked-invert-filter, 0)); /* Will be set by JS based on checkedForeground */
+    }
+
+    .form-check-input:focus-visible {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 0.25rem rgba(var(--accent-rgb), 0.25);
+      outline: none;
+    }
+
+    .form-check-input:disabled {
+      background-color: var(--disabledBackground);
+      border-color: var(--disabledBorder);
+    }
+
+    .form-check-label {
+      color: var(--foreground);
+    }
+
+    /* Footer styles */
+    .footer {
+      background: var(--darkerBackground);
+      color: var(--primary);
+      border-top: 4px solid var(--border);
+      padding: 1.5rem 0;
+      text-align: center;
+      margin-top: auto;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    /* Text selection styles */
+    ::selection {
+      background: var(--selectionBackground);
+      color: var(--selectionForeground);
+    }
+
+    /* Syntax highlighting token colors */
+    .token.keyword { color: var(--keywordColor); }
+    .token.string { color: var(--stringColor); }
+    .token.number { color: var(--numberColor); }
+    .token.operator { color: var(--operatorColor); }
+    .token.comment { color: var(--commentColor); }
+    .token.function { color: var(--functionColor); }
+    .token.variable { color: var(--varColor); }
+    .token.tag { color: var(--tagNameColor); }
+    .token.attr-name { color: var(--attributeNameColor); }
+
+  </style>
+</head>
+<body>
+  <div style="position:fixed;top:1rem;right:1rem;z-index:2000;">
+    <select id="themeSelector" class="form-select form-select-sm" style="width:auto;display:inline-block;" aria-label="Select color theme">
+      </select>
+  </div>
+
+  <div class="container my-5">
+    <section class="hero-section">
+      <h1>Comprehensive Dynamic Theme Demo</h1>
+      <p class="lead">This site demonstrates a flexible color theme system using CSS custom properties, including robust support for various UI component pseudo-states.</p>
+      <a href="https://www.example.com" target="_blank" class="cta-btn">Call to Action Example</a>
+    </section>
+
+    <div class="section-title">Sample Content & Interactions</div>
+    <div class="card mb-4">
+      <div class="card-header">Card Header</div>
+      <div class="card-body">
+        <p>This is a card using the current theme's palette. Observe how element styles adapt to the selected theme, even for interactive states.</p>
+        <button type="button" class="btn btn-primary me-2">Primary Button</button>
+        <button type="button" class="btn btn-danger">Danger Button</button>
+        <button type="button" class="btn btn-primary" disabled>Disabled Button</button>
+        <p class="mt-3">A regular <a href="#" class="btn-link">link with hover/active states</a>. Hover over buttons and links to see their themed interactions.</p>
+      </div>
+    </div>
+
+    <form class="mb-5">
+      <div class="section-title">Form Controls with Pseudo-states</div>
+
+      <div class="mb-3">
+        <label for="input1" class="form-label">Normal Input (Focus/Placeholder)</label>
+        <input type="text" class="form-control" id="input1" placeholder="Type here and focus to see changes...">
+      </div>
+
+      <div class="mb-3">
+        <label for="input2" class="form-label">Required & Pattern Input (Invalid/Valid)</label>
+        <input type="text" class="form-control" id="input2" required pattern="[A-Za-z]{3,}" title="Please enter at least 3 letters" placeholder="Enter at least 3 letters">
+        <div class="form-text">Try typing less than 3 letters or numbers to see invalid state.</div>
+      </div>
+
+      <div class="mb-3">
+        <label for="input3" class="form-label">Disabled Input</label>
+        <input type="text" class="form-control" id="input3" value="This input is disabled" disabled>
+      </div>
+
+      <div class="mb-3">
+        <label for="input4" class="form-label">Read-only Input</label>
+        <input type="text" class="form-control" id="input4" value="This input is read-only" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label for="select2" class="form-label">Example Select (Focus)</label>
+        <select class="form-select" id="select2">
+          <option selected>Open this select menu</option>
+          <option value="1">Option one</option>
+          <option value="2">Option two</option>
+          <option value="3">Option three</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Checkboxes & Radios (Checked/Disabled)</label>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+          <label class="form-check-label" for="flexCheckDefault">
+            Default checkbox
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
+          <label class="form-check-label" for="flexCheckChecked">
+            Checked checkbox
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled>
+          <label class="form-check-label" for="flexCheckDisabled">
+            Disabled checkbox
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+          <label class="form-check-label" for="flexRadioDefault1">
+            Default radio
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+          <label class="form-check-label" for="flexRadioDefault2">
+            Checked radio
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" disabled>
+          <label class="form-check-label" for="flexRadioDefault3">
+            Disabled radio
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Submit Form</button>
+      <button type="reset" class="btn btn-danger">Reset Form</button>
+    </form>
+
+    <div class="section-title">Syntax Highlight Example</div>
+    <div class="mb-5">
+      <pre><code class="language-javascript">
+<span class="token comment">// Example JavaScript with various tokens for syntax highlighting</span>
+<span class="token keyword">const</span> <span class="token variable">appName</span> = <span class="token string">'My Awesome App'</span>; <span class="token comment">// A string variable</span>
+<span class="token keyword">let</span> <span class="token variable">counter</span> = <span class="token number">0</span>;
+
+<span class="token function">function</span> <span class="token function">calculateTotal</span>(<span class="token variable">price</span>, <span class="token variable">quantity</span>) {
+  <span class="token comment">/*
+   * This is a multi-line comment.
+   * It should be styled with --commentColor.
+   */</span>
+  <span class="token keyword">if</span> (<span class="token variable">price</span> <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token variable">quantity</span> <span class="token operator">&lt;=</span> <span class="token number">0</span>) {
+    <span class="token keyword">return</span> <span class="token number">0</span>;
+  }
+  <span class="token keyword">return</span> <span class="token variable">price</span> <span class="token operator">*</span> <span class="token variable">quantity</span>;
+}
+
+<span class="token keyword">const</span> <span class="token variable">element</span> = <span class="token tag">&lt;div</span> <span class="token attr-name">id</span>=<span class="token string">"app"</span> <span class="token attr-name">data-value</span>=<span class="token string">"10"</span><span class="token tag">&gt;</span>;
+
+<span class="token variable">counter</span> <span class="token operator">=</span> <span class="token function">calculateTotal</span>(<span class="token number">10.50</span>, <span class="token number">2</span>);
+
+<span class="token comment">// An unvisited link example</span>
+<span class="token keyword">const</span> <span class="token variable">link</span> = <span class="token string">'https://example.com'</span>;
+      </code></pre>
+    </div>
+  </div>
+
+  <footer class="footer">
+    &copy; 2025 Comprehensive Dynamic Theme Demo. All rights reserved.
+  </footer>
+
+<script>
+    // --- THEME SYSTEM IMPLEMENTATION ---
+
+    /*
+     * Base theme properties. All themes will extend these,
+     * ensuring a consistent set of CSS variables are always defined.
+     * Defaults for console messages, generic light/dark hints, and pseudo-states are here.
+     */
+    const baseThemeDefaults = {
+      // Core UI Colors (defaults)
+      background: '#fff',
+      foreground: '#333',
+      highlight: '#eaeaea',
+      border: '#ccc',
+      accent: '#1a73e8',
+      primary: '#333',
+      contrast: '#f2f7fd',
+      darkerBackground: '#f3f3f3',
+      darkerContrast: '#e6effa', // NEW: Added a slightly darker contrast default
+
+      // Text and Link Colors (defaults)
+      linkColor: '#1155cc',
+      textColor: '#8097bd',
+      selectForeground: '#333',
+
+      // Pseudo-state Colors (defaults - usually derived from core colors,
+      // but can be explicitly overridden in individual themes)
+      hoverBackground: 'var(--highlight)',
+      hoverForeground: 'var(--primary)',
+      activeBackground: 'var(--primary)',
+      activeForeground: 'var(--accent)',
+      focusOutline: 'var(--accent)',
+      disabledBackground: '#e9ecef',
+      disabledForeground: '#6c757d',
+      disabledBorder: '#dee2e6',
+      readOnlyBackground: '#f8f9fa',
+      readOnlyForeground: '#495057',
+      invalidBorder: '#dc3545',
+      invalidBackground: '#fff0f0',
+      validBorder: '#198754',
+      validBackground: '#f0fff0',
+      placeholderColor: 'var(--textColor)',
+      checkedBackground: 'var(--accent)',
+      checkedBorder: 'var(--accent)',
+      checkedForeground: 'var(--background)', // Default checkmark/dot color to background
+      selectionBackground: 'var(--accent)',
+      selectionForeground: 'var(--background)',
+
+
+      // Syntax Highlighting Colors (defaults)
+      keywordColor: '#881280',
+      stringColor: '#1a1aa6',
+      numberColor: '#1c00cf',
+      operatorColor: '#808080',
+      commentColor: '#236e25',
+      functionColor: '#222',
+      varColor: '#c80000',
+      tagNameColor: '#881280',
+      attributeNameColor: '#994500',
+
+      // Console Log Colors (defaults)
+      consoleWarnBackground: '#fffbe5',
+      consoleWarnForeground: '#5c5c00',
+      consoleWarnBorder: '#fff5c2',
+      consoleErrorBackground: '#fff0f0',
+      consoleErrorForeground: '#f00',
+      consoleErrorBorder: '#ffd6d6',
+
+      // Generic Light/Dark Hints
+      light: '#fff',
+      dark: '#eee',
+    };
+
+    /**
+     * Creates a light theme object by extending base defaults.
+     * It sets `isDark` to false and calculates `checkedInvertFilter`.
+     * @param {object} theme - The specific light theme properties.
+     * @returns {object} The complete light theme object.
+     */
+    function createLightTheme(theme) {
+      // Ensure darkerBackground and darkerContrast exist, defaulting if not provided
+      if (!theme.darkerBackground) theme.darkerBackground = theme.contrast || baseThemeDefaults.contrast;
+      if (!theme.darkerContrast) theme.darkerContrast = theme.contrast ? darkenColor(theme.contrast, 10) : baseThemeDefaults.darkerContrast;
+
+      const mergedTheme = { ...baseThemeDefaults, ...theme, isDark: false };
+
+      // Calculate checkedInvertFilter for light themes: invert if checkedForeground is dark
+      mergedTheme.checkedInvertFilter = (getBrightness(mergedTheme.checkedForeground) < 128) ? 1 : 0;
+
+      return mergedTheme;
+    }
+
+    /**
+     * Creates a dark theme object by extending base defaults.
+     * It sets `isDark` to true, provides dark console defaults, and calculates `checkedInvertFilter`.
+     * @param {object} theme - The specific dark theme properties.
+     * @returns {object} The complete dark theme object.
+     */
+    function createDarkTheme(theme) {
+      // Ensure darkerBackground and darkerContrast exist, defaulting if not provided
+      if (!theme.darkerBackground) theme.darkerBackground = theme.contrast || baseThemeDefaults.contrast;
+      if (!theme.darkerContrast) theme.darkerContrast = theme.contrast ? darkenColor(theme.contrast, 10) : baseThemeDefaults.darkerContrast;
+
+      // Dark theme specific overrides for console (if not already provided by theme)
+      const darkThemeConsoleDefaults = {
+        consoleWarnBackground: '#332a00',
+        consoleWarnForeground: '#ffcb6b',
+        consoleWarnBorder: '#650',
+        consoleErrorBackground: '#290000',
+        consoleErrorForeground: '#ff8080',
+        consoleErrorBorder: '#5c0000',
+      };
+
+      // Dark theme specific overrides for pseudo-states (if not already provided by theme)
+      const darkThemePseudoStates = {
+        disabledBackground: '#2b2b2b',
+        disabledForeground: '#606060',
+        disabledBorder: '#4a4a4a',
+        readOnlyBackground: '#1e1e1e',
+        readOnlyForeground: '#7a7a7a',
+        invalidBackground: '#300000',
+        validBackground: '#003000',
+      };
+
+      const mergedTheme = { ...baseThemeDefaults, ...darkThemeConsoleDefaults, ...darkThemePseudoStates, ...theme, isDark: true };
+
+      // Calculate checkedInvertFilter for dark themes: invert if checkedForeground is light
+      mergedTheme.checkedInvertFilter = (getBrightness(mergedTheme.checkedForeground) > 128) ? 1 : 0;
+
+      return mergedTheme;
+    }
+
+    /**
+     * Helper to convert a hex color to an RGB string (e.g., "255, 0, 128").
+     * Used for dynamic RGBA shadows.
+     * @param {string} hex - Hex color string (e.g., "#RRGGBB" or "#RGB").
+     * @returns {string} RGB string or empty string if invalid.
+     */
+    function hexToRgb(hex) {
+      if (!hex || typeof hex !== 'string') return '';
+      const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+      hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+      });
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ?
+        `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
+        '';
+    }
+
+    /**
+     * Helper to calculate the perceived brightness of a hex color.
+     * Used to determine if a color needs inversion for visibility (e.g., checkbox checkmark).
+     * @param {string} hex - Hex color string.
+     * @returns {number} Brightness value (0-255) or 0 if invalid.
+     */
+    function getBrightness(hex) {
+      const rgb = hexToRgb(hex).split(',').map(Number);
+      if (rgb.length !== 3 || rgb.some(isNaN)) return 0;
+      // Formula for perceived brightness (Luminance)
+      return (0.299 * rgb[0] + 0.587 * rgb[1] + 0.114 * rgb[2]);
+    }
+
+    /**
+     * Helper to darken a hex color by a percentage.
+     * Used for deriving `darkerContrast` if not explicitly provided.
+     * @param {string} hex - The hex color string.
+     * @param {number} percent - The percentage to darken (e.g., 10 for 10%).
+     * @returns {string} The darkened hex color.
+     */
+    function darkenColor(hex, percent) {
+        let f=parseInt(hex.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=(f>>8)&0x00FF,B=f&0x0000FF;
+        return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+    }
+
+
+    // --- YOUR THEMES DEFINED AS OBJECTS ---
+    // All themes now explicitly define their properties as objects for clarity and maintainability.
+    // Pseudo-state colors are inherited from baseThemeDefaults unless explicitly overridden here.
+    const themes = {
+      'Light': createLightTheme({
+        background: '#fff',
+        foreground: '#333',
+        selectForeground: '#333',
+        accent: '#1a73e8', // Google Blue
+        highlight: '#eaeaea',
+        border: '#ccc',
+        primary: '#333',
+        contrast: '#f2f7fd',
+        darkerBackground: '#f3f3f3',
+        darkerContrast: '#e6effa', // Example of explicitly defining darkerContrast
+        linkColor: '#1155cc',
+        textColor: '#8097bd',
+        keywordColor: '#881280',
+        stringColor: '#1a1aa6',
+        numberColor: '#1c00cf',
+        operatorColor: '#808080',
+        commentColor: '#236e25',
+        functionColor: '#222',
+        varColor: '#c80000',
+        tagNameColor: '#881280',
+        attributeNameColor: '#994500',
+        placeholderColor: '#a0a0a0',
+        checkedBackground: '#1a73e8',
+        checkedBorder: '#1a73e8',
+        checkedForeground: '#fff', // White checkmark on blue background
+      }),
+      'Dark': createDarkTheme({
+        background: '#242424',
+        foreground: '#a5a5a5',
+        selectForeground: '#eaeaea',
+        accent: '#7cacf8',
+        highlight: '#000',
+        border: '#3d3d3d',
+        primary: '#ccc',
+        contrast: '#0b2544',
+        darkerBackground: '#333',
+        darkerContrast: '#071b30',
+        linkColor: '#ababab',
+        textColor: '#42597f',
+        keywordColor: '#9980ff',
+        stringColor: '#f29766',
+        numberColor: '#9980ff',
+        operatorColor: '#7f7f7f',
+        commentColor: '#747474',
+        functionColor: '#d5d5d5',
+        varColor: '#e36eec',
+        tagNameColor: '#5db0d7',
+        attributeNameColor: '#9bbbdc',
+        placeholderColor: '#5a6d89',
+        checkedBackground: '#7cacf8',
+        checkedBorder: '#7cacf8',
+        checkedForeground: '#242424', // Dark checkmark on light blue background
+      }),
+      'Material Oceanic': createDarkTheme({
+        background: '#263238',
+        foreground: '#B0BEC5',
+        selectForeground: '#FFFFFF',
+        accent: '#009688',
+        highlight: '#425B67',
+        border: '#2A373E',
+        primary: '#607D8B',
+        contrast: '#1E272C',
+        darkerBackground: '#212B30',
+        darkerContrast: '#161F24',
+        varColor: '#eeffff',
+        stringColor: '#c3e88d',
+        keywordColor: '#c792ea',
+        numberColor: '#f78c6c',
+        operatorColor: '#89ddff',
+        linkColor: '#80cbc4',
+        textColor: '#B0BEC5',
+        tagNameColor: '#f07178',
+        functionColor: '#82aaff',
+        attributeNameColor: '#ffcb6b',
+        commentColor: '#546e7a',
+        placeholderColor: '#70838D',
+        checkedBackground: '#009688',
+        checkedBorder: '#009688',
+        checkedForeground: '#FFFFFF',
+      }),
+      'Material Darker': createDarkTheme({
+        background: '#212121',
+        foreground: '#B0BEC5',
+        selectForeground: '#FFFFFF',
+        accent: '#FF9800',
+        highlight: '#3F3F3F',
+        border: '#292929',
+        primary: '#727272',
+        contrast: '#1A1A1A',
+        darkerBackground: '#1C1C1C',
+        darkerContrast: '#151515',
+        varColor: '#eeffff',
+        stringColor: '#c3e88d',
+        keywordColor: '#c792ea',
+        numberColor: '#f78c6c',
+        operatorColor: '#89ddff',
+        linkColor: '#80cbc4',
+        textColor: '#B0BEC5',
+        tagNameColor: '#f07178',
+        functionColor: '#82aaff',
+        attributeNameColor: '#ffcb6b',
+        commentColor: '#616161',
+        placeholderColor: '#70838D',
+        checkedBackground: '#FF9800',
+        checkedBorder: '#FF9800',
+        checkedForeground: '#212121',
+      }),
+      'Material Lighter': createLightTheme({
+        background: '#FAFAFA',
+        foreground: '#546E7A',
+        selectForeground: '#546e7a',
+        accent: '#00BCD4',
+        highlight: '#E7E7E8',
+        border: '#d3e1e8',
+        primary: '#94A7B0',
+        contrast: '#F4F4F4',
+        darkerBackground: '#F0F0F0',
+        darkerContrast: '#EAEAEA',
+        varColor: '#272727',
+        stringColor: '#91B859',
+        keywordColor: '#7C4DFF',
+        numberColor: '#F76D47',
+        operatorColor: '#39ADB5',
+        linkColor: '#39ADB5',
+        textColor: '#546E7A',
+        tagNameColor: '#E53935',
+        functionColor: '#6182B8',
+        attributeNameColor: '#F6A434',
+        commentColor: '#AABFC9',
+        placeholderColor: '#8097bd',
+        checkedBackground: '#00BCD4',
+        checkedBorder: '#00BCD4',
+        checkedForeground: '#FAFAFA',
+      }),
+      'Material Palenight': createDarkTheme({
+        background: '#292D3E',
+        foreground: '#A6ACCD',
+        selectForeground: '#FFFFFF',
+        accent: '#ab47bc',
+        highlight: '#444267',
+        border: '#2b2a3e',
+        primary: '#676E95',
+        contrast: '#202331',
+        darkerBackground: '#25293A',
+        darkerContrast: '#1C1F2B',
+        varColor: '#eeffff',
+        stringColor: '#c3e88d',
+        keywordColor: '#c792ea',
+        numberColor: '#f78c6c',
+        operatorColor: '#89ddff',
+        linkColor: '#80cbc4',
+        textColor: '#A6ACCD',
+        tagNameColor: '#f07178',
+        functionColor: '#82aaff',
+        attributeNameColor: '#ffcb6b',
+        commentColor: '#676E95',
+        placeholderColor: '#7E84A7',
+        checkedBackground: '#ab47bc',
+        checkedBorder: '#ab47bc',
+        checkedForeground: '#292D3E',
+      }),
+      'Material Deep Ocean': createDarkTheme({
+        background: '#0F111A',
+        foreground: '#8F93A2',
+        selectForeground: '#FFFFFF',
+        accent: '#84ffff',
+        highlight: '#1F2233',
+        border: '#41465b',
+        primary: '#4B526D',
+        contrast: '#090B10',
+        darkerBackground: '#0B0D15',
+        darkerContrast: '#07090C',
+        varColor: '#eeffff',
+        stringColor: '#c3e88d',
+        keywordColor: '#c792ea',
+        numberColor: '#f78c6c',
+        operatorColor: '#89ddff',
+        linkColor: '#80cbc4',
+        textColor: '#ff9fa2',
+        tagNameColor: '#f07178',
+        functionColor: '#82aaff',
+        attributeNameColor: '#ffcb6b',
+        commentColor: '#ffffb4',
+        placeholderColor: '#ffff89',
+        checkedBackground: '#84ffff',
+        checkedBorder: '#84ffff',
+        checkedForeground: '#0F111A',
+      }),
+      'Monokai Pro': createDarkTheme({
+        background: '#2D2A2E',
+        foreground: '#fcfcfa',
+        selectForeground: '#FFFFFF',
+        accent: '#ffd866',
+        highlight: '#5b595c',
+        border: '#423f43',
+        primary: '#939293',
+        contrast: '#221F22',
+        darkerBackground: '#282529',
+        darkerContrast: '#1D1A1D',
+        varColor: '#FCFCFA',
+        stringColor: '#FFD866',
+        keywordColor: '#FF6188',
+        numberColor: '#AB9DF2',
+        operatorColor: '#FF6188',
+        linkColor: '#78DCE8',
+        textColor: '#fcfcfa',
+        tagNameColor: '#FF6188',
+        functionColor: '#A9DC76',
+        attributeNameColor: '#78DCE8',
+        commentColor: '#727072',
+        placeholderColor: '#C4C2C4',
+        checkedBackground: '#ffd866',
+        checkedBorder: '#ffd866',
+        checkedForeground: '#2D2A2E',
+      }),
+      'Dracula': createDarkTheme({
+        background: '#282A36',
+        foreground: '#F8F8F2',
+        selectForeground: '#8BE9FD',
+        accent: '#FF79C5',
+        highlight: '#6272A4',
+        border: '#21222C',
+        primary: '#6272A4',
+        contrast: '#191A21',
+        darkerBackground: '#1F212D',
+        darkerContrast: '#15161D',
+        varColor: '#F8F8F2',
+        stringColor: '#F1FA8C',
+        keywordColor: '#FF79C6',
+        numberColor: '#BD93F9',
+        operatorColor: '#FF79C6',
+        linkColor: '#F1FA8C',
+        textColor: '#F8F8F2',
+        tagNameColor: '#FF79C6',
+        functionColor: '#50FA78',
+        attributeNameColor: '#50FA7B',
+        commentColor: '#6272A4',
+        placeholderColor: '#A8AFCF',
+        checkedBackground: '#FF79C5',
+        checkedBorder: '#FF79C5',
+        checkedForeground: '#282A36',
+      }),
+      'Arc Dark': createDarkTheme({
+        background: '#2f343f',
+        foreground: '#D3DAE3',
+        selectForeground: '#FFFFFF',
+        accent: '#42A5F5',
+        highlight: '#3F3F46',
+        border: '#404552',
+        primary: '#8b9eb5',
+        contrast: '#262b33',
+        darkerBackground: '#2A2F39',
+        darkerContrast: '#20252D',
+        varColor: '#CF6A4C',
+        stringColor: '#8F9D6A',
+        keywordColor: '#9B859D',
+        numberColor: '#CDA869',
+        operatorColor: '#A7A7A7',
+        linkColor: '#7587A6',
+        textColor: '#D3DAE3',
+        tagNameColor: '#CF6A4C',
+        functionColor: '#7587A6',
+        attributeNameColor: '#F9EE98',
+        commentColor: '#747C84',
+        placeholderColor: '#96A9B8',
+        checkedBackground: '#42A5F5',
+        checkedBorder: '#42A5F5',
+        checkedForeground: '#2f343f',
+      }),
+      'Atom One Dark': createDarkTheme({
+        background: '#282C34',
+        foreground: '#979FAD',
+        selectForeground: '#FFFFFF',
+        accent: '#2979ff',
+        highlight: '#383D48',
+        border: '#2e3239',
+        primary: '#979FAD',
+        contrast: '#21252B',
+        darkerBackground: '#24282F',
+        darkerContrast: '#1D2127',
+        varColor: '#D19A66',
+        stringColor: '#98C379',
+        keywordColor: '#C679DD',
+        numberColor: '#D19A66',
+        operatorColor: '#61AFEF',
+        linkColor: '#56B6C2',
+        textColor: '#979FAD',
+        tagNameColor: '#F07178',
+        functionColor: '#61AEEF',
+        attributeNameColor: '#E5C17C',
+        commentColor: '#59626F',
+        placeholderColor: '#6E7887',
+        checkedBackground: '#2979ff',
+        checkedBorder: '#2979ff',
+        checkedForeground: '#282C34',
+      }),
+      'Atom One Light': createLightTheme({
+        background: '#FAFAFA',
+        foreground: '#232324',
+        selectForeground: '#232324',
+        accent: '#2979ff',
+        highlight: '#EAEAEB',
+        border: '#DBDBDC',
+        primary: '#9D9D9F',
+        contrast: '#FFFFFF',
+        darkerBackground: '#F5F5F5',
+        darkerContrast: '#F0F0F0',
+        varColor: '#986801',
+        stringColor: '#50A14E',
+        keywordColor: '#A626A4',
+        numberColor: '#986801',
+        operatorColor: '#4078F2',
+        linkColor: '#0184BC',
+        textColor: '#232324',
+        tagNameColor: '#E4564A',
+        functionColor: '#4078F2',
+        attributeNameColor: '#C18401',
+        commentColor: '#A0A1A7',
+        placeholderColor: '#B0B0B0',
+        checkedBackground: '#2979ff',
+        checkedBorder: '#2979ff',
+        checkedForeground: '#FAFAFA',
+      }),
+      'Solarized Dark': createDarkTheme({
+        background: '#002B36',
+        foreground: '#839496',
+        selectForeground: '#FFFFFF',
+        accent: '#d33682',
+        highlight: '#11353F',
+        border: '#0D3640',
+        primary: '#586e75',
+        contrast: '#00252E',
+        darkerBackground: '#002028',
+        darkerContrast: '#001A22',
+        varColor: '#268BD2',
+        stringColor: '#2AA198',
+        keywordColor: '#859900',
+        numberColor: '#D33682',
+        operatorColor: '#93A1A1',
+        linkColor: '#268BD2',
+        textColor: '#839496',
+        tagNameColor: '#268BD2',
+        functionColor: '#B58900',
+        attributeNameColor: '#B58900',
+        commentColor: '#657B83',
+        placeholderColor: '#6C8187',
+        checkedBackground: '#d33682',
+        checkedBorder: '#d33682',
+        checkedForeground: '#002B36',
+      }),
+      'Solarized Light': createLightTheme({
+        background: '#fdf6e3',
+        foreground: '#586e75',
+        selectForeground: '#002b36',
+        accent: '#d33682',
+        highlight: '#F6F0DE',
+        border: '#f7f2e2',
+        primary: '#93a1a1',
+        contrast: '#eee8d5',
+        darkerBackground: '#e6dfce',
+        darkerContrast: '#dfd8c5',
+        varColor: '#268BD2',
+        stringColor: '#2AA198',
+        keywordColor: '#859900',
+        numberColor: '#D33682',
+        operatorColor: '#657B83',
+        linkColor: '#268BD2',
+        textColor: '#586e75',
+        tagNameColor: '#268BD2',
+        functionColor: '#B58900',
+        attributeNameColor: '#657B83',
+        commentColor: '#93A1A1',
+        placeholderColor: '#A0B0B7',
+        checkedBackground: '#d33682',
+        checkedBorder: '#d33682',
+        checkedForeground: '#fdf6e3',
+      }),
+      'Github': createLightTheme({
+        background: '#F7F8FA',
+        foreground: '#5B6168',
+        selectForeground: '#FFFFFF',
+        accent: '#79CB60',
+        highlight: '#CCE5FF',
+        border: '#DFE1E4',
+        primary: '#292D31',
+        contrast: '#FFFFFF',
+        darkerBackground: '#F0F2F4',
+        darkerContrast: '#F7F8FA',
+        varColor: '#24292E',
+        stringColor: '#032F62',
+        keywordColor: '#D73A49',
+        numberColor: '#005CC5',
+        operatorColor: '#D73A49',
+        linkColor: '#005CC5',
+        textColor: '#5B6168',
+        tagNameColor: '#22863A',
+        functionColor: '#6F42C1',
+        attributeNameColor: '#6F42C1',
+        commentColor: '#6A737D',
+        placeholderColor: '#888888',
+        checkedBackground: '#79CB60',
+        checkedBorder: '#79CB60',
+        checkedForeground: '#FFFFFF',
+      }),
+      'Night Owl': createDarkTheme({
+        background: '#011627',
+        foreground: '#b0bec5',
+        selectForeground: '#ffffff',
+        accent: '#7e57c2',
+        highlight: '#152C3B',
+        border: '#2a373e',
+        primary: '#607d8b',
+        contrast: '#001424',
+        darkerBackground: '#000F1C',
+        darkerContrast: '#000A14',
+        varColor: '#addb67',
+        stringColor: '#ecc48d',
+        keywordColor: '#c792ea',
+        numberColor: '#f78c6c',
+        operatorColor: '#c792ea',
+        linkColor: '#80CBC4',
+        textColor: '#b0bec5',
+        tagNameColor: '#7fdbca',
+        functionColor: '#82AAFF',
+        attributeNameColor: '#FAD430',
+        commentColor: '#637777',
+        placeholderColor: '#5a738c',
+        checkedBackground: '#7e57c2',
+        checkedBorder: '#7e57c2',
+        checkedForeground: '#011627',
+      }),
+      'Light Owl': createLightTheme({
+        background: '#FAFAFA',
+        foreground: '#546e7a',
+        selectForeground: '#403f53',
+        accent: '#269386',
+        highlight: '#E0E7EA',
+        border: '#efefef',
+        primary: '#403F53',
+        contrast: '#FAFAFA',
+        darkerBackground: '#F5F5F5',
+        darkerContrast: '#F0F0F0',
+        varColor: '#0C969B',
+        stringColor: '#c96765',
+        keywordColor: '#994cc3',
+        numberColor: '#aa0982',
+        operatorColor: '#7d818b',
+        linkColor: '#994cc3',
+        textColor: '#546e7a',
+        tagNameColor: '#994cc3',
+        functionColor: '#4876d6',
+        attributeNameColor: '#4876d6',
+        commentColor: '#637777',
+        placeholderColor: '#808080',
+        checkedBackground: '#269386',
+        checkedBorder: '#269386',
+        checkedForeground: '#FAFAFA',
+      }),
+      'AMOLED': createDarkTheme({
+        background: '#000000',
+        foreground: '#8F93A2',
+        selectForeground: '#FFFFFF',
+        accent: '#68FFAE',
+        highlight: '#1a1a1a', /* Slightly off-black for highlight */
+        border: '#41465b',
+        primary: '#4B526D',
+        contrast: '#000000',
+        darkerBackground: '#000000', /* AMOLED often uses true black for darker areas */
+        darkerContrast: '#000000',
+        varColor: '#DEFDF7',
+        stringColor: '#38ff9f',
+        keywordColor: '#ab2eff',
+        numberColor: '#A76DF7',
+        operatorColor: '#38ff9f',
+        linkColor: '#86F3C7',
+        textColor: '#8F93A2',
+        tagNameColor: '#ab2eff',
+        functionColor: '#8293FF',
+        attributeNameColor: '#38ff9f',
+        commentColor: '#6575c7',
+        placeholderColor: '#6a718b',
+        checkedBackground: '#68FFAE',
+        checkedBorder: '#68FFAE',
+        checkedForeground: '#000000',
+      }),
+    };
+
+
+    // --- APPLY THEME TO CSS VARIABLES ---
+    /**
+     * Applies the selected theme by setting CSS custom properties on the document root.
+     * @param {string} themeName - The name of the theme to apply (key from the 'themes' object).
+     */
+    function applyTheme(themeName) {
+      const theme = themes[themeName];
+      if (!theme) {
+        console.warn(`Theme "${themeName}" not found. Falling back to default.`);
+        return; // Or apply a default theme like 'Light'
+      }
+
+      const root = document.documentElement; // Target the <html> element for CSS variables
+
+      // Set each CSS variable from the theme object
+      for (const key in theme) {
+        // Skip 'isDark' as it's for JS logic, not a direct CSS variable
+        if (key === 'isDark') continue;
+
+        let value = theme[key];
+
+        // Special handling for accent-rgb for dynamic RGBA shadows
+        if (key === 'accent') {
+          root.style.setProperty(`--${key}-rgb`, hexToRgb(value));
+        } else if (key === 'checkedForeground') {
+          // Set filter for SVG checkmarks based on brightness for contrast
+          // This allows the SVG fill (which is white) to become dark if needed.
+          root.style.setProperty('--checked-invert-filter', theme.checkedInvertFilter);
+        }
+        root.style.setProperty(`--${key}`, value);
+      }
+
+      // Toggle 'dark' class on body for any specific dark mode adjustments
+      document.body.classList.toggle('dark', theme.isDark);
+
+      // Save the selected theme to localStorage
+      localStorage.setItem('theme', themeName);
+    }
+
+    // --- INITIALIZATION ---
+    document.addEventListener('DOMContentLoaded', () => {
+      const selector = document.getElementById('themeSelector');
+
+      // Populate the theme selector dropdown dynamically
+      selector.innerHTML = ""; // Clear existing options
+      Object.keys(themes).forEach(themeName => {
+        const option = document.createElement('option');
+        option.value = themeName;
+        option.textContent = themeName;
+        selector.appendChild(option);
+      });
+
+      // Get saved theme from localStorage
+      const savedTheme = localStorage.getItem('theme');
+
+      // Determine the initial theme to apply
+      let initialTheme = 'Light'; // Default fallback
+      if (savedTheme && themes[savedTheme]) {
+        initialTheme = savedTheme; // Use saved theme if it's valid
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        // If no saved theme, check system preference for dark mode
+        if (themes['Dark']) { // Only apply if a 'Dark' theme is explicitly defined
+          initialTheme = 'Dark';
+        }
+      }
+
+      // Set the dropdown to the determined initial theme
+      selector.value = initialTheme;
+
+      // Apply the initial theme
+      applyTheme(initialTheme);
+
+      // Add event listener for theme changes
+      selector.addEventListener('change', (e) => {
+        applyTheme(e.target.value);
+      });
+    });
+</script>
+</body>
+</html>
